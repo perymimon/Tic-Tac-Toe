@@ -1,0 +1,75 @@
+@keyframes show-up {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.register-form.introduce-finish {
+  animation: both show-up 1s 2s;
+}
+
+.register-form {
+  background-color: var(--bg-color, #282c34);
+  font-size: calc(.1em + 3vmin);;
+  border: white 2px solid;
+  border-radius: 1em/5em;
+  display: flex;
+  justify-items: center;
+  padding: 3em 1em;
+  width: 20em;
+
+  @media all and (max-width: 25em) {
+    width: 90vw;
+    height: 95%;
+  }
+
+  h5 {
+    color: white;
+    margin: 0;
+    margin-bottom: 2em;
+    font-size: 2em;
+    text-transform: uppercase;
+    will-change: background;
+    --bg-x: 0%;
+    --bg-rot: -.25turn;
+  }
+
+  @keyframes flash {
+    from {
+      --bg-x: 0%
+    }
+    to {
+      --bg-x: 100%
+    }
+
+  }
+
+  input {
+    font-size: 2em;
+    width: 80%;
+    margin-bottom: 1em;
+    text-align: center;
+  }
+
+  button {
+    background-color: white;
+    width: 80%;
+    color:var(--bg-color);
+    font-size: 2em;
+    text-transform: uppercase;
+    height: 3em;
+    border-radius: 2em/.5em;
+    font-weight: bold;
+
+
+    @media all and (max-width: 20em) {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 2em;
+    }
+  }
+}

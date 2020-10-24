@@ -1,0 +1,60 @@
+tk-arenas {
+  display: grid;
+  grid-template-columns: minmax(20em, 1fr);
+  grid-auto-flow: row;
+  width: 100%;
+  height: 100%;
+  gap: .1em;
+  border: 1px solid black;
+  padding: 1em;
+
+
+}
+
+tk-arena {
+  background-color: var(--bg-color);
+  width: 10em;
+  height: 10em;
+  display: grid;
+  grid-template-rows: 2em 1fr;
+  padding: 0.2em;
+
+  h4{
+    margin: 0;
+  }
+}
+
+tk-users {
+  background-color: rgba(100, 100, 100, 0.4);
+  grid-row: 2/3;
+  overflow: auto;
+}
+
+tk-user {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  padding: 0 0.1em ;
+  cursor: pointer;
+
+  .name{
+    text-align: left;
+    flex: 1;
+    margin-left: 0.1em;
+    text-transform: capitalize;
+  }
+  .color{
+    width: 1em;
+    height: 1em;
+    border-radius: 4em;
+    background-color: var(--user-color);
+  }
+  .score{
+    &:after{
+      content: "pt";
+    }
+  }
+}
