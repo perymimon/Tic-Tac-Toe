@@ -52,12 +52,14 @@ function addArena(user1, user2, arenaid) {
 }
 
 function removeArena(user1, user2, arenaid) {
-    user1 = String(user1) === user1 ? get(user1) : user1;
-    user2 = String(user2) === user2 ? get(user2) : user2;
-    emitter.emit('arenas-updated', {
-        [user1.id]:getArenas(user1).delete(arenaid),
-        [user2.id]:getArenas(user2).delete(arenaid)
-    })
+    const updated = {}
+    for( let u of [user1,user2]){
+        if(!u) continue;
+        const arenas = getArenas(Object(u) === u ? u: get(u));
+        arenas.delete(arenaid);
+        updated[u.id] = arenas
+    }
+    emitter.emit('arenas-updated', updated)
 
 }
 

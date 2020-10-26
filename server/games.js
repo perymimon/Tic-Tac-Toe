@@ -40,21 +40,25 @@ function create(user1, user2) {
     user1.mark = 'x';
     user2.mark = 'o';
 
-    const nspName = `/game-${id}`;
+    const nspName = `game-${id}`;
     const nsp = io.of(nspName);
     console.log(`created: namespace ${nspName}`)
 
     function emitModelUpdate() {
-        nsp.sockets.emit('update', model);
+        nsp.emit('update', model);
+        console.log(`game ${model.id} emit update`)
     }
 
-    nsp.on('connect', function (socket) {
+    nsp.on('connect', connectSocket )
+
+    function connectSocket(socket) {
         const userid = socket.handshake.query.uid || null;
         socket.join(userid)
         const user = users[userid]
         console.log(`connected nsp ${nspName}: user ${userid}`)
         if (!user) return 'observer'
         socket.emit('update', model)
+
         socket.on('cancel', function () {
             model.isCanceledBy = userid;
             model.stage = 'CANCEL'
@@ -86,7 +90,7 @@ function create(user1, user2) {
             emitModelUpdate()
 
         })
-    })
+    }
     nsp.in(user1.id).on('playerSelectCell', function (cellNumber) {
         console.log(`player select`, cellNumber);
     })

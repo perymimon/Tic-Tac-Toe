@@ -1,17 +1,22 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import './arenas.scss'
 import './arenas-users-list.scss'
-import socket, {createSocket, useSocket} from "../service/socket";
+import socket, {useSocket} from "../service/socket";
 import UserList,{User} from "../components/user-list";
 
 function handleChallenge(user){
     socket.emit('challenge',user)
 }
+function handleRemove(arenaId){
+    socket.emit('remove-arena',arenaId)
+}
 
 export default function Arenas() {
-    const arenasId = useSocket('arenas'  ,[]  )
+    const [arenasId] = useSocket('arenas'  ,[]  )
     return (<tk-arenas>
-        {arenasId.map((id) => <Arena id={id} key={id} />)}
+        {arenasId.map((id) => <Arena id={id}
+                                     key={id}
+                                     onRemove={handleRemove}/>)}
         {/*<Arena stage="LIST"></Arena>*/}
         <tk-arena>
             <UserList onChallenge={handleChallenge}/>
@@ -28,37 +33,29 @@ const STAGE = {
 }
 
 export function Arena({onRemove, ...initModel} = {}) {
-    debugger
-    const [gsocket] = useState(()=> createSocket('game-' + initModel.id))
-    const [gameModel, setGameModel] = useState({
-        stage:'LOADING',
-        ...initModel
-    })
-    useEffect(() => {
-        // return () => socket.disconnect();
-        gsocket.on('update', model => setGameModel(model));
-        gsocket.connect();
-    },[gsocket])
+    initModel.stage = 'LOADING';
+
+    const [gameModel,gSocket] = useSocket(`game-${initModel.id}/update`,initModel)
 
     function handleClick(event) {
         const cell = event.target;
         const cellNumber = cell.dataset.index;
-        gsocket.emit('playerSelectCell', cellNumber)
+        gSocket.emit('playerSelectCell', cellNumber)
 
     }
 
     function handleApprove() {
-        gsocket.emit('approve')
+        gSocket.emit('approve')
     }
 
     function handleCancel() {
-        gsocket.emit('cancel')
+        gSocket.emit('cancel')
     }
 
     const eventHandlers = {
         onCancel: handleCancel,
         onApprove: handleApprove,
-        onRemove: onRemove,
+        onRemove: ()=>onRemove && onRemove(gameModel.id),
         onSelectTile: handleClick
     }
     const Element = STAGE[gameModel.stage];
@@ -133,11 +130,10 @@ function Invitation({players, onCancel, onApprove}) {
             <button onClick={onCancel}>cancel</button>
         </div>
     )
-    const loginUser = useSocket('user', {})
 
     return (
         <tk-invantion>
-            {loginUser.id === by.id ? inviting : invited}
+            {localStorage.userId === by.id ? inviting : invited}
         </tk-invantion>
     )
 }

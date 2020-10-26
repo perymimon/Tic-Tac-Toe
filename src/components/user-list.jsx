@@ -2,7 +2,7 @@ import {useSocket} from "../service/socket";
 import React from "react";
 
 export default function UserList({onChallenge}) {
-    const usersList = useSocket('users-list', [])
+    const [usersList] = useSocket('users-list', [])
 
     return (
         <>
@@ -12,7 +12,6 @@ export default function UserList({onChallenge}) {
             </tk-users>
         </>
     )
-    // return 'test'
 }
 
 export function User({name, score, color, mark, id,onClick}) {
