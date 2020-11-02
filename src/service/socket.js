@@ -1,37 +1,16 @@
 import {Manager} from 'socket.io-client';
 import {useEffect, useLayoutEffect, useMemo, useState} from "react";
-
-class LetMap extends Map {
-    constructor(struct) {
-        super();
-        this.initStruct(struct);
-    }
-
-    initStruct(struct) {
-        this.struct = struct;
-    }
-
-    get(k) {
-        if (!super.has(k)) {
-            const {struct} = this;
-            const s = typeof struct == 'function' ?
-                struct(k) :
-                new struct.constructor(struct)
-            super.set(k, s)
-        }
-        return super.get(k);
-    }
-}
+import LetMap from '../helpers/let-map'
 
 const debug = require("debug")("socket")
 const SOCKET_DOMAIN = process.env.REACT_APP_SOCKET_DOMAIN;
 const manager = new Manager(SOCKET_DOMAIN, {
     reconnectionDelay: 10000,
-    autoConnect: true,
+    autoConnect: false,
     path: `/socket.io`,
-    query: {
-        uid: localStorage.userId
-    }
+    // query: {
+    //     uid: localStorage.userId
+    // }
 });
 /*
 listen to all event under socket ns and update all hooks
@@ -47,10 +26,14 @@ function eventWatcher({type, nsp, data}) {
 }
 
 export function createSocket(namespace) {
-    manager.opts.query.uid= localStorage.userId;
-    const socket = manager.socket(namespace)
+    const socket = manager.socket(namespace,{
+        query:{
+            uid:localStorage.userId
+        }
+    })
     socket.binary(false) /*performance*/
     socket.onevent = eventWatcher;
+    socket.connect();
     return socket
 }
 
@@ -81,8 +64,8 @@ export function useSocket(nspEvent, defaultValue) {
 
 export function useLoginUser() {
     const [user] = useSocket('user', {});
-    useEffect(() => {
-        localStorage.userId = user.id
+    useLayoutEffect(() => {
+        user.id &&(localStorage.userId = user.id)
     }, [user.id])
     return user;
 }
@@ -103,7 +86,5 @@ export function useIsConnected() {
     }, []);
     return isConnected;
 }
-
-manager.connect();
 
 export default socket;

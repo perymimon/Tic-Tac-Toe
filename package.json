@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "set DEBUG=socket.io:server,socket,ph & node scripts/start.js",
+    "start": "set ,ph & node scripts/start.js",
     "preserver": "",
-    "server": "set DEBUG=socket.io:server,socket,ph & nodemon --inspect server",
-    "server:brk": "set DEBUG=socket.io:server,socket,ph & nodemon --inspect-brk server",
+    "server": "nodemon --inspect server",
+    "server:brk": "nodemon --inspect-brk server",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },

@@ -56,7 +56,7 @@ function create(user1, user2) {
         socket.join(userid)
         const user = users[userid]
         console.log(`connected nsp ${nspName}: user ${userid}`)
-        if (!user) return 'observer'
+        if (!user) return 'observer';
         socket.emit('update', model)
 
         socket.on('cancel', function () {
@@ -72,14 +72,14 @@ function create(user1, user2) {
         })
         socket.on('playerSelectCell', function (cellNumber) {
             /* some validation */
-            if (model.isStarted && !model.isCanceled)
+            if (!model.isStarted || model.isCanceled)
                 return socket.emit('error', `game not started`)
             if (cellNumber < 0 && cellNumber > 8)
                 return socket.emit('error', `cell number ${cellNumber} is out of range`)
             if (userid !== model.players[model.turn].id)
                 return socket.emit('error', 'not your turn')
 
-            model.board[cellNumber] = user.mark;
+            model.board[cellNumber] = model.turn;
             updateEndSituation();
 
             if (!(model.winner || model.draw)) {
@@ -108,7 +108,7 @@ function create(user1, user2) {
             [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
         ];
         const isRowComplete = row => {
-            const syms = row.map(i => model.board[i]).filter(Boolean);
+            const syms = row.map(i => model.board[i]).filter(Number.isInteger);
             return syms.length == 3
                 && [0] == syms[1]
                 && syms[1] == syms[2];

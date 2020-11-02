@@ -2,7 +2,9 @@
     box-sizing: border-box;
     --sw-color: white;
     --bg-color:#282c34;
+    --bg-color2:rgba(100, 100, 100, 0.4);
 }
+
 :not(input,button){
     color: white;
 }

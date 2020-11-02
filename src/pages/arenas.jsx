@@ -1,18 +1,18 @@
-import React from "react";
+import React, {useMemo} from "react";
 import './arenas.scss'
-import './arenas-users-list.scss'
 import socket, {useSocket} from "../service/socket";
-import UserList,{User} from "../components/user-list";
+import UserList, {User} from "../components/user-list";
 
-function handleChallenge(user){
-    socket.emit('challenge',user)
+function handleChallenge(user) {
+    socket.emit('challenge', user)
 }
-function handleRemove(arenaId){
-    socket.emit('remove-arena',arenaId)
+
+function handleRemove(arenaId) {
+    socket.emit('remove-arena', arenaId)
 }
 
 export default function Arenas() {
-    const [arenasId] = useSocket('arenas'  ,[]  )
+    const [arenasId] = useSocket('arenas', [])
     return (<tk-arenas>
         {arenasId.map((id) => <Arena id={id}
                                      key={id}
@@ -35,7 +35,7 @@ const STAGE = {
 export function Arena({onRemove, ...initModel} = {}) {
     initModel.stage = 'LOADING';
 
-    const [gameModel,gSocket] = useSocket(`game-${initModel.id}/update`,initModel)
+    const [gameModel, gSocket] = useSocket(`game-${initModel.id}/update`, initModel)
 
     function handleClick(event) {
         const cell = event.target;
@@ -55,7 +55,7 @@ export function Arena({onRemove, ...initModel} = {}) {
     const eventHandlers = {
         onCancel: handleCancel,
         onApprove: handleApprove,
-        onRemove: ()=>onRemove && onRemove(gameModel.id),
+        onRemove: () => onRemove && onRemove(gameModel.id),
         onSelectTile: handleClick
     }
     const Element = STAGE[gameModel.stage];
@@ -66,27 +66,28 @@ export function Arena({onRemove, ...initModel} = {}) {
     )
 }
 
-function Game({onSelectTile, players}) {
-    const user1 = players[0];
-    const user2 = players[1];
-
-    return <div className="game">
+function Game({onSelectTile, players, board}) {
+    const [usersList] = useSocket('users-list', []);
+    let [_players, marks] = useMemo(() => {
+        return [
+            players.map( p => usersList.find(u => u.id === p.id)),
+            {[0]: '✗', [1]: '○'}
+        ]
+    }, [players, usersList])
+    return <tk-game>
         <div className="competitors">
-            <User {...user1} avatar/>
-            <User {...user2} avatar/>
+            <User {..._players[0]} mark={marks[0]} avatar/>
+            <User {..._players[1]} mark={marks[1]} avatar/>
         </div>
         <div className="board">
-            <div data-index="0" onClick={onSelectTile}>board[0]</div>
-            <div data-index="1" onClick={onSelectTile}>board[1]</div>
-            <div data-index="2" onClick={onSelectTile}>board[2]</div>
-            <div data-index="3" onClick={onSelectTile}>board[3]</div>
-            <div data-index="4" onClick={onSelectTile}>board[4]</div>
-            <div data-index="5" onClick={onSelectTile}>board[5]</div>
-            <div data-index="6" onClick={onSelectTile}>board[6]</div>
-            <div data-index="7" onClick={onSelectTile}>board[7]</div>
-            <div data-index="8" onClick={onSelectTile}>board[8]</div>
+            {Array.from({...board, length:9}).map((turn, i) => {
+                const style =  {"--user-color": _players[turn || 0].color};
+                const mark = marks[turn];
+                return <div key={i}
+                            data-index={i} style={style} onClick={onSelectTile}>{mark}</div>
+            })}
         </div>
-    </div>
+    </tk-game>
 }
 
 function Cancel({isCanceledBy, players, onRemove}) {
@@ -119,8 +120,8 @@ function Invitation({players, onCancel, onApprove}) {
     const invited = (
         <div className="invited">
             {by.name} challenge You to dual against him
-            <button onClick={onCancel}>approve</button>
-            <button onClick={onApprove}>decline</button>
+            <button onClick={onApprove}>approve</button>
+            <button onClick={onCancel}>decline</button>
         </div>
     )
 
@@ -133,11 +134,12 @@ function Invitation({players, onCancel, onApprove}) {
 
     return (
         <tk-invantion>
-            {localStorage.userId === by.id ? inviting : invited}
+            {localStorage.userId === against.id && invited}
+            {localStorage.userId === by.id && inviting}
         </tk-invantion>
     )
 }
 
-function Loading(){
+function Loading() {
     return <div className="message"> Loading Arena </div>
 }
