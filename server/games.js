@@ -73,11 +73,11 @@ function create(user1, user2) {
         socket.on('playerSelectCell', function (cellNumber) {
             /* some validation */
             if (!model.isStarted || model.isCanceled)
-                return socket.emit('error', `game not started`)
+                return socket.emit('game-error', `game not started`)
             if (cellNumber < 0 && cellNumber > 8)
-                return socket.emit('error', `cell number ${cellNumber} is out of range`)
+                return socket.emit('game-error', `cell number ${cellNumber} is out of range`)
             if (userid !== model.players[model.turn].id)
-                return socket.emit('error', 'not your turn')
+                return socket.emit('game-error', 'not your turn')
 
             model.board[cellNumber] = model.turn;
             updateEndSituation();

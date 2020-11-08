@@ -76,7 +76,8 @@ io.on('connection', socket => {
         return;
     }
     socket.on('user-register', function ({name}) {
-        if (name.length < 2) return;
+        // 2-4 letters
+        if (name.length < 2 || name.length > 4) return;
         user = socket.user = Users.create(name)
         welcome(socket, user);
     })

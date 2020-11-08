@@ -7,31 +7,36 @@ export default function UserList({onChallenge}) {
 
     return (
         <>
-            <h4>challenge user</h4>
+            <h4>challenge</h4>
             <tk-users>
                 {usersList.map(user => (
-                    <User {...user} onClick={onChallenge} key={user.id}/>)
+                    <User {...user} showScore onClick={onChallenge} key={user.id}/>)
                 )}
             </tk-users>
         </>
     )
 }
 
-export function User({name, score, color, mark, id, onClick, avatar}) {
+export function User({name, score, color, mark, id, onClick, avatar,
+                         showScore, tagView, colorView, nameView}) {
     const style = {
-        '--user-color': color ||'red',
+        '--user-color': color || 'gray',
         '--user-mark': mark
     }
 
     function handleClick(event) {
         onClick({name, id})
     }
+    const showName = !colorView;
+    const showColor = !nameView;
 
-    return (
-        <tk-user style={style} avatar={avatar} onClick={handleClick}>
-            <div className="color"></div>
-            <div className="name">{name}</div>
-            <div className="score">{score}</div>
+    const user = (
+        <tk-user style={style} avatar={avatar} nameView={nameView} onClick={handleClick}>
+            {showColor && <div className="color"></div> }
+            {showName && <div className="name">{name || ''}</div> }
+            {showScore && <div className="score">{score}</div>}
         </tk-user>
     )
+
+    return user;
 }

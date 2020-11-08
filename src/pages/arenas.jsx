@@ -66,22 +66,23 @@ export function Arena({onRemove, ...initModel} = {}) {
     )
 }
 
-function Game({onSelectTile, players, board}) {
+function Game({onSelectTile, players, board, turn}) {
     const [usersList] = useSocket('users-list', []);
     let [_players, marks] = useMemo(() => {
         return [
-            players.map( p => usersList.find(u => u.id === p.id)),
+            players.map(p => usersList.find(u => u.id === p.id)),
             {[0]: '✗', [1]: '○'}
         ]
     }, [players, usersList])
     return <tk-game>
         <div className="competitors">
             <User {..._players[0]} mark={marks[0]} avatar/>
+            <User {..._players[turn]} mark={marks[turn]} colorView/>
             <User {..._players[1]} mark={marks[1]} avatar/>
         </div>
         <div className="board">
-            {Array.from({...board, length:9}).map((turn, i) => {
-                const style =  {"--user-color": _players[turn || 0].color};
+            {Array.from({...board, length: 9}).map((turn, i) => {
+                const style = {"--user-color": _players[turn || 0].color};
                 const mark = marks[turn];
                 return <div key={i}
                             data-index={i} style={style} onClick={onSelectTile}>{mark}</div>
@@ -92,10 +93,12 @@ function Game({onSelectTile, players, board}) {
 
 function Cancel({isCanceledBy, players, onRemove}) {
     const user = players.find(p => p.id === isCanceledBy);
-    return <div className="message">
-        <span>{user.name} cancel the game</span>
-        <button onClick={onRemove}>OK</button>
-    </div>
+    
+    return <tk-message class="text-style-1">
+        <User {...user} nameView className="text-style-2"/>
+        cancel the game
+        <button className="button-style-1" onClick={onRemove}>OK</button>
+    </tk-message>
 }
 
 function End({winner, draw, onRemove}) {
@@ -106,10 +109,10 @@ function End({winner, draw, onRemove}) {
         message = `${winner.name} WIN`
     }
 
-    return <div className="message">
-        <span>{message}</span>
+    return <tk-message>
+        <span class="text-style-1">{message}</span>
         <button onClick={onRemove}>OK</button>
-    </div>
+    </tk-message>
 
 }
 
@@ -118,28 +121,28 @@ function Invitation({players, onCancel, onApprove}) {
     const against = players[1];
 
     const invited = (
-        <div className="invited">
-            {by.name} challenge You to dual against him
+        <>
+            dual with {by.name} ?
             <button onClick={onApprove}>approve</button>
             <button onClick={onCancel}>decline</button>
-        </div>
+        </>
     )
 
     const inviting = (
-        <div className="inviting">
+        <>
             waiting to {against.name}
             <button onClick={onCancel}>cancel</button>
-        </div>
+        </>
     )
 
     return (
-        <tk-invantion>
+        <tk-message class="text-style-1">
             {localStorage.userId === against.id && invited}
             {localStorage.userId === by.id && inviting}
-        </tk-invantion>
+        </tk-message>
     )
 }
 
 function Loading() {
-    return <div className="message"> Loading Arena </div>
+    return <tk-message class="text-style-1"> Loading Arena </tk-message>
 }

@@ -27,6 +27,7 @@
   }
 
   h5 {
+    font-family: "arcaderegular";
     color: white;
     margin: 0;
     margin-bottom: 2em;
@@ -55,15 +56,11 @@
   }
 
   button {
-    background-color: white;
     width: 80%;
-    color:var(--bg-color);
     font-size: 2em;
     text-transform: uppercase;
     height: 3em;
-    border-radius: 2em/.5em;
     font-weight: bold;
-
 
     @media all and (max-width: 20em) {
       position: absolute;

@@ -8,10 +8,12 @@ const manager = new Manager(SOCKET_DOMAIN, {
     reconnectionDelay: 10000,
     autoConnect: false,
     path: `/socket.io`,
-    // query: {
-    //     uid: localStorage.userId
-    // }
+    /* must add query here also because manger.socket() not move query on '/' ns */
+    query: {
+        uid: localStorage.userId
+    }
 });
+
 /*
 listen to all event under socket ns and update all hooks
 * */
@@ -26,11 +28,12 @@ function eventWatcher({type, nsp, data}) {
 }
 
 export function createSocket(namespace) {
-    const socket = manager.socket(namespace,{
-        query:{
-            uid:localStorage.userId
-        }
-    })
+    const query = {
+        uid: localStorage.userId
+    };
+    const socket = manager.socket(namespace, {query})
+    // must do for case userId updated after Manger connected
+    socket.io.opts.query = query;
     socket.binary(false) /*performance*/
     socket.onevent = eventWatcher;
     socket.connect();
@@ -65,7 +68,7 @@ export function useSocket(nspEvent, defaultValue) {
 export function useLoginUser() {
     const [user] = useSocket('user', {});
     useLayoutEffect(() => {
-        user.id &&(localStorage.userId = user.id)
+        user.id && (localStorage.userId = user.id)
     }, [user.id])
     return user;
 }

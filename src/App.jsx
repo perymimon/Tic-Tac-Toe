@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 
 import {useIsConnected, useLoginUser} from "./service/socket"
+import {User} from "./components/user-list";
 
 function App() {
     const user = useLoginUser()
@@ -25,7 +26,7 @@ function App() {
     return (
         <div className="App">
             <header className="app-header introduce-finish">
-                <span className="place-holder"></span>
+                <User {...user} tagView/>
                 Tick Tac Toe
                 <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}>
                  <ConnectionSVG style={connectionStyle}/>

@@ -3,6 +3,7 @@ tk-users {
   background-color: rgba(100, 100, 100, 0.4);
   grid-row: 2/3;
   overflow: auto;
+  padding: 0.3em 0.1em;
 }
 
 tk-user {
@@ -23,7 +24,8 @@ tk-user {
   }
   .color{
     width: 1em;
-    height: 1em;
+    height: 0.7em;
+    margin: 0.1em 0;
     border-radius: 4em;
     background-color: var(--user-color);
   }
