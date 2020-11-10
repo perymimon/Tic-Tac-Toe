@@ -22,6 +22,7 @@ Users.on('arenas-updated', function (updatedUsers) {
 
 function welcome(socket, user) {
     socket.join(user.id)
+    socket.handshake.query.uid = user.id;
     socket.emit('user', user);
     const arenas = Users.getArenas(user);
     socket.emit('arenas', [...arenas]);
@@ -45,31 +46,27 @@ function welcome(socket, user) {
 
 }
 
-const dynamicNsp = io.of(/^\/game-\w+$/).on('connect', (socket) => {
-    const newNamespace = socket.nsp; // newNamespace.name === '/dynamic-101'
-    console.log(`socket connected to ${newNamespace.name}`);
-});
+// const dynamicNsp = io.of(/^\/game-\w+$/).on('connect', (socket) => {
+//     const newNamespace = socket.nsp; // newNamespace.name === '/dynamic-101'
+//     console.log(`socket connected to ${newNamespace.name}`);
+// });
 
 io.on('connection', socket => {
-    const userid = socket.handshake.query.uid ;
-
-    if(userid)
-    var user = socket.user = Users.get(userid);
-
-
-    console.log(`connect: ${socket.id} userid: ${userid}`);
-
     socket.on('disconnect', () => {
         console.log(`disconnect: ${socket.id}`);
         socket.removeAllListeners('user-register')
         socket.removeAllListeners('challenge')
         socket.removeAllListeners('remove-arena')
         socket.removeAllListeners('hello')
+        // remove user from list in two steps
 
     });
-    socket.on('hello!', () => {
-        console.log(`hello from ${socket.id} userid: ${userid}`);
-    });
+
+    const userid = socket.handshake.query.uid ;
+
+    if(userid)
+    var user = socket.user = Users.get(userid);
+    console.log(`connect: ${socket.id} userid: ${userid}`);
 
     if (user) {
         welcome(socket, user)

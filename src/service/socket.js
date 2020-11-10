@@ -8,41 +8,49 @@ const manager = new Manager(SOCKET_DOMAIN, {
     reconnectionDelay: 10000,
     autoConnect: false,
     path: `/socket.io`,
-    /* must add query here also because manger.socket() not move query on '/' ns */
-    query: {
-        uid: localStorage.userId
-    }
 });
+window.addEventListener('storage', (...args) => {
+    debugger;
+    console.log('storage', args);
+})
 
 /*
 listen to all event under socket ns and update all hooks
 * */
-function eventWatcher({type, nsp, data}) {
+function socketEventWatcher({type, nsp, data}) {
     const [event, datum] = data;
     debug(`${event} event`, datum);
     console.log(event, nsp, datum)
     const nspEventKey = `${nsp}/${event}`;
     const setters = eventsHooks.get(nspEventKey)
-    socketMemo[nspEventKey] = datum;
+    socketMemo.set(nspEventKey, datum);
     setters.forEach(set => set(datum))
 }
 
 export function createSocket(namespace) {
-    const query = {
-        uid: localStorage.userId
-    };
-    const socket = manager.socket(namespace, {query})
+    const uid = localStorage.userId;
+    const socket = manager.socket(namespace, {query: {uid}})
     // must do for case userId updated after Manger connected
-    socket.io.opts.query = query;
+    socket.io.opts.query = {uid};
     socket.binary(false) /*performance*/
-    socket.onevent = eventWatcher;
+    socket.onevent = socketEventWatcher;
     socket.connect();
     return socket
 }
 
 const eventsHooks = new LetMap(new Set());
 const sockets = new LetMap(ns => createSocket(ns))
-const socketMemo = {};
+const socketMemo = new LetMap(); // use it for the events
+
+socketMemo.on('//user',function (user, oldUser){
+    console.log('user',user);
+    if(localStorage.userId !== user.id){
+        localStorage.userId = user.id
+        manager.opts.query.uid = user.id;
+        manager.disconnect();
+        manager.connect();
+    }
+})
 
 const socket = window.socket = sockets.get('/')
 
@@ -54,7 +62,7 @@ export function useSocket(nspEvent, defaultValue) {
         return [nsp, key]
     }, [nspEvent]);
 
-    const [value, setValue] = useState(socketMemo[key] ?? defaultValue);
+    const [, setValue] = useState(/*just for trigger RENDER*/);
     useLayoutEffect(() => {
         const setters = eventsHooks.get(key)
         setters.add(setValue)
@@ -62,14 +70,11 @@ export function useSocket(nspEvent, defaultValue) {
             setters.delete(setValue)
         }
     }, [key])
-    return [socketMemo[key] ?? value, sockets.get(nsp)];
+    return [socketMemo.get(key) ?? defaultValue, sockets.get(nsp)];
 }
 
 export function useLoginUser() {
     const [user] = useSocket('user', {});
-    useLayoutEffect(() => {
-        user.id && (localStorage.userId = user.id)
-    }, [user.id])
     return user;
 }
 
