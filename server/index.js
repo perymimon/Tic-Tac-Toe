@@ -22,22 +22,17 @@ Users.on('arenas-updated', function (updatedUsers) {
 
 function welcome(socket, user) {
     socket.join(user.id)
-    socket.handshake.query.uid = user.id;
     socket.emit('user', user);
     const arenas = Users.getArenas(user);
     socket.emit('arenas', [...arenas]);
 
     socket.on('challenge', function (user2) {
-        const victoryScore = 100;
-        const lostScore = -1;
         if (!user) return;
-        const {id, name} = user;
-        const user1 = {id, name};
-        const game = Games.create(user1, user2);
-        Users.addArena(user1.id, user2.id, game.id);
+        const game = Games.create(user.id, user2.id);
+        Users.addArena(user.id, user2.id, game.id);
     })
     socket.on('remove-arena', function (arenaid) {
-        Users.removeArena(this.user, null, arenaid)
+        Users.removeArena(this.user.id,  arenaid)
     })
 
     const users = Users.getUsersList();
@@ -73,6 +68,7 @@ io.on('connection', socket => {
         return;
     }
     socket.on('user-register', function ({name}) {
+        if(user) return // all ready exist
         // 2-4 letters
         if (name.length < 2 || name.length > 4) return;
         user = socket.user = Users.create(name)

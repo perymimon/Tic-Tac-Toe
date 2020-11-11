@@ -14,13 +14,15 @@ function handleRemove(arenaId) {
 export default function Arenas() {
     const [arenasId] = useSocket('arenas', [])
     return (<tk-arenas>
-        {arenasId.map((id) => <Arena id={id}
-                                     key={id}
-                                     onRemove={handleRemove}/>)}
-        {/*<Arena stage="LIST"></Arena>*/}
+        {/* like : <Arena stage="LIST"></Arena> */}
         <tk-arena>
             <UserList onChallenge={handleChallenge}/>
         </tk-arena>
+        {arenasId.map((id) => <Arena id={id}
+                                     key={id}
+                                     onRemove={handleRemove}/>)}
+
+
     </tk-arenas>)
 }
 
@@ -68,11 +70,9 @@ export function Arena({onRemove, ...initModel} = {}) {
 
 function Game({onSelectTile, players, board, turn}) {
     const [usersList] = useSocket('users-list', []);
-    let [_players, marks] = useMemo(() => {
-        return [
-            players.map(p => usersList.find(u => u.id === p.id)),
-            {[0]: '✗', [1]: '○'}
-        ]
+    const marks = ['✗', '○'];
+    const _players = useMemo(() => {
+        return players.map(p => usersList.find(u => p.id === u.id))
     }, [players, usersList])
     return <tk-game>
         <div className="competitors">

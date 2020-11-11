@@ -1,6 +1,6 @@
 const EventEmitter = require('events');
-
-export default class LetMap extends Map {
+module.exports =
+  class LetMap extends Map {
     constructor(struct) {
         super();
         this.initStruct(struct);
@@ -16,19 +16,29 @@ export default class LetMap extends Map {
     initStruct(struct) {
         this.struct = struct;
     }
+    emit(k){
+        this.emitter.emit(k);
+        this.emitter.emit('update');
+    }
     set(k,nv){
         let ov = super.get(k);
         super.set(k,nv);
-        return this.emitter.emit(k,nv,ov);
+        this.emitter.emit(k,nv,ov);
+        this.emitter.emit('update');
+
+        return nv;
     }
-    get(k) {
-        if (this.struct && !super.has(k)) {
-            const {struct} = this;
+    for(k){
+        const {struct} = this;
+        if (struct && !super.has(k)) {
             const s = typeof struct == 'function' ?
                 struct(k) :
                 new struct.constructor(struct)
             super.set(k, s)
         }
         return super.get(k);
+    }
+    get(k) {
+       return this.for(...arguments)
     }
 }

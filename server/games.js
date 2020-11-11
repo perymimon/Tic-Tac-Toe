@@ -4,12 +4,16 @@ var io  = null;
 const gameMap = new Map();
 const EventEmitter = require('events');
 const emitter = new EventEmitter();
+const ReactiveModel = require('../src/helpers/reactive-model');
+const victoryScore = 100;
+const lostScore = -1;
 
-
+/* module exports */
 Object.assign(module.exports, {
     get, create, getList,attach,
     on: emitter.on.bind(emitter)
 })
+
 function attach(_io){
     io = _io;
 }
@@ -22,32 +26,32 @@ function getList() {
     return list;
 }
 
-function create(user1, user2) {
-    const id = uid();
+function create(user1id, user2id) {
+    const gameId = uid();
+    const user1 = Users.get(user1id)
+        , user2 = Users.get(user2id);
+
     const users = {
-        [user1.id]: user1,
-        [user2.id]: user2,
+        [user1id]: user1,
+        [user2id]: user2
     }
-    const model = {
-        id,
+    const model = ReactiveModel({
+        id: gameId,
         players: [user1, user2],
-        board: Array(0).fill(''),
+        board: Array(9).fill(''),
         turn: 0,
         isStarted: false,
         isCanceled: false,
         stage: 'INVITATION'
-    }
-    user1.mark = 'x';
-    user2.mark = 'o';
-
-    const nspName = `game-${id}`;
-    const nsp = io.of(nspName);
-    console.log(`created: namespace ${nspName}`)
-
-    function emitModelUpdate() {
+    })
+    model.observe((model)=>{
         nsp.emit('update', model);
         console.log(`game ${model.id} emit update`)
-    }
+    })
+
+    const nspName = `game-${gameId}`;
+    const nsp = io.of(nspName);
+    console.log(`created: namespace ${nspName}`)
 
     nsp.on('connect', connectSocket )
 
@@ -62,13 +66,11 @@ function create(user1, user2) {
         socket.on('cancel', function () {
             model.isCanceledBy = userid;
             model.stage = 'CANCEL'
-            emitModelUpdate()
         })
         socket.on('approve', function () {
             if (userid !== user2.id) return;
             model.isStarted = true;
             model.stage = 'GAME'
-            emitModelUpdate()
         })
         socket.on('playerSelectCell', function (cellNumber) {
             /* some validation */
@@ -81,13 +83,13 @@ function create(user1, user2) {
 
             model.board[cellNumber] = model.turn;
             updateEndSituation();
-
-            if (!(model.winner || model.draw)) {
-                model.turn = (++model.turn % 2);
-            } else {
-                model.stage = `END`
+            if(model.stage == 'END'){
+                const {winner:winPlayer, loser:losePlayer} = model;
+                if(winPlayer) (winPlayer.score += victoryScore);
+                if(losePlayer) losePlayer.score += lostScore;
+            }else {
+                model.turn = (model.turn +1) % 2
             }
-            emitModelUpdate()
 
         })
     }
@@ -117,9 +119,12 @@ function create(user1, user2) {
         const isDraw = model.board.filter(Boolean).length === 9
         if (isVictory) {
             model.winner = model.players[model.turn];
+            model.loser = model.players[(model.turn+1) % 2];
+            model.stage = `END`
         }
         if (isDraw) {
             model.draw = true;
+            model.stage = `END`
         }
     }
 

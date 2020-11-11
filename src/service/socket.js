@@ -9,22 +9,25 @@ const manager = new Manager(SOCKET_DOMAIN, {
     autoConnect: false,
     path: `/socket.io`,
 });
-window.addEventListener('storage', (...args) => {
-    debugger;
-    console.log('storage', args);
-})
-
 /*
-listen to all event under socket ns and update all hooks
+listen to all event under socket ns .
+ save last value and update all register react hooks
 * */
 function socketEventWatcher({type, nsp, data}) {
     const [event, datum] = data;
-    debug(`${event} event`, datum);
-    console.log(event, nsp, datum)
-    const nspEventKey = `${nsp}/${event}`;
-    const setters = eventsHooks.get(nspEventKey)
-    socketMemo.set(nspEventKey, datum);
+    console.log(' Event Watcher', event, nsp, datum)
+    const [,key] = nspEventKey(nsp,event);
+    const setters = eventsHooks.for(key)
+    socketMemo.set(key, datum);
     setters.forEach(set => set(datum))
+}
+
+function nspEventKey (nsp, event=''){
+    let key = `${nsp}/${event}`
+        .replace(/^\/*/,'/') // make it start with *one* /
+        .replace(/\/*$/,'') // clear all / from the end
+    const parts = key.split(/(?!^)\//) // split key to [/nsp,event]
+    return parts.length == 1 ?['/',key]: [parts[0],key];
 }
 
 export function createSocket(namespace) {
@@ -40,10 +43,11 @@ export function createSocket(namespace) {
 
 const eventsHooks = new LetMap(new Set());
 const sockets = new LetMap(ns => createSocket(ns))
-const socketMemo = new LetMap(); // use it for the events
+const socketMemo = new LetMap(); // use it for events
 
-socketMemo.on('//user',function (user, oldUser){
-    console.log('user',user);
+/* need to reconnect for query get place on the request*/
+socketMemo.on('/user',function (user, oldUser){
+    console.log('/user',user);
     if(localStorage.userId !== user.id){
         localStorage.userId = user.id
         manager.opts.query.uid = user.id;
@@ -52,25 +56,24 @@ socketMemo.on('//user',function (user, oldUser){
     }
 })
 
-const socket = window.socket = sockets.get('/')
+const socket = window.socket = sockets.for('/')
 
 export function useSocket(nspEvent, defaultValue) {
-    const [nsp, key] = useMemo(() => {
-        let [nsp, event] = nspEvent.split('/');
-        [nsp, event] = event ? ['/' + nsp, event] : ['/', nsp];
-        const key = [nsp, event].join('/');
-        return [nsp, key]
-    }, [nspEvent]);
+    // nspEvent:string support 2 formats :
+    // "nsp/event" - for register listener under event under custom ns
+    // "event" - for register listener under default ns `/`
 
-    const [, setValue] = useState(/*just for trigger RENDER*/);
+    const [nsp, key] = useMemo(() => nspEventKey(nspEvent), [nspEvent]);
+    const [, setValue] = useState(/*just for we have a trigger RENDER*/);
+
     useLayoutEffect(() => {
-        const setters = eventsHooks.get(key)
+        const setters = eventsHooks.for(key)
         setters.add(setValue)
         return () => {
             setters.delete(setValue)
         }
     }, [key])
-    return [socketMemo.get(key) ?? defaultValue, sockets.get(nsp)];
+    return [socketMemo.get(key) ?? defaultValue, sockets.for(nsp)];
 }
 
 export function useLoginUser() {
