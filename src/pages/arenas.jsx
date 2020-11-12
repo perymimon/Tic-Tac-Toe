@@ -38,7 +38,15 @@ export function Arena({onRemove, ...initModel} = {}) {
     initModel.stage = 'LOADING';
 
     const [gameModel, gSocket] = useSocket(`game-${initModel.id}/update`, initModel)
-    const {stage} = gameModel;
+    const [usersList] = useSocket('users-list', []);
+
+    const {stage,playersId} = gameModel;
+
+    gameModel.players = useMemo(()=>{
+        if(!playersId) return []
+        return playersId.map(pid => usersList.find(u => pid === u.id))
+    },[playersId, usersList])
+
     function handleClick(event) {
         const cell = event.target;
         const cellNumber = cell.dataset.index;
@@ -61,26 +69,23 @@ export function Arena({onRemove, ...initModel} = {}) {
     return (
         <tk-arena>
             <Element {...gameModel} {...eventHandlers}  />
-            {stage == "END" && <End {...gameModel} {...eventHandlers} />}
+            {stage === "END" && <End {...gameModel} {...eventHandlers} />}
         </tk-arena>
     )
 }
 
 function Game({onSelectTile, players, board, turn}) {
-    const [usersList] = useSocket('users-list', []);
     const marks = ['✗', '○'];
-    const _players = useMemo(() => {
-        return players.map(p => usersList.find(u => p.id === u.id))
-    }, [players, usersList])
+
     return <tk-game>
         <div className="competitors">
-            <User {..._players[0]} mark={marks[0]} avatar/>
-            <User {..._players[turn]} mark={marks[turn]} colorView/>
-            <User {..._players[1]} mark={marks[1]} avatar/>
+            <User {...players[0]} mark={marks[0]} avatar/>
+            <User {...players[turn]} mark={marks[turn]} colorView/>
+            <User {...players[1]} mark={marks[1]} avatar/>
         </div>
         <div className="board">
             {Array.from({...board, length: 9}).map((turn, i) => {
-                const style = {"--user-color": _players[turn || 0].color};
+                const style = {"--user-color": players[turn || 0].color};
                 const mark = marks[turn];
                 return <div key={i}
                             data-index={i} style={style} onClick={onSelectTile}>{mark}</div>

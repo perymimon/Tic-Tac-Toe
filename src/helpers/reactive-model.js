@@ -1,6 +1,6 @@
 module.exports =
     function ReactiveModel(model = {}) {
-        const updates = [];
+        const updates = new Set();
         let timerUpdate = null;
 
         function emitUpdate() {
@@ -12,8 +12,11 @@ module.exports =
 
         function observe(cb) {
             if (typeof cb === 'function') {
-                updates.push(cb);
+                updates.add(cb);
                 cb(model);
+            }
+            return function disconnect(){
+                this.updates.remove(cb);
             }
         }
 

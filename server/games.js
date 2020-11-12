@@ -23,8 +23,7 @@ function get(id) {
 }
 
 function getList() {
-    const list = [...arenaMap.values()]
-    return list;
+    return [...arenaMap.values()];
 }
 
 function Arena(user1id, user2id) {
@@ -61,9 +60,9 @@ class Game {
 
         const model = this.model = ReactiveModel({
             id: uid(),
-            players: [
-                Users.get(user1id),
-                Users.get(user2id)
+            playersId: [user1id, user2id
+                // Users.get(user1id).model,
+                // Users.get(user2id).model
             ],
             board: Array(9).fill(''),
             turn: 0,
@@ -74,7 +73,6 @@ class Game {
 
         this.id = model.id;
         this.errors = ReactiveModel([]);
-
 
     }
 
@@ -94,27 +92,27 @@ class Game {
     approve(userid) {
         const {model} = this;
         // just user2 can approve invention
-        if (userid !== model.players[1].id) return;
+        if (userid !== model.playersId[1]) return;
         model.isStarted = true;
         model.stage = 'GAME'
     }
 
     selectCell(userid, cellNumber) {
         const {model,errors} = this;
-        const {turn,players, board} = model;
+        const {turn,playersId, board} = model;
         if (!model.isStarted || model.isCanceledBy)
             return errors.push( `game not started`)
-        // if (cellNumber < 0 && cellNumber > 8)
-        //     return socket.emit('game-error', `cell number ${cellNumber} is out of range`)
-        // if (userid !== model.players[model.turn].id)
-        //     return socket.emit('game-error', 'not your turn')
+        if (cellNumber < 0 && cellNumber > 8)
+            return errors.push(`cell number ${cellNumber} is out of range`)
+        if (userid !== playersId[turn])
+            return errors.push( 'not your turn')
 
         board[cellNumber] = turn;
         const {isDraw, isVictory} = checkEndSituation(model);
 
         if(isVictory){
-            model.winner = players[turn];
-            model.loser = players[(turn + 1) % 2];
+            model.winner = Users.get(playersId[turn]);
+            model.loser = Users.get(playersId[(turn + 1) % 2]);
             model.stage = `END`
             model.winner.score += victoryScore;
             model.loser.score += lossScore;

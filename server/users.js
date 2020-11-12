@@ -1,77 +1,107 @@
 const uid = require('uid')
 const EventEmitter = require('events');
+const AI = require('./ai')
 const letMap = require('../src/helpers/let-map');
+const ReactiveSet = require('../src/helpers/reactive-set');
 const ReactiveModel = require('../src/helpers/reactive-model');
-
-const usersMap = new letMap(create);
-const users$arenaMap = new WeakMap();
-
 var colorPool = "F44336,9C27B0,673AB7,3F51B5,2196f3,03a9f4,00BCD4,009688,4CAF50,8BC34A,cddc39,ffeb3b,ffc107,ff9800,ff5722".split(',');
 const emitter = new EventEmitter();
 
-
-/* emit every time userMap add or update record */
-usersMap.on('update',()=> emitter.emit('update'))
-
 function randomColor() {
-    const {lastPoint=0} = randomColor;
+    const {lastPoint = 0} = randomColor;
     var steps = (Math.random() * (colorPool.length / 2)) | 1;
-    // var color = colorPool.splice(i, 1)[0];
-    randomColor.lastPoint =  (lastPoint + steps) % colorPool.length;
+    randomColor.lastPoint = (lastPoint + steps) % colorPool.length;
     var color = colorPool[randomColor.lastPoint];
     return '#' + color;
 }
 
-Object.assign(module.exports, {
-    get, create, getUsersList, getArenas, addArena, removeArena,
-    on: emitter.on.bind(emitter)
-})
+class User {
+    // static arenasSym = Symbol('arena')
+    constructor(name) {
+        const model = this.model = ReactiveModel({
+            id: uid(),
+            name,
+            color: randomColor(),
+            score: 0,
+        })
+        this.id = model.id;
 
-function get(id) {
-    return usersMap.get(id);
+        /* init arena set for this user */
+        const arenas = new ReactiveSet();
+        users$arenaMap.set(this, arenas)
+    }
+
+    observeModel(cb) {
+        this.model.observe(cb);
+    }
+
+    observeArenas(cb) {
+        this.arenas.observe(cb);
+    }
+
+    get arenas() {
+        return users$arenaMap.get(this);
+    }
+
+    addArena(arenaId) {
+        const {arenas} = this;
+        arenas.add(arenaId);
+    }
+
+    removeArena(arenaId) {
+        const {arenas} = this;
+        arenas.delete(arenaId);
+
+    }
 }
 
-function getUsersList() {
-    return [...usersMap.values()];
+
+const usersMap = new letMap();
+const users$arenaMap = new WeakMap();
+
+/* emit every time userMap add or update record */
+usersMap.on('update', () => emitter.emit('update'))
+
+
+class Users {
+    static create(name, useAI = false) {
+        const user = new User(name)
+        /* add new user to collection, it trigger `update` */
+        usersMap.set(user.id, user)
+
+        /*proxy `update` to UserMap, for make user.score reflect*/
+        user.observeModel(model => usersMap.emit(model.id));
+        user.observeArenas(() => emitter.emit('arenas-updated', user.id, user.arenas))
+
+        emitter.emit('new-user', user);
+        // emitter.emit('arenas-updated',this.id, arenas);
+        if (useAI) {
+            return new AI(user);
+        }
+        return user;
+    }
+
+    static list() {
+        return [...usersMap.values()].map(u => u.model);
+    }
+
+    static get(userId) {
+        return usersMap.get(userId);
+    }
+
+    static addArena(userId, arenaId) {
+        const user = Users.get(userId);
+        user.addArena(arenaId);
+    }
+
+    static on() {
+        return emitter.on(...arguments)
+    }
+
+    static removeArena(userId, arenaId) {
+        const user = Users.get(userId);
+        user.removeArena(arenaId);
+    }
 }
 
-function create(name) {
-    const user = ReactiveModel({
-        id: uid(),
-        name,
-        color: randomColor(),
-        score: 0,
-    })
-    /*proxy change to trigger `update` on UserMap*/
-    user.observe((model) => usersMap.emit(user.id))
-    /* add new user to collection, it trigger `update` */
-    usersMap.set(user.id, user)
-    /*init arena set for this user */
-    users$arenaMap.set(user, new Set())
-
-    return user;
-}
-
-function getArenas(user) {
-    return users$arenaMap.get(user)
-}
-
-function addArena(user1id, user2id, arenaid) {
-    const user1 = get(user1id);
-    const user2 = get(user2id);
-
-    emitter.emit('arenas-updated', {
-        [user1.id]: getArenas(user1).add(arenaid),
-        [user2.id]: getArenas(user2).add(arenaid)
-    })
-}
-
-function removeArena(user1id, arenaid) {
-    const arenas = getArenas(get(user1id));
-    arenas.delete(arenaid);
-    emitter.emit('arenas-updated', {
-        [user1id]: arenas
-    })
-
-}
-
+module.exports = Users;
