@@ -13,6 +13,7 @@ module.exports =
         function observe(cb) {
             if (typeof cb === 'function') {
                 updates.push(cb);
+                cb(model);
             }
         }
 

@@ -28,7 +28,8 @@ function welcome(socket, user) {
 
     socket.on('challenge', function (user2) {
         if (!user) return;
-        const game = Games.create(user.id, user2.id);
+        const game = new Games.Arena(user.id, user2.id);
+        // const game = Games.create(user.id, user2.id);
         Users.addArena(user.id, user2.id, game.id);
     })
     socket.on('remove-arena', function (arenaid) {
@@ -40,11 +41,6 @@ function welcome(socket, user) {
         socket.emit('users-list', users);
 
 }
-
-// const dynamicNsp = io.of(/^\/game-\w+$/).on('connect', (socket) => {
-//     const newNamespace = socket.nsp; // newNamespace.name === '/dynamic-101'
-//     console.log(`socket connected to ${newNamespace.name}`);
-// });
 
 io.on('connection', socket => {
     socket.on('disconnect', () => {
@@ -76,7 +72,5 @@ io.on('connection', socket => {
     })
 
 });
+
 io.listen(serverPort);
-// setInterval(() => {
-//     io.emit('message', new Date().toISOString());
-// }, 1000);

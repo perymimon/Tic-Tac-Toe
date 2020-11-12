@@ -29,7 +29,7 @@ export default function Arenas() {
 const STAGE = {
     "INVITATION": Invitation,
     "GAME": Game,
-    "END": End,
+    "END": Game,
     "CANCEL": Cancel,
     "LOADING": Loading
 }
@@ -38,18 +38,15 @@ export function Arena({onRemove, ...initModel} = {}) {
     initModel.stage = 'LOADING';
 
     const [gameModel, gSocket] = useSocket(`game-${initModel.id}/update`, initModel)
-
+    const {stage} = gameModel;
     function handleClick(event) {
         const cell = event.target;
         const cellNumber = cell.dataset.index;
         gSocket.emit('playerSelectCell', cellNumber)
-
     }
-
     function handleApprove() {
         gSocket.emit('approve')
     }
-
     function handleCancel() {
         gSocket.emit('cancel')
     }
@@ -60,10 +57,11 @@ export function Arena({onRemove, ...initModel} = {}) {
         onRemove: () => onRemove && onRemove(gameModel.id),
         onSelectTile: handleClick
     }
-    const Element = STAGE[gameModel.stage];
+    const Element = STAGE[stage];
     return (
         <tk-arena>
             <Element {...gameModel} {...eventHandlers}  />
+            {stage == "END" && <End {...gameModel} {...eventHandlers} />}
         </tk-arena>
     )
 }
@@ -91,16 +89,6 @@ function Game({onSelectTile, players, board, turn}) {
     </tk-game>
 }
 
-function Cancel({isCanceledBy, players, onRemove}) {
-    const user = players.find(p => p.id === isCanceledBy);
-    
-    return <tk-message class="text-style-1">
-        <User {...user} nameView className="text-style-2"/>
-        cancel the game
-        <button className="button-style-1" onClick={onRemove}>OK</button>
-    </tk-message>
-}
-
 function End({winner, draw, onRemove}) {
     var message;
     if (draw) {
@@ -110,10 +98,19 @@ function End({winner, draw, onRemove}) {
     }
 
     return <tk-message>
-        <span class="text-style-1">{message}</span>
+        <span className="text-style-1">{message}</span>
         <button onClick={onRemove}>OK</button>
     </tk-message>
 
+}
+function Cancel({isCanceledBy, players, onRemove}) {
+    const user = players.find(p => p.id === isCanceledBy);
+
+    return <tk-message class="text-style-1">
+        <User {...user} nameView className="text-style-2"/>
+        cancel the game
+        <button className="button-style-1" onClick={onRemove}>OK</button>
+    </tk-message>
 }
 
 function Invitation({players, onCancel, onApprove}) {

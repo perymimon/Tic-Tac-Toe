@@ -1,133 +1,145 @@
 const uid = require('uid')
 const Users = require('./users')
-var io  = null;
-const gameMap = new Map();
+const ReactiveModel = require('../src/helpers/reactive-model');
+const arenaMap = new Map();
 const EventEmitter = require('events');
 const emitter = new EventEmitter();
-const ReactiveModel = require('../src/helpers/reactive-model');
 const victoryScore = 100;
-const lostScore = -1;
+const lossScore = -1;
 
 /* module exports */
 Object.assign(module.exports, {
-    get, create, getList,attach,
+    get, Arena, getList, attach,
     on: emitter.on.bind(emitter)
 })
+var io = null;
 
-function attach(_io){
+function attach(_io) {
     io = _io;
 }
+
 function get(id) {
-    return gameMap.get(id);
+    return arenaMap.get(id);
 }
 
 function getList() {
-    const list = [...gameMap].map(pair => pair[1])
+    const list = [...arenaMap.values()]
     return list;
 }
 
-function create(user1id, user2id) {
-    const gameId = uid();
-    const user1 = Users.get(user1id)
-        , user2 = Users.get(user2id);
+function Arena(user1id, user2id) {
+    const game = new Game(user1id, user2id);
+    arenaMap.set(game.id, game)
 
-    const users = {
-        [user1id]: user1,
-        [user2id]: user2
-    }
-    const model = ReactiveModel({
-        id: gameId,
-        players: [user1, user2],
-        board: Array(9).fill(''),
-        turn: 0,
-        isStarted: false,
-        isCanceled: false,
-        stage: 'INVITATION'
-    })
-    model.observe((model)=>{
-        nsp.emit('update', model);
-        console.log(`game ${model.id} emit update`)
-    })
+    const nsp = io.of(`game-${game.id}`);
+    console.log(`created: namespace ${nsp.name}`)
 
-    const nspName = `game-${gameId}`;
-    const nsp = io.of(nspName);
-    console.log(`created: namespace ${nspName}`)
+    nsp.on('connect', function connectSocket(socket) {
+        game.observe(model => {
+            socket.emit('update', model)
+        })
+        game.error(errors=>{
+            socket.emit('game-errors', errors);
+            errors.length = 0;
+        })
 
-    nsp.on('connect', connectSocket )
-
-    function connectSocket(socket) {
         const userid = socket.handshake.query.uid || null;
-        socket.join(userid)
-        const user = users[userid]
-        console.log(`connected nsp ${nspName}: user ${userid}`)
-        if (!user) return 'observer';
-        socket.emit('update', model)
+        if (![user1id, user2id].includes(userid)) return;
 
-        socket.on('cancel', function () {
-            model.isCanceledBy = userid;
-            model.stage = 'CANCEL'
-        })
-        socket.on('approve', function () {
-            if (userid !== user2.id) return;
-            model.isStarted = true;
-            model.stage = 'GAME'
-        })
-        socket.on('playerSelectCell', function (cellNumber) {
-            /* some validation */
-            if (!model.isStarted || model.isCanceled)
-                return socket.emit('game-error', `game not started`)
-            if (cellNumber < 0 && cellNumber > 8)
-                return socket.emit('game-error', `cell number ${cellNumber} is out of range`)
-            if (userid !== model.players[model.turn].id)
-                return socket.emit('game-error', 'not your turn')
+        socket.on('cancel', () => game.cancel(userid))
+        socket.on('approve', () => game.approve(userid))
+        socket.on('playerSelectCell', (number)=>game.selectCell(userid,number));
 
-            model.board[cellNumber] = model.turn;
-            updateEndSituation();
-            if(model.stage == 'END'){
-                const {winner:winPlayer, loser:losePlayer} = model;
-                if(winPlayer) (winPlayer.score += victoryScore);
-                if(losePlayer) losePlayer.score += lostScore;
-            }else {
-                model.turn = (model.turn +1) % 2
-            }
+    })
 
+    return game;
+
+}
+
+class Game {
+    constructor(user1id, user2id) {
+
+        const model = this.model = ReactiveModel({
+            id: uid(),
+            players: [
+                Users.get(user1id),
+                Users.get(user2id)
+            ],
+            board: Array(9).fill(''),
+            turn: 0,
+            isStarted: false,
+            isCanceled: false,
+            stage: 'INVITATION'
         })
+
+        this.id = model.id;
+        this.errors = ReactiveModel([]);
+
+
     }
-    nsp.in(user1.id).on('playerSelectCell', function (cellNumber) {
-        console.log(`player select`, cellNumber);
-    })
-    nsp.in(user2.id).on('playerSelectCell', function (cellNumber) {
-        console.log(`player select`, cellNumber);
-    })
 
-    gameMap.set(model.id, model)
+    observe(cb) {
+        this.model.observe(cb);
+    }
+    error(cb){
+        this.errors.observe(cb);
+    }
+    cancel(userid) {
+        const {model} = this;
+        if (model.stage === 'GAME') return;
+        model.isCanceledBy = userid;
+        model.stage = 'CANCEL'
+    }
 
-    // emitter.emit('update')
+    approve(userid) {
+        const {model} = this;
+        // just user2 can approve invention
+        if (userid !== model.players[1].id) return;
+        model.isStarted = true;
+        model.stage = 'GAME'
+    }
 
-    function updateEndSituation() {
-        const positions = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
-            [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
-        ];
-        const isRowComplete = row => {
-            const syms = row.map(i => model.board[i]).filter(Number.isInteger);
-            return syms.length == 3
-                && [0] == syms[1]
-                && syms[1] == syms[2];
-        };
-        const isVictory = positions.map(isRowComplete).some(i => i === true);
-        const isDraw = model.board.filter(Boolean).length === 9
-        if (isVictory) {
-            model.winner = model.players[model.turn];
-            model.loser = model.players[(model.turn+1) % 2];
+    selectCell(userid, cellNumber) {
+        const {model,errors} = this;
+        const {turn,players, board} = model;
+        if (!model.isStarted || model.isCanceledBy)
+            return errors.push( `game not started`)
+        // if (cellNumber < 0 && cellNumber > 8)
+        //     return socket.emit('game-error', `cell number ${cellNumber} is out of range`)
+        // if (userid !== model.players[model.turn].id)
+        //     return socket.emit('game-error', 'not your turn')
+
+        board[cellNumber] = turn;
+        const {isDraw, isVictory} = checkEndSituation(model);
+
+        if(isVictory){
+            model.winner = players[turn];
+            model.loser = players[(turn + 1) % 2];
             model.stage = `END`
+            model.winner.score += victoryScore;
+            model.loser.score += lossScore;
+            return;
         }
-        if (isDraw) {
+        if(isDraw){
             model.draw = true;
             model.stage = `END`
+            return ;
         }
+        model.turn = (model.turn + 1) % 2
     }
+}
 
-    return model;
-};
-
+function checkEndSituation(model) {
+    const {board} = model;
+    const positions = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
+        [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
+    ];
+    const isRowComplete = row => {
+        const symbols = row.map(i => board[i]).filter(Number.isInteger).join('');
+        return symbols === '111' || symbols === '000';
+    };
+    const isVictory = positions.map(isRowComplete).includes(true);
+    const isDraw = !isVictory && board.filter(Number.isInteger).length === 9;
+    return {isDraw, isVictory}
+}

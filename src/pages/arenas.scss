@@ -29,11 +29,21 @@ tk-arena {
 }
 
 tk-message{
-  grid-row: 2;
+  grid-row: 1/-1;
+  grid-column: 1/-1;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 
 tk-game {
+  grid-row: 1/-1;
+  grid-column: 1/-1;
+
   .competitors {
     display: flex;
     flex-direction: row;

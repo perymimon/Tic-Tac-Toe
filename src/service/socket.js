@@ -2,7 +2,6 @@ import {Manager} from 'socket.io-client';
 import {useEffect, useLayoutEffect, useMemo, useState} from "react";
 import LetMap from '../helpers/let-map'
 
-const debug = require("debug")("socket")
 const SOCKET_DOMAIN = process.env.REACT_APP_SOCKET_DOMAIN;
 const manager = new Manager(SOCKET_DOMAIN, {
     reconnectionDelay: 10000,
@@ -27,7 +26,7 @@ function nspEventKey (nsp, event=''){
         .replace(/^\/*/,'/') // make it start with *one* /
         .replace(/\/*$/,'') // clear all / from the end
     const parts = key.split(/(?!^)\//) // split key to [/nsp,event]
-    return parts.length == 1 ?['/',key]: [parts[0],key];
+    return parts.length === 1 ?['/',key]: [parts[0],key];
 }
 
 export function createSocket(namespace) {

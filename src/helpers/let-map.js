@@ -38,7 +38,4 @@ module.exports =
         }
         return super.get(k);
     }
-    get(k) {
-       return this.for(...arguments)
-    }
 }

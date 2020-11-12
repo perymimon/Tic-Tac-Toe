@@ -3,7 +3,7 @@ const EventEmitter = require('events');
 const letMap = require('../src/helpers/let-map');
 const ReactiveModel = require('../src/helpers/reactive-model');
 
-const usersMap = new letMap();
+const usersMap = new letMap(create);
 const users$arenaMap = new WeakMap();
 
 var colorPool = "F44336,9C27B0,673AB7,3F51B5,2196f3,03a9f4,00BCD4,009688,4CAF50,8BC34A,cddc39,ffeb3b,ffc107,ff9800,ff5722".split(',');
