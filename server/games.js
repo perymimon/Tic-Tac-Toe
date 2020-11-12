@@ -1,59 +1,48 @@
 const uid = require('uid')
 const Users = require('./users')
+const LetMap = require('../src/helpers/let-map');
 const ReactiveModel = require('../src/helpers/reactive-model');
-const arenaMap = new Map();
-const EventEmitter = require('events');
-const emitter = new EventEmitter();
+
 const victoryScore = 100;
 const lossScore = -1;
 
-/* module exports */
-Object.assign(module.exports, {
-    get, Arena, getList, attach,
-    on: emitter.on.bind(emitter)
-})
-var io = null;
+class Arenas extends LetMap{
+    create(user1id, user2id) {
+        const game = new Game(user1id, user2id);
+        this.set(game.id, game)
 
-function attach(_io) {
-    io = _io;
-}
+        const nsp = this.io.of(`game-${game.id}`);
+        console.log(`created: namespace ${nsp.name}`)
 
-function get(id) {
-    return arenaMap.get(id);
-}
+        nsp.on('connect', function connectSocket(socket) {
+            game.observe(model => {
+                socket.emit('update', model)
+            })
+            game.error(errors=>{
+                socket.emit('game-errors', errors);
+                errors.length = 0;
+            })
 
-function getList() {
-    return [...arenaMap.values()];
-}
+            const userid = socket.handshake.query.uid ;
+            if (![user1id, user2id].includes(userid)) return;
 
-function Arena(user1id, user2id) {
-    const game = new Game(user1id, user2id);
-    arenaMap.set(game.id, game)
+            socket.on('cancel', () => game.cancel(userid))
+            socket.on('approve', () => game.approve(userid))
+            socket.on('playerSelectCell', (number)=>game.selectCell(userid,number));
 
-    const nsp = io.of(`game-${game.id}`);
-    console.log(`created: namespace ${nsp.name}`)
-
-    nsp.on('connect', function connectSocket(socket) {
-        game.observe(model => {
-            socket.emit('update', model)
-        })
-        game.error(errors=>{
-            socket.emit('game-errors', errors);
-            errors.length = 0;
         })
 
-        const userid = socket.handshake.query.uid || null;
-        if (![user1id, user2id].includes(userid)) return;
-
-        socket.on('cancel', () => game.cancel(userid))
-        socket.on('approve', () => game.approve(userid))
-        socket.on('playerSelectCell', (number)=>game.selectCell(userid,number));
-
-    })
-
-    return game;
+        return game;
+    }
+    list(){
+        return [...this.values()];
+    }
+    attach(io) {
+        this.io = io;
+    }
 
 }
+module.exports = new Arenas()
 
 class Game {
     constructor(user1id, user2id) {
@@ -111,11 +100,11 @@ class Game {
         const {isDraw, isVictory} = checkEndSituation(model);
 
         if(isVictory){
-            model.winner = Users.get(playersId[turn]);
-            model.loser = Users.get(playersId[(turn + 1) % 2]);
+            model.winner = playersId[turn];
+            model.loser = playersId[(turn + 1) % 2];
             model.stage = `END`
-            model.winner.score += victoryScore;
-            model.loser.score += lossScore;
+            Users.get(model.winner).model.score += victoryScore;
+            Users.get(model.loser).model.score += lossScore;
             return;
         }
         if(isDraw){

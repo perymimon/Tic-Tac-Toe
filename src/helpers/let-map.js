@@ -19,8 +19,8 @@ module.exports =
             this.struct = struct;
         }
 
-        emit(k, nv, ov) {
-            this.emitter.emit(k, nv, ov);
+        emit(k, nv, ov,...rest) {
+            this.emitter.emit(k, nv, ov,...rest);
             this.emitter.emit('update');
         }
 

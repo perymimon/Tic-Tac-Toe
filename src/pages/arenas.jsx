@@ -94,7 +94,8 @@ function Game({onSelectTile, players, board, turn}) {
     </tk-game>
 }
 
-function End({winner, draw, onRemove}) {
+function End({winner, draw, onRemove,players}) {
+    winner = players.find(p=> p.id == winner);
     var message;
     if (draw) {
         message = 'game end with draw'

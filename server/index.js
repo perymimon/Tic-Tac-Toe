@@ -1,7 +1,7 @@
 // loads environment variables from a .env file into process.env
 require('dotenv').config()
 const Users = require('./users');
-const Games = require('./games');
+const Arenas = require('./games');
 
 Users.create('bob', true) /*AI*/
 
@@ -11,13 +11,15 @@ const io = require('socket.io')({
     pingTimeout: 60000,
     pingInterval: 12000,
 });
-Games.attach(io);
-Users.on('update', function () {
-    io.sockets.emit('users-list', Users.list())
-    console.log('User update');
-})
-Users.on('arenas-updated', function (userid, arenasSet) {
-    io.in(userid).emit('arenas', [...arenasSet]);
+Arenas.attach(io);
+
+Users.on('new-user', function (user){
+    user.model.observe( ()=>{
+        io.sockets.emit('users-list', Users.list());
+    })
+    user.arenas.observe(() => {
+        io.in(user.id).emit('arenas', [...user.arenas]);
+    })
 })
 
 function welcome(socket, user) {
@@ -27,13 +29,12 @@ function welcome(socket, user) {
 
     socket.on('challenge', function (user2) {
         if (!user) return;
-        const game = new Games.Arena(user.id, user2.id);
-        // const game = Games.create(user.id, user2.id);
-        Users.addArena(user.id, game.id);
-        Users.addArena(user2.id, game.id);
+        const arena = Arenas.create(user.id, user2.id);
+        Users.get(user.id).arenas.add(arena.id);
+        Users.get(user2.id).arenas.add(arena.id);
     })
-    socket.on('remove-arena', function (arenaid) {
-        Users.removeArena(this.user.id, arenaid)
+    socket.on('remove-arena', function (arenaId) {
+        Users.get(user.id).arenas.delete(arenaId)
     })
 
     socket.emit('users-list', Users.list());
