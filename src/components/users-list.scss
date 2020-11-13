@@ -37,6 +37,7 @@ tk-user {
 }
 
 tk-user{
+  &[ai] .name::after{ content: "(AI)"; margin-left:0.1em}
 
   &[avatar]{
     &:before{
@@ -46,6 +47,7 @@ tk-user{
       width: 1em;
       height: 1em;
     }
+
     display: flex;
     flex-direction: column;
     border-radius: 50%;

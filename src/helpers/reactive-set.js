@@ -1,5 +1,3 @@
-const EventEmitter = require('events');
-
 function emitUpdate() {
     for (let cb of this.updates) cb(...arguments)
 }

@@ -6,7 +6,7 @@
     "start": "set ,ph & node scripts/start.js",
     "preserver": "",
     "server": "nodemon --inspect server",
-    "server:brk": "nodemon --inspect-brk server",
+    "server:debug": "nodemon --inspect-brk server",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },

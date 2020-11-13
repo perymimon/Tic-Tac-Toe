@@ -1,58 +1,55 @@
-const uid = require('uid')
-const Users = require('./users')
+const uid = require('uid');
 const LetMap = require('../src/helpers/let-map');
 const ReactiveModel = require('../src/helpers/reactive-model');
 
 const victoryScore = 100;
 const lossScore = -1;
+module.exports =
+    new class Arenas extends LetMap {
+        create(user1id, user2id) {
+            const game = new Game(user1id, user2id);
+            this.set(game.id, game)
 
-class Arenas extends LetMap{
-    create(user1id, user2id) {
-        const game = new Game(user1id, user2id);
-        this.set(game.id, game)
+            const nsp = this.io.of(`game-${game.id}`);
+            console.log(`created: namespace ${nsp.name}`)
 
-        const nsp = this.io.of(`game-${game.id}`);
-        console.log(`created: namespace ${nsp.name}`)
+            nsp.on('connect', function connectSocket(socket) {
+                game.model.observe(model => {
+                    socket.emit('update', model)
+                })
+                // game.error(errors => {
+                //     socket.emit('game-errors', errors);
+                //     errors.length = 0;
+                // })
 
-        nsp.on('connect', function connectSocket(socket) {
-            game.observe(model => {
-                socket.emit('update', model)
+                const userid = socket.handshake.query.uid;
+                if (![user1id, user2id].includes(userid)) return;
+
+                socket.on('cancel', () => game.cancel(userid))
+                socket.on('approve', () => game.approve(userid))
+                socket.on('playerSelectCell', (number) => game.selectCell(userid, number));
+
             })
-            game.error(errors=>{
-                socket.emit('game-errors', errors);
-                errors.length = 0;
-            })
 
-            const userid = socket.handshake.query.uid ;
-            if (![user1id, user2id].includes(userid)) return;
+            return game;
+        }
 
-            socket.on('cancel', () => game.cancel(userid))
-            socket.on('approve', () => game.approve(userid))
-            socket.on('playerSelectCell', (number)=>game.selectCell(userid,number));
+        list() {
+            return [...this.values()];
+        }
 
-        })
+        attach(io) {
+            this.io = io;
+        }
 
-        return game;
     }
-    list(){
-        return [...this.values()];
-    }
-    attach(io) {
-        this.io = io;
-    }
-
-}
-module.exports = new Arenas()
 
 class Game {
     constructor(user1id, user2id) {
-
-        const model = this.model = ReactiveModel({
-            id: uid(),
-            playersId: [user1id, user2id
-                // Users.get(user1id).model,
-                // Users.get(user2id).model
-            ],
+        this.id = uid();
+        this.model = ReactiveModel({
+            id: this.id,
+            playersId: [user1id, user2id],
             board: Array(9).fill(''),
             turn: 0,
             isStarted: false,
@@ -60,17 +57,15 @@ class Game {
             stage: 'INVITATION'
         })
 
-        this.id = model.id;
         this.errors = ReactiveModel([]);
 
     }
 
-    observe(cb) {
-        this.model.observe(cb);
-    }
-    error(cb){
+
+    error(cb) {
         this.errors.observe(cb);
     }
+
     cancel(userid) {
         const {model} = this;
         if (model.stage === 'GAME') return;
@@ -87,19 +82,22 @@ class Game {
     }
 
     selectCell(userid, cellNumber) {
-        const {model,errors} = this;
-        const {turn,playersId, board} = model;
+        const {model, errors} = this;
+        const {turn, playersId, board} = model;
         if (!model.isStarted || model.isCanceledBy)
-            return errors.push( `game not started`)
+            return errors.push(`game not started`)
         if (cellNumber < 0 && cellNumber > 8)
             return errors.push(`cell number ${cellNumber} is out of range`)
         if (userid !== playersId[turn])
-            return errors.push( 'not your turn')
-
+            return errors.push('not your turn')
+        if ([0, 1].includes(board[cellNumber])) {
+            return errors.push('cell not empty')
+        }
         board[cellNumber] = turn;
         const {isDraw, isVictory} = checkEndSituation(model);
 
-        if(isVictory){
+        if (isVictory) {
+            const Users = require('./users');
             model.winner = playersId[turn];
             model.loser = playersId[(turn + 1) % 2];
             model.stage = `END`
@@ -107,10 +105,10 @@ class Game {
             Users.get(model.loser).model.score += lossScore;
             return;
         }
-        if(isDraw){
+        if (isDraw) {
             model.draw = true;
             model.stage = `END`
-            return ;
+            return;
         }
         model.turn = (model.turn + 1) % 2
     }
@@ -118,7 +116,7 @@ class Game {
 
 function checkEndSituation(model) {
     const {board} = model;
-    const positions = [
+    const rows = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
         [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
     ];
@@ -126,7 +124,7 @@ function checkEndSituation(model) {
         const symbols = row.map(i => board[i]).filter(Number.isInteger).join('');
         return symbols === '111' || symbols === '000';
     };
-    const isVictory = positions.map(isRowComplete).includes(true);
+    const isVictory = rows.map(isRowComplete).includes(true);
     const isDraw = !isVictory && board.filter(Number.isInteger).length === 9;
     return {isDraw, isVictory}
 }
