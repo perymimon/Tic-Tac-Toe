@@ -1,4 +1,5 @@
 const Arenas = require('./games')
+const thinkingTime = 3000;
 
 module.exports =
     function AI(user) {
@@ -24,7 +25,10 @@ function action(user, game, model) {
         return;
     }
     if (stage === 'GAME' && userId === playersId[turn]) {
-        game.selectCell(userId, selectCell(model))
+        setTimeout(_=>{
+            game.selectCell(userId, selectCell(model))
+        },thinkingTime)
+
         return
     }
 

@@ -1,7 +1,8 @@
-import React, {useMemo} from "react";
+import React, {useMemo, useRef} from "react";
 import './arenas.scss'
 import socket, {useSocket} from "../service/socket";
 import UserList, {User} from "../components/user-list";
+import useTimer from "../helpers/timer-hook"
 
 function handleChallenge(user) {
     socket.emit('challenge', user)
@@ -21,8 +22,6 @@ export default function Arenas() {
         {arenasId.map((id) => <Arena id={id}
                                      key={id}
                                      onRemove={handleRemove}/>)}
-
-
     </tk-arenas>)
 }
 
@@ -40,21 +39,23 @@ export function Arena({onRemove, ...initModel} = {}) {
     const [gameModel, gSocket] = useSocket(`game-${initModel.id}/update`, initModel)
     const [usersList] = useSocket('users-list', []);
 
-    const {stage,playersId} = gameModel;
+    const {stage, playersId} = gameModel;
 
-    gameModel.players = useMemo(()=>{
-        if(!playersId) return []
+    gameModel.players = useMemo(() => {
+        if (!playersId) return []
         return playersId.map(pid => usersList.find(u => pid === u.id))
-    },[playersId, usersList])
+    }, [playersId, usersList])
 
     function handleClick(event) {
         const cell = event.target;
         const cellNumber = cell.dataset.index;
         gSocket.emit('playerSelectCell', cellNumber)
     }
+
     function handleApprove() {
         gSocket.emit('approve')
     }
+
     function handleCancel() {
         gSocket.emit('cancel')
     }
@@ -74,13 +75,27 @@ export function Arena({onRemove, ...initModel} = {}) {
     )
 }
 
-function Game({onSelectTile, players, board, turn}) {
+function Game({onSelectTile, players, board, turn, nextTurn, turnTime, stage}) {
     const marks = ['✗', '○'];
+    const gameDom = useRef();
 
-    return <tk-game>
+    const timer = useTimer(turnTime * 1000, 100, timer => {
+        const dom = gameDom.current;
+        var deg = 360 - timer.progress * 360;
+        if (dom)
+            dom.style.setProperty('--progress', `${deg}deg`);
+
+    }, [turn])
+    if (stage === "END") {
+        timer.stop(0, false);
+    }
+    return <tk-game ref={gameDom}>
         <div className="competitors">
             <User {...players[0]} mark={marks[0]} avatar/>
-            <User {...players[turn]} mark={marks[turn]} colorView/>
+            <div>
+                <User {...players[nextTurn]} mark={marks[nextTurn]} colorView/>
+                <User {...players[turn]} mark={marks[turn]} colorView counterDown/>
+            </div>
             <User {...players[1]} mark={marks[1]} avatar/>
         </div>
         <div className="board">
@@ -88,14 +103,15 @@ function Game({onSelectTile, players, board, turn}) {
                 const style = {"--user-color": players[turn || 0].color};
                 const mark = marks[turn];
                 return <div key={i}
-                            data-index={i} style={style} onClick={onSelectTile}>{mark}</div>
+                            data-index={i} style={style}
+                            onClick={onSelectTile}>{mark}</div>
             })}
         </div>
     </tk-game>
 }
 
-function End({winner, draw, onRemove,players}) {
-    winner = players.find(p=> p.id == winner);
+function End({winner, draw, onRemove, players}) {
+    winner = players.find(p => p.id === winner);
     var message;
     if (draw) {
         message = 'game end with draw'
@@ -109,6 +125,7 @@ function End({winner, draw, onRemove,players}) {
     </tk-message>
 
 }
+
 function Cancel({isCanceledBy, players, onRemove}) {
     const user = players.find(p => p.id === isCanceledBy);
 

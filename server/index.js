@@ -24,7 +24,7 @@ Users.on('new-user', function (user){
 
 function welcome(socket, user) {
     socket.join(user.id)
-    socket.emit('user', user);
+    socket.emit('user', user.model);
     socket.emit('arenas', [...user.arenas]);
 
     socket.on('challenge', function (user2) {

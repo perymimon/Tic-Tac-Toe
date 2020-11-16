@@ -18,21 +18,20 @@ export default function UserList({onChallenge}) {
 }
 
 export function User({name, score, color, mark, id, onClick, avatar,
-                         showScore, tagView, colorView, nameView, AI}) {
+                         showScore, tagView, colorView, nameView, AI, counterDown}) {
     const style = {
-        '--user-color': color || 'gray',
-        '--user-mark': mark
+        '--user-color': color || 'gray'
     }
 
     function handleClick(event) {
-        onClick({name, id})
+        onClick && onClick({name, id})
     }
     const showName = !colorView;
     const showColor = !nameView;
 
     const user = (
-        <tk-user style={style} avatar={avatar} nameView={nameView} AI={AI} onClick={handleClick}>
-            {showColor && <div className="color"></div> }
+        <tk-user mark={mark} style={style} avatar={avatar}  time={counterDown} nameView={nameView} AI={AI} onClick={handleClick}>
+            {showColor && <div className="color" ></div> }
             {showName && <div className="name">{name || ''}</div> }
             {showScore && <div className="score">{score}</div>}
         </tk-user>

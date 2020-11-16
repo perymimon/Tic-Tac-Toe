@@ -6,8 +6,8 @@ const victoryScore = 100;
 const lossScore = -1;
 module.exports =
     new class Arenas extends LetMap {
-        create(user1id, user2id) {
-            const game = new Game(user1id, user2id);
+        create(user1id, user2id, turnTime) {
+            const game = new Game(user1id, user2id, turnTime);
             this.set(game.id, game)
 
             const nsp = this.io.of(`game-${game.id}`);
@@ -45,22 +45,22 @@ module.exports =
     }
 
 class Game {
-    constructor(user1id, user2id) {
+    constructor(user1id, user2id, turnTime=5) {
         this.id = uid();
         this.model = ReactiveModel({
             id: this.id,
             playersId: [user1id, user2id],
             board: Array(9).fill(''),
             turn: 0,
+            nextTurn:0,
             isStarted: false,
             isCanceled: false,
-            stage: 'INVITATION'
+            turnTime,
+            stage: 'INVITATION',
         })
 
         this.errors = ReactiveModel([]);
-
     }
-
 
     error(cb) {
         this.errors.observe(cb);
@@ -79,6 +79,7 @@ class Game {
         if (userid !== model.playersId[1]) return;
         model.isStarted = true;
         model.stage = 'GAME'
+        nextPlayer.call(this);
     }
 
     selectCell(userid, cellNumber) {
@@ -103,15 +104,27 @@ class Game {
             model.stage = `END`
             Users.get(model.winner).model.score += victoryScore;
             Users.get(model.loser).model.score += lossScore;
+            clearTimeout(this.turnTimer);
             return;
         }
         if (isDraw) {
             model.draw = true;
             model.stage = `END`
+            clearTimeout(this.turnTimer);
             return;
         }
-        model.turn = (model.turn + 1) % 2
+        nextPlayer.call(this);
     }
+}
+/* PRIVATE */
+function nextPlayer(){
+    const {model, turnTimer} = this;
+    model.turn = model.nextTurn || 0;
+    model.nextTurn = (model.turn + 1) % 2;
+
+    clearTimeout(turnTimer);
+    this.turnTimer = setTimeout(nextPlayer.bind(this), model.turnTime * 1000);
+
 }
 
 function checkEndSituation(model) {
