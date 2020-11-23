@@ -86,6 +86,7 @@ export function Arena({onRemove, ...initModel} = {}) {
 function Game({onSelectTile, players, board, turn, nextTurn, turnTime, stage}) {
     const marks = ['✗', '○'];
     const gameDom = useRef();
+    const loginUser = useLoginUser();
 
     const timer = useTimer(turnTime * 1000, 100, timer => {
         const dom = gameDom.current;
@@ -106,7 +107,7 @@ function Game({onSelectTile, players, board, turn, nextTurn, turnTime, stage}) {
             </div>
             <User {...players[1]} mark={marks[1]} avatar/>
         </div>
-        <div className="board" style={{"--user-color":players[0].color}}>
+        <div className="board" style={{"--user-color":loginUser.color}}>
             {Array.from({...board, length: 9}).map((turn, i) => {
                 const style = {"--cell-color": players[turn || 0].color};
                 const mark = marks[turn];
