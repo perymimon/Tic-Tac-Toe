@@ -100,7 +100,7 @@ function Game({onSelectTile, players, board, turn, nextTurn, turnTime, stage}) {
     return <tk-game ref={gameDom}>
         <div className="competitors">
             <User {...players[0]} mark={marks[0]} avatar/>
-            <div>
+            <div className="time-out-marker">
                 <User {...players[nextTurn]} mark={marks[nextTurn]} colorView/>
                 <User {...players[turn]} mark={marks[turn]} colorView counterDown/>
             </div>

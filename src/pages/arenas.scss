@@ -103,6 +103,14 @@ tk-game {
     flex-direction: row;
     justify-content: space-between;
   }
+  .time-out-marker{
+    display: grid;
+
+    tk-user{
+      grid-row: 1/1;
+      grid-column: 1/1;
+    }
+  }
 
   .board {
     display: grid;
