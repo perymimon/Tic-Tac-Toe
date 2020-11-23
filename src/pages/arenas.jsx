@@ -1,12 +1,10 @@
 import React, {useMemo, useRef} from "react";
 import './arenas.scss'
-import socket, {useSocket} from "../service/socket";
+import socket, {useLoginUser, useSocket} from "../service/socket";
 import UserList, {User} from "../components/user-list";
 import useTimer from "../helpers/timer-hook"
 
-function handleChallenge(user) {
-    socket.emit('challenge', user)
-}
+
 
 function handleRemove(arenaId) {
     socket.emit('remove-arena', arenaId)
@@ -14,6 +12,12 @@ function handleRemove(arenaId) {
 
 export default function Arenas() {
     const [arenasId] = useSocket('arenas', [])
+    const user = useLoginUser();
+
+    function handleChallenge(u1) {
+        if(user.id === u1.id) return ;
+        socket.emit('challenge', u1)
+    }
     return (<tk-arenas>
         {/* like : <Arena stage="LIST"></Arena> */}
         <tk-arena>
@@ -37,6 +41,7 @@ export function Arena({onRemove, ...initModel} = {}) {
     initModel.stage = 'LOADING';
 
     const [gameModel, gSocket] = useSocket(`game-${initModel.id}/update`, initModel)
+    const [gameErrors] = useSocket(`game-${initModel.id}/game-errors`, [])
     const [usersList] = useSocket('users-list', []);
 
     const {stage, playersId} = gameModel;
@@ -71,6 +76,9 @@ export function Arena({onRemove, ...initModel} = {}) {
         <tk-arena>
             <Element {...gameModel} {...eventHandlers}  />
             {stage === "END" && <End {...gameModel} {...eventHandlers} />}
+            <tk-errors>
+                {gameErrors.map( (e,i) => <tk-error key={e.id}>{e.text}</tk-error>)}
+            </tk-errors>
         </tk-arena>
     )
 }
@@ -98,9 +106,9 @@ function Game({onSelectTile, players, board, turn, nextTurn, turnTime, stage}) {
             </div>
             <User {...players[1]} mark={marks[1]} avatar/>
         </div>
-        <div className="board">
+        <div className="board" style={{"--user-color":players[0].color}}>
             {Array.from({...board, length: 9}).map((turn, i) => {
-                const style = {"--user-color": players[turn || 0].color};
+                const style = {"--cell-color": players[turn || 0].color};
                 const mark = marks[turn];
                 return <div key={i}
                             data-index={i} style={style}

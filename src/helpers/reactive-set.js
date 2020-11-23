@@ -5,7 +5,7 @@ function emitUpdate() {
 module.exports =
     class ReactiveSet extends Set {
         constructor() {
-            super();
+            super(...arguments);
             // this.emitter = new EventEmitter();
             this.updates = new Set();
         }
@@ -19,7 +19,9 @@ module.exports =
                 this.updates.remove(cb);
             }
         }
-
+        unobserve(cb){
+            this.updates.remove(cb);
+        }
         add(v) {
             if(super.has(v)) return this;
             super.add(v);

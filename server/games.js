@@ -3,7 +3,9 @@ const LetMap = require('../src/helpers/let-map');
 const ReactiveModel = require('../src/helpers/reactive-model');
 
 const victoryScore = 100;
-const lossScore = -1;
+const lossScore = 0;
+const tieScore = 10;
+
 module.exports =
     new class Arenas extends LetMap {
         create(user1id, user2id, turnTime) {
@@ -17,14 +19,14 @@ module.exports =
                 game.model.observe(model => {
                     socket.emit('update', model)
                 })
-                // game.error(errors => {
-                //     socket.emit('game-errors', errors);
-                //     errors.length = 0;
-                // })
 
                 const userid = socket.handshake.query.uid;
                 if (![user1id, user2id].includes(userid)) return;
 
+                game.errors.for(userid).observe(errors => {
+                    socket.emit('game-errors', errors.map(eText=>({id:uid(),text:eText})));
+                    setTimeout(_=> errors.length = 0)
+                })
                 socket.on('cancel', () => game.cancel(userid))
                 socket.on('approve', () => game.approve(userid))
                 socket.on('playerSelectCell', (number) => game.selectCell(userid, number));
@@ -59,11 +61,7 @@ class Game {
             stage: 'INVITATION',
         })
 
-        this.errors = ReactiveModel([]);
-    }
-
-    error(cb) {
-        this.errors.observe(cb);
+        this.errors = new LetMap( userid => ReactiveModel([]))
     }
 
     cancel(userid) {
@@ -85,14 +83,15 @@ class Game {
     selectCell(userid, cellNumber) {
         const {model, errors} = this;
         const {turn, playersId, board} = model;
+        const userErrors = errors.for(userid);
         if (!model.isStarted || model.isCanceledBy)
-            return errors.push(`game not started`)
+            return userErrors.push(`game not started`)
         if (cellNumber < 0 && cellNumber > 8)
-            return errors.push(`cell number ${cellNumber} is out of range`)
+            return userErrors.push(`cell number ${cellNumber} is out of range`)
         if (userid !== playersId[turn])
-            return errors.push('not your turn')
+            return userErrors.push('not your turn')
         if ([0, 1].includes(board[cellNumber])) {
-            return errors.push('cell not empty')
+            return userErrors.push('cell not empty')
         }
         board[cellNumber] = turn;
         const {isDraw, isVictory} = checkEndSituation(model);
@@ -108,9 +107,12 @@ class Game {
             return;
         }
         if (isDraw) {
+            const Users = require('./users');
             model.draw = true;
             model.stage = `END`
             clearTimeout(this.turnTimer);
+            Users.get(playersId[0]).model.score += tieScore;
+            Users.get(playersId[1]).model.score += tieScore;
             return;
         }
         nextPlayer.call(this);

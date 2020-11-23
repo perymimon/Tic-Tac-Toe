@@ -13,6 +13,7 @@ tk-arenas {
 
 tk-arena {
   background-color: var(--bg-color);
+  position: relative;
   width: 10em;
   height: 10em;
   display: grid;
@@ -26,6 +27,58 @@ tk-arena {
     font-size: 18px;
     background: var(--sw-color);
   }
+
+  tk-errors{
+    display: flex;
+    flex-flow: column-reverse ;
+    overflow-y: auto;
+    pointer-events: none;
+    user-select: none;
+    height: 50%;
+    grid-row: 2/3;
+    grid-column: 1/-1;
+    bottom: 0;
+    //background-color: rebeccapurple;
+    align-self: end;
+
+  }
+
+  tk-error{
+    &:before{
+      content: "⚠";
+      font-size: 1.4em;
+      color: #8d8d1f;
+      margin: 0 .5em 0 0em;
+    }
+    pointer-events: none;
+    user-select: none;
+    text-transform: capitalize;
+    line-height: 1.5em;
+    font-size: 12px;
+    color: white;
+    font-family: neuropol_xregular ;
+    animation: enter-out 4s ease-out both;
+  }
+  @keyframes enter-out {
+    from{
+      margin-bottom: -1.4em;
+      opacity: 0;
+    }
+    10%{
+      margin-bottom:0;
+      opacity: 1;
+    }
+    75%{
+      margin-bottom:0;
+      opacity: 1;
+    }
+    to{
+      opacity: 0;
+      margin-bottom:0;
+    }
+
+
+  }
 }
 
 tk-message{
@@ -37,6 +90,7 @@ tk-message{
   justify-content: center;
   align-items: center;
   display: flex;
+  text-transform: capitalize;
 }
 
 
@@ -61,10 +115,21 @@ tk-game {
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      color: var(--user-color);
+      color: var(--cell-color);
       background-color: var(--bg-color2);
+
+      &:active{
+        animation: activeCell 0.4s ease ;
+      }
+
       &:hover{
         filter: brightness(120%);
+      }
+
+      @keyframes activeCell {
+        from{
+          background-color: var(--user-color);
+        }
       }
     }
 

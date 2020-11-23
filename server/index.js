@@ -26,6 +26,7 @@ function welcome(socket, user) {
     socket.join(user.id)
     socket.emit('user', user.model);
     socket.emit('arenas', [...user.arenas]);
+    socket.emit('users-list', Users.list());
 
     socket.on('challenge', function (user2) {
         if (!user) return;
@@ -37,7 +38,6 @@ function welcome(socket, user) {
         Users.get(user.id).arenas.delete(arenaId)
     })
 
-    socket.emit('users-list', Users.list());
 
 }
 
@@ -56,7 +56,7 @@ io.on('connection', socket => {
 
     if (userid)
         var user = socket.user = Users.get(userid);
-    console.log(`connect: ${socket.id} userid: ${userid}`);
+        console.log(`connect: ${socket.id} userid: ${userid}`);
 
     if (user) {
         welcome(socket, user)
@@ -68,6 +68,7 @@ io.on('connection', socket => {
         if (name.length < 2 || name.length > 4) return;
         user = socket.user = Users.create(name)
         welcome(socket, user);
+        socket.removeAllListeners('user-register');
     })
 
 });

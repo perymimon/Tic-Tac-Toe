@@ -6,7 +6,8 @@ export default function useTimer(time, tickTime, cb, restartsConditions){
     useEffect(()=>{
         timer.clearTicks();
         timer.tick(tickTime, _=> cb(timer));
-    } , [time]);
+        return _=> timer.clearTicks();
+    } , [time,cb,tickTime]);
 
     useEffect(function () {
         timer.restart();

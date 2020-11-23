@@ -4,6 +4,20 @@ tk-users {
   grid-row: 2/3;
   overflow: auto;
   padding: 0.3em 0.1em;
+
+  &:after{
+    display: flex;
+    position: absolute;
+    left: 0;right: 0;
+    top:0; bottom: 0;
+    place-content: center;
+    place-items: center;
+    user-select: none;
+    z-index: -1;
+    content: attr(decorationText);
+    font-family: neuropol_xregular;
+    font-size: 30px;
+  }
 }
 
 tk-user {
@@ -52,9 +66,6 @@ tk-user {
       --opacity: 1
     }
   }
-
-
-
 
   .score {
     &:after {

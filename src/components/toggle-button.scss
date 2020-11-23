@@ -1,0 +1,45 @@
+toggle-buttn{
+  width: fit-content;
+  color: white;
+  vertical-align: revert;
+  display: flex;
+  align-items: center;
+  gap: 0.1em;
+  font-size: 0.9em;
+  text-transform: capitalize;
+
+  input{
+    display: none;
+  }
+
+  label{
+    outline: 0;
+    display: inline-block;
+    width: 2em;
+    height: 1em;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: all .4s ease;
+    background: var(--bg-color2);
+    border-radius: 2em;
+    padding: 2px;
+
+    &::after{
+      position: relative;
+      display: block;
+      content: "";
+      width: 50%;
+      height: 100%;
+      left: 0;
+      border-radius: 50%;
+      background: var(--bg-color2);
+      transition: all .2s ease;
+    }
+  }
+  input:checked + label:after{
+    left: 50%;
+    background: var(--sw-color);
+
+  }
+}

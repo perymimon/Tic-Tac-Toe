@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+
 module.exports =
     class LetMap extends Map {
         constructor(struct) {
@@ -43,10 +44,11 @@ module.exports =
         for(k) {
             const {struct} = this;
             if (struct && !super.has(k)) {
-                const s = typeof struct == 'function' ?
-                    struct(k) :
-                    new struct.constructor(struct)
-                super.set(k, s)
+                const s = typeof struct == 'function' ? struct(k) :
+                        struct.constructor? new struct.constructor(struct):
+                        struct
+
+                this.set(k, s)
             }
             return super.get(k);
         }
