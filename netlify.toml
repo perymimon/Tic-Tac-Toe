@@ -1,0 +1,14 @@
+[build]
+    publish = "build/"
+    command = "npm run build"
+
+[[redirects]]
+    from ="/*"
+    to   ="/"
+    status = 200 #must be 200 for proxy and not real redirect
+
+[[redirects]]
+    from ="/api-socket-server"
+    to ="https://perymimon-tic-tac-toe.herokuapp.com"
+    status = 200
+    force = true

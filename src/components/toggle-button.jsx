@@ -15,6 +15,7 @@ export default function ToggleButton({onInput, defaultValue=false, children}) {
 
     return <toggle-buttn>
         <input type="checkbox" id={id} checked={checked} onChange={handleInput}/>
-        <label for={id}></label>{children}
+        {/*// eslint-disable-next-line*/}
+        <label htmlFor={id}/>{children}
     </toggle-buttn>
 }

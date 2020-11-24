@@ -1,18 +1,36 @@
 {
-  "name": "speakspace",
+  "name": "tic-tac-toe",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "set ,ph & node scripts/start.js",
+    "start": "node scripts/start.js",
     "preserver": "",
     "server": "nodemon --inspect server",
-    "server:debug": "nodemon --inspect-brk server",
+    "server:brk": "nodemon --inspect-brk server",
+    "server:production":"nodemon server",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "killnode": "taskkill /f /im node.exe"
   },
   "dependencies": {
     "@babel/core": "7.9.0",
-    "@perymimon/timer": "^1.0.2",
+    "@perymimon/timer": "^1.0.6",
+    "debug": "^4.2.0",
+    "dotenv": "8.2.0",
+    "dotenv-expand": "5.1.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.6",
+    "react": "^16.13.1",
+    "react-app-polyfill": "^1.0.6",
+    "react-dom": "^16.13.1",
+    "react-inlinesvg": "^2.1.1",
+    "react-router-dom": "5.2.0",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "uid": "^1.0.0"
+  },
+  "devDependencies": {
+    "react-svg-loader": "^3.0.3",
     "@svgr/webpack": "4.3.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -27,9 +45,6 @@
     "camelcase": "^5.3.1",
     "case-sensitive-paths-webpack-plugin": "2.3.0",
     "css-loader": "3.4.2",
-    "debug": "^4.2.0",
-    "dotenv": "8.2.0",
-    "dotenv-expand": "5.1.0",
     "eslint": "^6.6.0",
     "eslint-config-react-app": "^5.2.1",
     "eslint-loader": "3.0.3",
@@ -55,28 +70,19 @@
     "postcss-normalize": "8.0.1",
     "postcss-preset-env": "6.7.0",
     "postcss-safe-parser": "4.0.1",
-    "react": "^16.13.1",
-    "react-app-polyfill": "^1.0.6",
-    "react-dev-utils": "^10.2.1",
-    "react-dom": "^16.13.1",
-    "react-inlinesvg": "^2.1.1",
-    "react-router-dom": "5.2.0",
     "resolve": "1.15.0",
     "resolve-url-loader": "3.1.1",
     "sass-loader": "8.0.2",
     "semver": "6.3.0",
-    "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0",
-    "socketio-wildcard": "^2.0.0",
-    "style-loader": "0.23.1",
-    "terser-webpack-plugin": "2.3.5",
-    "ts-pnp": "1.1.6",
-    "uid": "^1.0.0",
-    "url-loader": "2.3.0",
+    "react-dev-utils": "^10.2.1",
     "webpack": "4.42.0",
     "webpack-dev-server": "3.10.3",
     "webpack-manifest-plugin": "2.2.0",
-    "workbox-webpack-plugin": "4.3.1"
+    "workbox-webpack-plugin": "4.3.1",
+    "terser-webpack-plugin": "2.3.5",
+    "style-loader": "0.23.1",
+    "ts-pnp": "1.1.6",
+    "url-loader": "2.3.0"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -148,7 +154,7 @@
       "react-app"
     ]
   },
-  "devDependencies": {
-    "react-svg-loader": "^3.0.3"
+  "engines": {
+    "node": "14.x"
   }
 }

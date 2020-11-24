@@ -4,8 +4,6 @@ import socket, {useLoginUser, useSocket} from "../service/socket";
 import UserList, {User} from "../components/user-list";
 import useTimer from "../helpers/timer-hook"
 
-
-
 function handleRemove(arenaId) {
     socket.emit('remove-arena', arenaId)
 }
@@ -146,8 +144,8 @@ function Cancel({isCanceledBy, players, onRemove}) {
 }
 
 function Invitation({players, onCancel, onApprove}) {
-    const by = players[0];
-    const against = players[1];
+    const [by,against] = players;
+    const loginUser = useLoginUser();
 
     const invited = (
         <>
@@ -166,8 +164,8 @@ function Invitation({players, onCancel, onApprove}) {
 
     return (
         <tk-message class="text-style-1">
-            {localStorage.userId === against.id && invited}
-            {localStorage.userId === by.id && inviting}
+            {loginUser.id === against.id && invited}
+            {loginUser.id === by.id && inviting}
         </tk-message>
     )
 }

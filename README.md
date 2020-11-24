@@ -1,4 +1,7 @@
 ![game screenshot](./images/screanshot.png)
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/40c0266e-3dbf-4847-b7b3-de4111b06e29/deploy-status)](https://app.netlify.com/sites/perymimon-tic-tac-toe/deploys)
+
 # Tic-Tac-Toe
 Multi Arenas and Multi Players Tic-Tac-Toe Web Game powered by `React V16`, `NodeJS V14` and `socket.io V2.3`
 

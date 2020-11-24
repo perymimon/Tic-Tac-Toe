@@ -7,6 +7,7 @@ export default function useTimer(time, tickTime, cb, restartsConditions){
         timer.clearTicks();
         timer.tick(tickTime, _=> cb(timer));
         return _=> timer.clearTicks();
+        // eslint-disable-next-line
     } , [time,cb,tickTime]);
 
     useEffect(function () {
@@ -14,6 +15,7 @@ export default function useTimer(time, tickTime, cb, restartsConditions){
         return () => {
             timer.stop()
         }
+        // eslint-disable-next-line
     }, [...restartsConditions])
 
     return timer;

@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 
-
-export default class LetMap extends Map {
+module.exports =
+    class LetMap extends Map {
         constructor(struct) {
             super();
             this.initStruct(struct);

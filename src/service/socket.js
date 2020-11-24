@@ -1,21 +1,17 @@
-import {Manager} from 'socket.io-client';
+
+import io from 'socket.io-client';
 import {useLayoutEffect, useMemo, useState} from "react";
 import LetMap from '../helpers/let-map'
-
-const SOCKET_DOMAIN = process.env.REACT_APP_SOCKET_DOMAIN;
-const manager = new Manager(SOCKET_DOMAIN, {
-    reconnectionDelay: 10000,
-    autoConnect: false,
-    path: `/socket.io`,
-});
-
-/*
+/** enable Verbose on devtool logs to see that logs*/
+import debuggers from 'debug'
+const debug = debuggers("socket");
+/**********************************
 listen to all event under socket ns .
  save last value and update all register react hooks
-* */
+ /************************************/
 function socketEventWatcher({type, nsp, data}) {
     const [event, datum] = data;
-    console.log(' Event Watcher', event, nsp, datum)
+    debug('Event Watcher', event, nsp, datum)
     const [, key] = nspEventKey(nsp, event);
     const setters = eventsHooks.for(key)
     socketMemo.set(key, datum);
@@ -24,17 +20,23 @@ function socketEventWatcher({type, nsp, data}) {
 
 function nspEventKey(nsp, event = '') {
     let key = `${nsp}/${event}`
-        .replace(/^\/*/, '/') // make it start with *one* /
-        .replace(/\/*$/, '') // clear all / from the end
+        .replace(/^\/*/, '/') // force it start with one /
+        .replace(/\/*$/, '') // clear all / at the end
     const parts = key.split(/(?!^)\//) // split key to [/nsp,event]
     return parts.length === 1 ? ['/', key] : [parts[0], key];
 }
 
 function createSocket(namespace) {
     const uid = localStorage.userId;
-    const socket = manager.socket(namespace, {query: {uid}})
-    // must do for case userId updated after Manger connected
-    socket.io.opts.query = {uid};
+    const SOCKET_DOMAIN = process.env.REACT_APP_SOCKET_DOMAIN;
+    const socket = io(SOCKET_DOMAIN + namespace, {
+        autoConnect: false,
+        query: {uid},
+        transports : ['websocket'],
+        extraHeaders: {
+            'Access-Control-Allow-Origin': "*"
+        }
+    })
     socket.binary(false) /*performance*/
     socket.onevent = socketEventWatcher;
     socket.connect();
@@ -47,22 +49,19 @@ const socketMemo = new LetMap(); // use it for events
 
 /* need to reconnect for query get place on the request*/
 socketMemo.on('/user', function (user, oldUser) {
-    console.log('/user', user);
+    debug('/user', user);
     if (localStorage.userId !== user.id) {
         localStorage.userId = user.id
-        manager.opts.query.uid = user.id;
-        manager.disconnect();
-        manager.connect();
     }
 })
 
 const socket = window.socket = sockets.for('/')
 
 export function useSocket(nspEvent, defaultValue) {
-    /*
-        nspEvent:string support 2 formats :
+    /*****************
+        @nspEvent:string support 2 formats
         "nsp/event" - for register listener under event under custom ns
-        "event" - for register listener under default ns `/`
+        "event"     - for register listener under default ns `/`
      */
     const [nsp, key] = useMemo(() => nspEventKey(nspEvent), [nspEvent]);
     const [, setValue] = useState(/*just for we have a trigger RENDER*/);
@@ -99,6 +98,7 @@ export function useIsConnected() {
             socket.off('connect');
             socket.off('disconnect');
         };
+        // eslint-disable-next-line
     }, []);
     return isConnected;
 }

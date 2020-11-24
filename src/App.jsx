@@ -26,7 +26,7 @@ function App() {
     return (
         <div className="App">
             <header className="app-header introduce-finish">
-                <User {...user} tagView/>
+                {user.id ? <User {...user} tagView/> :<span/>}
                 Tick Tac Toe
                 <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}>
                  <ConnectionSVG style={connectionStyle}/>

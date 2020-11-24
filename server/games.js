@@ -1,6 +1,7 @@
 const uid = require('uid');
-const LetMap = require('../src/helpers/let-map');
+const LetMap = require('./helpers/let-map');
 const ReactiveModel = require('../src/helpers/reactive-model');
+const debug = require('debug')('arena')
 
 const victoryScore = 100;
 const lossScore = 0;
@@ -13,7 +14,7 @@ module.exports =
             this.set(game.id, game)
 
             const nsp = this.io.of(`game-${game.id}`);
-            console.log(`created: namespace ${nsp.name}`)
+            debug(`created: namespace ${nsp.name}`)
 
             nsp.on('connect', function connectSocket(socket) {
                 game.model.observe(model => {

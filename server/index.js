@@ -1,15 +1,32 @@
 // loads environment variables from a .env file into process.env
-require('dotenv').config()
+require('dotenv').config();
+
+var app = require('express')();
+var http = require('http').createServer(app);
+
+app.get('/',(req,res)=>{
+    res.send('server up')
+})
 const Users = require('./users');
 const Arenas = require('./games');
 
-Users.create('bob', true) /*AI*/
+/*Create One AI*/
+Users.create('bob', true)
 
-const serverPort = process.env.SERVER_PORT || 4000;
 
-const io = require('socket.io')({
+const serverPort = process.env.PORT ;
+if(!serverPort){
+    throw `process.env.PORT = ${serverPort}`
+}
+
+const io = require('socket.io')(http,{
     pingTimeout: 60000,
     pingInterval: 12000,
+    cors: {
+        origin: '*',
+        methods: 'GET,PUT,POST,DELETE,OPTIONS'.split(','),
+        credentials: true
+    }
 });
 Arenas.attach(io);
 
@@ -37,8 +54,6 @@ function welcome(socket, user) {
     socket.on('remove-arena', function (arenaId) {
         Users.get(user.id).arenas.delete(arenaId)
     })
-
-
 }
 
 io.on('connection', socket => {
@@ -73,4 +88,6 @@ io.on('connection', socket => {
 
 });
 
-io.listen(serverPort);
+http.listen(serverPort,()=>{
+    console.log(`server listening on port ${serverPort}`)
+})
