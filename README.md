@@ -4,13 +4,11 @@
 
 # Tic-Tac-Toe
 Multi Arenas and Multi Players Tic-Tac-Toe Web Game powered by `React V16`, `NodeJS V14` and `socket.io V2.3`
-
- 
   
 ## Table of Contents
-[setup](#setup)  
-[launch](#launch)  
-[general architecture](#General-Architecture)  
+[Setup](#setup)  
+[Launch](#launch)  
+[General architecture](#General-Architecture)  
 helpers:    
 [LetMap](#letmap)
 [ReactiveModel](#reactivemodel-model-object--proxy)
@@ -18,8 +16,8 @@ helpers:
 [UseSocket](#usesocketnamespaceevent-string-defaultvalue-any)
 
 ## Setup
-   * clone the project
-   * on the working project call `npm install`
+   * Clone the project
+   * On the working project call `npm install`
 ## Launch
    * `npm run server` - spin up the server
    * `npm start` - building the client and open `localhost:3000` on default browser 
@@ -33,7 +31,7 @@ The response can be as sent it to the client through `socket.io` or let the AI k
 
 ### Before we dive some  - Helpers 
 #### On file helpers/let-map.js
-###### export default `LetMap` extend `Map`, mixed with `EventEmitter` 
+* `export default LetMap extend Map, mixed with EventEmitter` 
 
 LetMap
 -------- 
@@ -102,7 +100,16 @@ Behave exactly like `Map.set` but emit events
 Behave exactly like `Map.get` 
 
 #### helpers/reactive-model.js  
-##### `export default ReactiveModel factory`  
+* `export default ReactiveModel factory`  
+
+ReactiveModel
+--------------------------------------------
+Factory (that can used as decorator in future js) that return deep
+trackable object. the model expose `observe(cb)` and any changed to any key of the model in any deep,
+even if the key value assigned to different variable, call `cb(model)`.
+
+As a side effect any object that get from the `ReactiveModel` is also `ReactiveModel` with 
+is own `observe` method 
 ```js
 const model = ReactiveModel({
     id: 1234,
@@ -116,20 +123,39 @@ model.observe(model=>{
 model.board[4] = 'X'; // in the next eventloop's tick callbacks called
 ```
 
-ReactiveModel (model: object) : proxy<model>
---------------------------------------------
-Factory (that can used as decorator in future js) that return deep
-trackable object. the model expose `observe(cb)` and any changed to any key of the model in any deep,
-even if the key value assigned to different variable, call `cb(model)`.
+```js
+class Game(){
+  constructor(){
+    this.model = ReactiveModel({
+            id: this.id,
+            playersId: [user1id, user2id],
+            board: Array(9).fill(''),
+            turn: 0,
+            nextTurn:0,
+           ...
+        })
+   }
+   next(){
+    const {model} = this; 
+    model.turn = (model.turn + 1) % model.playersId.length;
+   }
+ }
+ const game = new Game();
+//... on other part of the code
+game.model.observe( model=> console.log(`game update with`, model))
 
-As a side effect any object that get from the `ReactiveModel` is also `ReactiveModel` with 
-is own `observe` method 
+/// then  
+game.next()
+// call all observe's callbacks
+```
+
+#### `ReactiveModel (model: object) : proxy<model>`
 
 Parameter|	type  |	description
 ---------|--------|------------    
 model    | object |  object to deep track-proxy on   
    
-###### `observe(cb: function(model)) : function disconnect`
+#### `model.observe(cb: function(model)) : function disconnect`
 Register cb function to called on any model's changed.
 It returns `disconnect` function that remove the `cb` when called. 
 
@@ -139,13 +165,15 @@ cb       | function(model)| function to call on any model change with
  
 
 #### helpers/reactive-set.js
-##### `export default ReactiveSet extends Set` 
+* `export default ReactiveSet extends Set` 
 
 ReactiveSet
 -----------
 the name is similar, but it almost not related to `ReactiveModel` expect from they both have the `observe` function.
 this thin extends of `Set` bring `observer(cb)` that called immediate each time value added or delete from the set
 and when `ReactiveSet` cleared.
+
+
 ```js
 import ReactiveSet from  './helpers/reactive-set'
 
@@ -162,30 +190,43 @@ const disconnect = arenas.observe( (action,arena) =>{
     if(action === "delete")
         arena.model.unobserve( makeMove );
 })
-
 ```
-###### `observe(cb:function): function disconnect`
-register a `cb` that called `cb(actionType, value)` every time `ReactiveSet` updated. 
-i.e. after `add` `delete` or `clear`
+#### `constracture ReactiveSet(as Set) : reactiveSet`
+create new instance of `ReactiveSet()`
+Parameter|	type  |	description
+---------|-------|------------    
+as `Set` | any   |  got any argument that constracture of `Set` can get
 
-###### `unobserve(cb)`
+#### `observe(cb:function): function disconnect`
+register a `cb` that called `cb(actionType, value)` every time `ReactiveSet` updated. 
+i.e. after `add` `delete` or `clear`  
+It return `disconnect` function that remove the cb when called
+
+Parameter|	type  |	description
+---------|-------|------------    
+cb       | function   |  function to call after set update. `cb` called with actionType that can be `add` `delete` or `clear`, and `value` that we mention
+
+
+#### `unobserve(cb)`
     remove cb from callback updated list
         
-###### `add` `delete` `clear` behave the same as Set expect it trigger the callback's observed
+#### `add` `delete` `clear` 
+behave the same as Set expect it trigger the callback's observed
 
-##### service/socket.js
-###### export useSocket(namespace/event: string, defaultValue: any)
-###### export useLoginUser()
-###### export useIsConnected()
+#### service/socket.js
+* `export useSocket(namespace/event: string, defaultValue: any)`
+* `export useLoginUser()`
+* `export useIsConnected()`
   
+
+useSocket
+---------
+#### `useSocket(namespace/event: string, defaultValue: any)`
 ```js
 const [user, socket] = useSocket('user',{})
 // or
 const [game, gameSocket] = useSocket('game-${id}/update', {});
-
 ```
-useSocket(namespace/event: string, defaultValue: any)
----------
 Hook that let component to get last data from `namespace/event's` socket.io's stream
 And bring the socket.io's `socket` that created and used specialy for that namespace,
 so a component can send back notification to exact namespace connection on the server. 
@@ -195,14 +236,24 @@ and save them on `LetMap` under `namespace/event` key. so it readies when `useSo
 It also creates `useState` and register it's `setter` on the same key. so it can be force update the component
 when data on that key updated.  
 
-useLoginUser() : Object<user>
+
+useLoginUser() 
 --------------
+#### `useLoginUser(): Object<user>`
+```
+ const loginUser = useLoginUser()
+```
 Thin wrapper around `useSocket('user', {})` that just return 
 the login user.  
 
-useIsConnected()
+useConnected()
 --------------
-Return the status of main `socket.connected`, and call render when status change from 
+#### useConnected()
+```
+ const isConnected = useConnected()
+```
+
+Return the status of main `socket.connected`, and force render when status change from 
 `connected` to `disconnected`
 
 ### Client - Component Hierarchy
