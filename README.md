@@ -7,14 +7,15 @@ Multi Arenas and Multi Players Tic-Tac-Toe Web Game powered by `React V16`, `Nod
 
  
   
-##Table of Contents
+## Table of Contents
 [setup](#setup)  
 [launch](#launch)  
 [general architecture](#General-Architecture)  
 helpers:    
-[LetMap](#helpers/let-map.js)
-[ReactiveModel](#helpers/reactive-model.js)
-[ReactiveSet](#helpers/reactive-set.js)
+[LetMap](#letmap)
+[ReactiveModel](#reactivemodel-model-object--proxy)
+[ReactiveSet](#reactiveset)
+[UseSocket](#usesocketnamespaceevent-string-defaultvalue-any)
 
 ## Setup
    * clone the project
