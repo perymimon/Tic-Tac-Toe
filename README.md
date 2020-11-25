@@ -7,13 +7,21 @@ Multi Arenas and Multi Players Tic-Tac-Toe Web Game powered by `React V16`, `Nod
   
 ## Table of Contents
 [Setup](#setup)  
-[Launch](#launch)  
+[Launch](#launch) 
 [General architecture](#General-Architecture)  
-helpers:    
+Helpers:    
 [LetMap](#letmap)
-[ReactiveModel](#reactivemodel-model-object--proxy)
+[ReactiveModel](#reactivemodel)
 [ReactiveSet](#reactiveset)
-[UseSocket](#usesocketnamespaceevent-string-defaultvalue-any)
+[UseSocket](#usesocket)
+[useLoginUser](#useloginuser)
+[useConnected](#useconnected)  
+
+[Client - Component Hierarchy](#client---component-hierarchy)  
+[Server - Data Flow](#server---data-flow)  
+[Technical Choices](#technical-choices)  
+[Trade Off](#trade-off)  
+[@Rights](#rights)  
 
 ## Setup
    * Clone the project
@@ -29,16 +37,16 @@ On the Server it used [ReactiveModel](#helpers/reactive-model.js) that base on J
 The response can be as sent it to the client through `socket.io` or let the AI know about the change and respond to it.
 
 
-### Before we dive some  - Helpers 
+## Before we dive some Helpers 
 #### On file helpers/let-map.js
 * `export default LetMap extend Map, mixed with EventEmitter` 
 
 LetMap
 -------- 
-That class extend the regular js `Map` and expose on it new
-`for(k)` method. this method brings the value's key if it exist  
+Class that extend the regular js `Map` and expose new method
+`for(k)`. That method brings the value's key if it exist  
 or if not exist create it with pre provide template .
-That class also emits events on any keys updates or create.
+`LetMap` also emits events on any keys updates or create.
 
  ```js
   import LetMap from './helpers/let-map'
@@ -48,26 +56,25 @@ That class also emits events on any keys updates or create.
  ```    
 
 #### `constractor LetMap(struct:any|function) : letmap`     
-create a new instance of the data structure `LetMap`
+Create a new instance of the data structure `LetMap`
 
 Parameter|	type  |	description
 ---------|--------|------------
-`struct`| `any\function`| move directly to `initStuct(struct)` go there for more details | 
+`struct`| `any\function`| move directly to `setStuct(struct)` go there for more details | 
     
-#### `letmap.initStruct(struct:any|function)`    
-Save the template struct for missing keys.
-The function just store the struct for future use by `for(k)` method.
+#### `letmap.setStruct(struct:any|function)`    
+Save the template struct for missing keys For future use by `for(k)` method.
 
 Parameter|	type  |	description
 ---------|--------|------------      
 `struct` | `object\function\primitive` | Template for the `letmap.for()`. used to creating new keys.
 
 #### `letmap.for(k: any)`  
-This method is like `map.get` but if `k` not exist it creates it based on `struct` template and return it.
-Like that:   
-if `struct` is function it called with the `k` and  return's value is the value of the new key
-if `struct.constructor` exist it used to create the new value for the key. `new struct.constructor`. 
-if any of that. `struct` assume as primitive value and used as-is to create the new value's key.
+This method is like `map.get` but if `k` not exist it creates & return it based on `struct` template.
+It work Like that:   
+If `struct` is function it called with the `k` and  return's value is the value of that new key.
+If `struct.constructor` exist it used to create the new value for the key. `new struct.constructor`. 
+If any of that. `struct` assume as primitive value and used as-is to create the new value's key.
 
 Parameter|	type  |	description
 ---------|--------|------------    
@@ -78,20 +85,20 @@ Register callback to specific key change.
 
 Parameter|	type  |	description
 ---------|--------|------------    
-`eventname` | `string` | Is the name of the key. `update` is a special event that emit, with empty parameters, each called to `set`, `create`. 
+`eventname` | `string` | Eventname is the key that update. also `update` is a special event that emit every time set was updated.
 `fn`  | `function` | called as `fn(new value, old value)`  
  
 #### `letmap.off(fn)`  
 Thin wrapper around `EventEmitter.off`
  
 #### `letmap.emit(key: string, nv: any, ol:any, ...rest)`  
-Used for manual let any callback to know that
-some value of some key updated (because letMat not do any deep checking).
-It also emit `update` on any call.
+Used for manual emit events and let all callbacks to know that.
+Some object value of some key updated (because letMat not do any deep checking).
+After call it, it  also emit general `update` event
 
 Parameter|	type  |	description
 ---------|--------|------------    
-`key` | `string` | event name  
+`key` | `string` | event name should be the name of the key.
 `nv` `ov` ...  | `any` |   all arguments transfer as is to `EventEmitter.emit`
 
 #### `letmap.set`, `letmap.delete`  
@@ -99,7 +106,8 @@ Behave exactly like `Map.set` but emit events
 #### `letmap.get`  
 Behave exactly like `Map.get` 
 
-#### helpers/reactive-model.js  
+----------
+#### on file helpers/reactive-model.js  
 * `export default ReactiveModel factory`  
 
 ReactiveModel
@@ -123,33 +131,8 @@ model.observe(model=>{
 model.board[4] = 'X'; // in the next eventloop's tick callbacks called
 ```
 
-```js
-class Game(){
-  constructor(){
-    this.model = ReactiveModel({
-            id: this.id,
-            playersId: [user1id, user2id],
-            board: Array(9).fill(''),
-            turn: 0,
-            nextTurn:0,
-           ...
-        })
-   }
-   next(){
-    const {model} = this; 
-    model.turn = (model.turn + 1) % model.playersId.length;
-   }
- }
- const game = new Game();
-//... on other part of the code
-game.model.observe( model=> console.log(`game update with`, model))
-
-/// then  
-game.next()
-// call all observe's callbacks
-```
-
-#### `ReactiveModel (model: object) : proxy<model>`
+#### `Factory ReactiveModel (model: object) : proxy<model>`
+Create and return the `ReactiveModel` around the `model`. orginal model not touched at all.
 
 Parameter|	type  |	description
 ---------|--------|------------    
@@ -163,16 +146,16 @@ Parameter|	type   |	description
 ---------|---------|------------    
 cb       | function(model)| function to call on any model change with    
  
-
-#### helpers/reactive-set.js
+-------------------------------------------------------------------------------------------------------
+#### on file helpers/reactive-set.js
 * `export default ReactiveSet extends Set` 
 
 ReactiveSet
 -----------
-the name is similar, but it almost not related to `ReactiveModel` expect from they both have the `observe` function.
+#### `constractor ReactiveSet(as Set) : reactiveSet`
+The name is similar, but it almost not related to `ReactiveModel`. Expect from they both have the `observe` function.
 this thin extends of `Set` bring `observer(cb)` that called immediate each time value added or delete from the set
 and when `ReactiveSet` cleared.
-
 
 ```js
 import ReactiveSet from  './helpers/reactive-set'
@@ -191,13 +174,14 @@ const disconnect = arenas.observe( (action,arena) =>{
         arena.model.unobserve( makeMove );
 })
 ```
-#### `constracture ReactiveSet(as Set) : reactiveSet`
+
+#### `constractor ReactiveSet(as Set) : reactiveSet`
 create new instance of `ReactiveSet()`
 Parameter|	type  |	description
 ---------|-------|------------    
 as `Set` | any   |  got any argument that constracture of `Set` can get
 
-#### `observe(cb:function): function disconnect`
+#### `reactiveSet.observe(cb:function): function disconnect`
 register a `cb` that called `cb(actionType, value)` every time `ReactiveSet` updated. 
 i.e. after `add` `delete` or `clear`  
 It return `disconnect` function that remove the cb when called
@@ -206,14 +190,14 @@ Parameter|	type  |	description
 ---------|-------|------------    
 cb       | function   |  function to call after set update. `cb` called with actionType that can be `add` `delete` or `clear`, and `value` that we mention
 
-
-#### `unobserve(cb)`
+#### `reactiveSet.unobserve(cb)`
     remove cb from callback updated list
         
-#### `add` `delete` `clear` 
-behave the same as Set expect it trigger the callback's observed
+#### `reactiveSet.add` `reactiveSet.delete` `reactiveSet.clear` 
+Behave the same as Set expect it trigger the callback's observed
 
-#### service/socket.js
+-------------------------------------------------------------------------------------------------------
+#### on file service/socket.js
 * `export useSocket(namespace/event: string, defaultValue: any)`
 * `export useLoginUser()`
 * `export useIsConnected()`
@@ -221,39 +205,38 @@ behave the same as Set expect it trigger the callback's observed
 
 useSocket
 ---------
-#### `useSocket(namespace/event: string, defaultValue: any)`
+#### `useSocket(namespaceEvent: string, defaultValue: any)`
 ```js
 const [user, socket] = useSocket('user',{})
 // or
 const [game, gameSocket] = useSocket('game-${id}/update', {});
 ```
-Hook that let component to get last data from `namespace/event's` socket.io's stream
+Hook that let component to get last data from `{namespace}/{event}'s` socket.io's stream.
 And bring the socket.io's `socket` that created and used specialy for that namespace,
 so a component can send back notification to exact namespace connection on the server. 
 
 Under the surface the module listen all events from `socket.io`
-and save them on `LetMap` under `namespace/event` key. so it readies when `useSocket` ask them.
-It also creates `useState` and register it's `setter` on the same key. so it can be force update the component
-when data on that key updated.  
-
+and save them on `LetMap` under `namespace/event` key. so it ready when `useSocket` ask for them.
+It also creates react's `useState` and register it's `setter` so when data on that key updated
+it can force update the component
 
 useLoginUser() 
 --------------
 #### `useLoginUser(): Object<user>`
-```
- const loginUser = useLoginUser()
+```js
+const loginUser = useLoginUser()
 ```
 Thin wrapper around `useSocket('user', {})` that just return 
 the login user.  
 
 useConnected()
 --------------
-#### useConnected()
-```
- const isConnected = useConnected()
+#### `useConnected(): boolean `
+```js
+const isConnected = useConnected()
 ```
 
-Return the status of main `socket.connected`, and force render when status change from 
+Return the status of main `mangaer.connected`, and force render when status change from 
 `connected` to `disconnected`
 
 ### Client - Component Hierarchy
@@ -267,7 +250,7 @@ Return the status of main `socket.connected`, and force render when status chang
             * Register
         * Router path=/
             * Arenas
-                * UserList  
+                * UserList, two views. top10 and all users
                 * For each user's arenas: Arena[Stage=INVITATION|GAME|CANCEL|LOADING]
 
 Arena can be in 4  stage 
@@ -338,20 +321,19 @@ After each action any update to `game-model` emitted to client with `update` eve
 
 
 ## Technical Choices
-* there no redis on `socket.io` for help with scaling, and the architecture not tested on 
+* There no use of redis for help with scaling `socket.io`, and the architecture not tested on 
 scaling environment  
-* there is no of use for any redundant `redux` style design pattern as it unnecessary and make the code bloat
-* try to make the code more readable than magic. But for Infrastructure I must do some deep magic, from time to time, for it to work
-most of it because bugs on the `socket.io` lib  
+* There is no use for any redundant `redux` style design pattern as it unnecessary and make the code bloat
+* Try to make the code more readable than magic. But for Infrastructure I must do some deep magic, for it to work cleanr in other parts;
+* some workarround because bugs on `socket.io` lib and using same helpers lib on server and client 
 
 ## Trade Off
 * All events registered are literal string for the simplicity and clarity
 * No implantation yet for history playback . There is no reason not to add in the future.
 * most of the file un documents because lake of time and believe of self explanation. 
 * no implement of user disconnect from the server
-* no implement for limit number of users that send back to each new connection from the server 
-* no specific time-out turn marker, reuse for User component on color view
-
+* no implement for limit number of users that send back to each new connection
+* no specific time-out `turnMarker` componnect,I just reuse `User` component on color view
  
 ##Sources
 This project start as challenge from TalkSpace Company that ask for implement Tick-Tac-Tour game.
