@@ -9,21 +9,49 @@ const tieScore = 10;
 
 module.exports =
     new class Arenas extends LetMap {
-        create(user1id, user2id, turnTime) {
-            const game = new Game(user1id, user2id, turnTime);
-            this.set(game.id, game)
+        createGame(user1, user2, turnTime) {
+            const game = new Game(user1.id, user2.id, turnTime);
+            this.set(game.id, game);
+            user1.arenas.add(game.id);
+            user2.arenas.add(game.id);
 
             const nsp = this.io.of(`game-${game.id}`);
             debug(`created: namespace ${nsp.name}`)
-
+            // const connected = new Set();
+            // var deleteGameTimer = null;
+            const get = (userid) =>   [user1,user2].find( u=> u.id === userid);
             nsp.on('connect', function connectSocket(socket) {
+                // connected.add(socket)
+                // clearTimeout(deleteGameTimer);
+                //
+                // socket.on('disconnect',()=>{
+                //     connected.delete(socket)
+                //     if(connected.size === 0 ){
+                //         deleteGameTimer = setTimeout(()=>{
+                //             this.delete(game.id);
+                //         }, 60 * 1000);
+                //     }
+                // })
+
+                // const userid = socket.handshake.query.uid;
+                const userid = socket.client.request._query.uid;
+                if (![user1.id, user2.id].includes(userid)) return;
+
                 game.model.observe(model => {
+                    const {stage,winner, loser, draw} = model;
+                    if(['END','CANCEL'].includes(stage)){
+                        if(draw){
+                            user1.model.score += tieScore
+                            user2.model.score += tieScore
+                        }
+                        if(winner){
+                          get(winner).model.score += victoryScore;
+                          get(loser).model.score += lossScore;
+                        }
+                    }
+
                     socket.emit('update', model)
                 })
-
-                const userid = socket.handshake.query.uid;
-                if (![user1id, user2id].includes(userid)) return;
-
                 game.errors.for(userid).observe(errors => {
                     socket.emit('game-errors', errors.map(eText=>({id:uid(),text:eText})));
                     setTimeout(_=> errors.length = 0)
@@ -65,9 +93,10 @@ class Game {
         this.errors = new LetMap( userid => ReactiveModel([]))
     }
 
-    cancel(userid) {
-        const {model} = this;
-        if (model.stage === 'GAME') return;
+    cancel(userid, force= false) {
+        const {model, turnTimer} = this;
+        if (!force && model.stage === 'GAME') return;
+        clearTimeout(turnTimer);
         model.isCanceledBy = userid;
         model.stage = 'CANCEL'
     }
@@ -83,6 +112,7 @@ class Game {
 
     selectCell(userid, cellNumber) {
         const {model, errors} = this;
+        if(model.stage !== 'GAME') return;
         const {turn, playersId, board} = model;
         const userErrors = errors.for(userid);
         if (!model.isStarted || model.isCanceledBy)
@@ -97,25 +127,20 @@ class Game {
         board[cellNumber] = turn;
         const {isDraw, isVictory} = checkEndSituation(model);
 
-        if (isVictory) {
-            const Users = require('./users');
-            model.winner = playersId[turn];
-            model.loser = playersId[(turn + 1) % 2];
-            model.stage = `END`
-            Users.get(model.winner).model.score += victoryScore;
-            Users.get(model.loser).model.score += lossScore;
+        if(isVictory || isDraw){
             clearTimeout(this.turnTimer);
-            return;
+            model.stage = `END`;
+
+            if (isVictory) {
+                model.winner = playersId[turn];
+                model.loser = playersId[(turn + 1) % 2];
+            }
+            if (isDraw) {
+                model.draw = true;
+            }
+            return ;
         }
-        if (isDraw) {
-            const Users = require('./users');
-            model.draw = true;
-            model.stage = `END`
-            clearTimeout(this.turnTimer);
-            Users.get(playersId[0]).model.score += tieScore;
-            Users.get(playersId[1]).model.score += tieScore;
-            return;
-        }
+
         nextPlayer.call(this);
     }
 }

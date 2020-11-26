@@ -23,11 +23,12 @@ function App() {
     const connectionStyle = {
         ...isConnected ? {} : {filter: 'grayscale(1)'}
     }
+    const env = process.env.NODE_ENV ==='development'?'(dev)':'';
     return (
         <div className="App">
             <header className="app-header introduce-finish">
                 {user.id ? <User {...user} tagView/> :<span/>}
-                Tick Tac Toe
+                Tick Tac Toe {env}
                 <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}>
                  <ConnectionSVG style={connectionStyle}/>
                 </span>

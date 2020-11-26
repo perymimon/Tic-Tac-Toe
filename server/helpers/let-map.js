@@ -28,24 +28,23 @@ module.exports =
         set(k, nv) {
             let ov = super.get(k);
             super.set(k, nv);
+            if(ov === void 0)
+                this.emitter.emit('new', nv);
             this.emit(k, nv, ov);
-            this.emitter.emit('update');
-
             return nv;
         }
 
         delete(k) {
             let ov = super.get(k);
             super.delete(k);
-            this.emitter.emit(k, ov);
-            this.emitter.emit('update');
+            this.emit('delete', ov);
         }
 
         for(k) {
             const {struct} = this;
             if (struct && !super.has(k)) {
                 const s = typeof struct == 'function' ? struct(k) :
-                        struct.constructor? new struct.constructor(struct):
+                    struct.constructor? new struct.constructor(struct):
                         struct
 
                 this.set(k, s)
@@ -53,3 +52,4 @@ module.exports =
             return super.get(k);
         }
     }
+

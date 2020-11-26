@@ -10,34 +10,29 @@ module.exports =
             if (type === 'add') {
                 game.model.observe(model => action(user, game, model))
             }
-
         })
-
-
-
     }
 
 function action(user, game, model) {
-    const {stage, playersId,turn} = model;
+    const {stage, playersId, turn} = model;
     const userId = user.id;
     if (stage === 'INVITATION' && playersId[1] === userId) {
         game.approve(user.id);
         return;
     }
     if (stage === 'GAME' && userId === playersId[turn]) {
-        setTimeout(_=>{
+        setTimeout(_ => {
             game.selectCell(userId, selectCell(model))
-        },thinkingTime)
+        }, thinkingTime)
 
         return
     }
-
-    if(stage === 'END'){
+    if(['END','CANCEL'].includes(stage)) {
         user.arenas.delete(game.id);
     }
 }
 
-function selectCell(model){
+function selectCell(model) {
     const {board} = model;
     const rows = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
@@ -45,24 +40,24 @@ function selectCell(model){
     ];
     // if 2 in the row are "1" and the third are '',
     // select the free space and win
-    for( const row of rows ) {
+    for (const row of rows) {
         const symbols = row.map(i => board[i]);
-        if(symbols.join('') === '11'){
+        if (symbols.join('') === '11') {
             // each index on the row are index on the board
             return row[symbols.indexOf('')];
         }
     }
     // if 2 in the row are "0" and the third are '',
     // select the free space and block
-        for( const row of rows ) {
-            const symbols = row.map(i => board[i]);
-            if(symbols.join('') === '00'){
-                // each index on the row are index on the board
-                return row[symbols.indexOf('')];
-            }
+    for (const row of rows) {
+        const symbols = row.map(i => board[i]);
+        if (symbols.join('') === '00') {
+            // each index on the row are index on the board
+            return row[symbols.indexOf('')];
         }
+    }
     // if center is free select it
-    if( board[4] === '') return 4;
+    if (board[4] === '') return 4;
 
     //select the first free space
     return board.indexOf('');

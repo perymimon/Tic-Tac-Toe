@@ -52,8 +52,8 @@ socketMemo.on('/user', function (user, oldUser) {
     debug('/user', user);
     if (localStorage.userId !== user.id) {
         localStorage.userId = user.id
-        socket.io.disconnect()
-        socket.io.connect();
+        // socket.io.disconnect()
+        // socket.io.connect();
     }
 })
 

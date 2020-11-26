@@ -22,8 +22,11 @@ module.exports =
 
         return new Proxy(model, {
             set: function (model, prop, val) {
+                if(prop === observe.name) return true /*saved keyword*/;
+                var oldValue = Reflect.get(model, prop);
                 var indicate = Reflect.set(model, prop, val, model);
-                emitUpdate(model);
+                if(oldValue != val)
+                    emitUpdate(model);
                 return indicate;
             },
             get: function (model, prop) {
