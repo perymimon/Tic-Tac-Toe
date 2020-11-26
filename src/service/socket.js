@@ -80,29 +80,31 @@ export function useSocket(nspEvent, defaultValue) {
 
 export function useLoginUser() {
     const [user] = useSocket('user', {});
+    const isConnected = useConnected();
+    user.disconnect = !isConnected
     return user;
 }
 
-export function useIsConnected() {
+export function useConnected() {
     const [isConnected, setIsConnected] = useState(socket.connected);
     useLayoutEffect(() => {
+        socket.on('connect', set);
+        socket.on('disconnect', set);
+
         function set() {
             setIsConnected(socket.connected);
         }
-
         if (socket.connected !== isConnected){
             set()
         }
 
-        socket.on('connect', set);
-        socket.on('disconnect', set);
         return () => {
             socket.off('connect');
             socket.off('disconnect');
         };
         // eslint-disable-next-line
     }, []);
-    return isConnected;
+    return socket.connected;
 }
 
 export default socket;
