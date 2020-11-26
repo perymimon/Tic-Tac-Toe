@@ -48,7 +48,7 @@ const sockets = new LetMap(ns => createSocket(ns))
 const socketMemo = new LetMap(); // use it for events
 
 /* need to reconnect for query get place on the request*/
-socketMemo.on('/user', function (user, oldUser) {
+socketMemo.on('/user', function (key, user) {
     debug('/user', user);
     if (localStorage.userId !== user.id) {
         localStorage.userId = user.id
