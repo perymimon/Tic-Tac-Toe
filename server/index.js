@@ -57,11 +57,10 @@ function welcome(socket, user) {
         user.arenas.delete(arenaId)
     })
     socket.on('disconnect', () => {
-        // check connections amount on user's room
-        // if( Object.keys(io.in(user.id).connected).length === 0 ){
-        setTimeout(_ => {
-            const isDisconnect = Object.keys(io.in(user.id).connected).length === 0;
-            user.model.disconnect = isDisconnect;
+        socket.leave(user.id, _=>{
+            const disconnected = !io.nsps["/"].adapter.rooms[user.id];
+            console.log(`$user ${user.id} disconnect, online: ${!disconnected} `);
+            user.model.disconnect = disconnected;
         })
     })
 }

@@ -35,13 +35,15 @@ export default function UserList({onChallenge}) {
 
 
 export function User({
-                         name, score, color, mark, id, onClick, avatar,
-                         showScore, tagView, colorView, nameView, AI, counterDown
-                     }) {
+     name, score, color, mark, id, onClick, avatar, disconnect,
+     showScore, tagView, colorView, nameView, AI, counterDown,
+                }) {
     const style = {
         '--user-color': color || 'gray'
     }
-
+    if(disconnect){
+        style.filter = "opacity(0.5) grayscale(.9)";
+    }
     function handleClick(event) {
         onClick && onClick({name, id})
     }
