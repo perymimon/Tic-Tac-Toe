@@ -7,7 +7,7 @@ module.exports =
         user.arenas.observe(function (type, gameId) {
             const game = Arenas.get(gameId);
 
-            if (type === 'add') {
+            if (type === 'ADD') {
                 game.model.observe(model => action(user, game, model))
             }
         })

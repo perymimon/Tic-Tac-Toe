@@ -9,12 +9,12 @@ import {
     useHistory
 } from "react-router-dom";
 
-import {useIsConnected, useLoginUser} from "./service/socket"
+import {useConnected, useLoginUser} from "./service/socket"
 import {User} from "./components/user-list";
 
 function App() {
     const user = useLoginUser()
-    const isConnected = useIsConnected();
+    const isConnected = useConnected();
     let history = useHistory();
     useEffect(_=>{
         history.push(user.id ? "/" : "/register", '');

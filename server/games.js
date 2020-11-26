@@ -6,55 +6,48 @@ const debug = require('debug')('arena')
 const victoryScore = 100;
 const lossScore = 0;
 const tieScore = 10;
+const turnTime = 5; // 5 sec
+
 
 module.exports =
     new class Arenas extends LetMap {
-        createGame(user1, user2, turnTime) {
-            const game = new Game(user1.id, user2.id, turnTime);
+        createGame(user1, user2) {
+            if (user1.model.disconnect || user2.model.disconnect)
+                return "can't challenge disconnected user";
+
+            const game = new Game(user1, user2, turnTime);
             this.set(game.id, game);
             user1.arenas.add(game.id);
             user2.arenas.add(game.id);
+            game.users = new Set([user1, user2])
 
-            const nsp = this.io.of(`game-${game.id}`);
-            debug(`created: namespace ${nsp.name}`)
-            // const connected = new Set();
-            // var deleteGameTimer = null;
-            const get = (userid) =>   [user1,user2].find( u=> u.id === userid);
-            nsp.on('connect', function connectSocket(socket) {
-                // connected.add(socket)
-                // clearTimeout(deleteGameTimer);
-                //
-                // socket.on('disconnect',()=>{
-                //     connected.delete(socket)
-                //     if(connected.size === 0 ){
-                //         deleteGameTimer = setTimeout(()=>{
-                //             this.delete(game.id);
-                //         }, 60 * 1000);
-                //     }
-                // })
 
-                // const userid = socket.handshake.query.uid;
-                const userid = socket.client.request._query.uid;
+            game.nsp = this.io.of(`game-${game.id}`);
+            debug(`created: namespace ${game.nsp.name}`)
+            const get = (userid) => [user1, user2].find(u => u.id === userid);
+            game.nsp.on('connect', function connectSocket(socket) {
+                /**  const userid = socket.handshake.query.uid; this way need browser reconnect */
+                const userid = socket.client.request._query.uid; /*this way share connection*/
                 if (![user1.id, user2.id].includes(userid)) return;
 
                 game.model.observe(model => {
-                    const {stage,winner, loser, draw} = model;
-                    if(['END','CANCEL'].includes(stage)){
-                        if(draw){
+                    const {stage, winner, loser, draw} = model;
+                    if (['END', 'CANCEL'].includes(stage)) {
+                        if (draw) {
                             user1.model.score += tieScore
                             user2.model.score += tieScore
                         }
-                        if(winner){
-                          get(winner).model.score += victoryScore;
-                          get(loser).model.score += lossScore;
+                        if (winner) {
+                            get(winner).model.score += victoryScore;
+                            get(loser).model.score += lossScore;
                         }
                     }
 
                     socket.emit('update', model)
                 })
                 game.errors.for(userid).observe(errors => {
-                    socket.emit('game-errors', errors.map(eText=>({id:uid(),text:eText})));
-                    setTimeout(_=> errors.length = 0)
+                    socket.emit('game-errors', errors.map(eText => ({id: uid(), text: eText})));
+                    setTimeout(_ => errors.length = 0)
                 })
                 socket.on('cancel', () => game.cancel(userid))
                 socket.on('approve', () => game.approve(userid))
@@ -62,8 +55,11 @@ module.exports =
 
             })
 
+            tackingForUnused.call(this,game);
             return game;
         }
+
+
 
         list() {
             return [...this.values()];
@@ -75,25 +71,60 @@ module.exports =
 
     }
 
+    //todo: simplify it
+function tackingForUnused(game) {
+    const Users = require('./users');
+    const Arenas = module.exports ;
+    game.users.forEach(user => {
+        user.arenas.observe((action, gameId, dis) => {
+            if (!user.arenas.has(game.id)) {
+                game.users.delete(user)
+                dis();
+                checkAndDestroy()
+            }
+        })
+    })
+    Users.on('delete', deleteUser);
+
+    function deleteUser(userId, user) {
+        /** it do work just if user in users **/
+        game.users.delete(user);
+        checkAndDestroy();
+
+    }
+
+    function checkAndDestroy() {
+        if (game.users.size === 0) {
+            Users.off('delete', deleteUser);
+            console.log(`game ${game.id} destroy`);
+            // game.nsp.disconnect();
+            Arenas.delete(game.id)
+            for (let k in game)
+                delete game[k];
+        }
+    }
+
+}
+
 class Game {
-    constructor(user1id, user2id, turnTime=5) {
+    constructor(user1, user2, turnTime = 5) {
         this.id = uid();
         this.model = ReactiveModel({
             id: this.id,
-            playersId: [user1id, user2id],
+            playersId: [user1.id, user2.id],
             board: Array(9).fill(''),
             turn: 0,
-            nextTurn:0,
+            nextTurn: 0,
             isStarted: false,
             isCanceled: false,
             turnTime,
             stage: 'INVITATION',
         })
 
-        this.errors = new LetMap( userid => ReactiveModel([]))
+        this.errors = new LetMap(userid => ReactiveModel([]))
     }
 
-    cancel(userid, force= false) {
+    cancel(userid, force = false) {
         const {model, turnTimer} = this;
         if (!force && model.stage === 'GAME') return;
         clearTimeout(turnTimer);
@@ -112,7 +143,7 @@ class Game {
 
     selectCell(userid, cellNumber) {
         const {model, errors} = this;
-        if(model.stage !== 'GAME') return;
+        if (model.stage !== 'GAME') return;
         const {turn, playersId, board} = model;
         const userErrors = errors.for(userid);
         if (!model.isStarted || model.isCanceledBy)
@@ -127,7 +158,7 @@ class Game {
         board[cellNumber] = turn;
         const {isDraw, isVictory} = checkEndSituation(model);
 
-        if(isVictory || isDraw){
+        if (isVictory || isDraw) {
             clearTimeout(this.turnTimer);
             model.stage = `END`;
 
@@ -138,14 +169,15 @@ class Game {
             if (isDraw) {
                 model.draw = true;
             }
-            return ;
+            return;
         }
 
         nextPlayer.call(this);
     }
 }
+
 /* PRIVATE */
-function nextPlayer(){
+function nextPlayer() {
     const {model, turnTimer} = this;
     model.turn = model.nextTurn || 0;
     model.nextTurn = (model.turn + 1) % 2;

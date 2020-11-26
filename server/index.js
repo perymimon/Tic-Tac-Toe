@@ -29,28 +29,37 @@ const io = require('socket.io')(http, {
 });
 Arenas.attach(io);
 Users.on('update', () => {
-    /** on new user, delete user, user model change*/
-    io.sockets.emit('users-list', Users.list());
+    /** fire on new user, delete user, user's model change*/
+    io.sockets.emit('users-list', Users.list(true));
 })
 
-Users.on('new', function (user) {
+Users.on('new', function (userid, user) {
+    /** observe user arenas*/
     user.arenas.observe(() => {
         io.in(user.id).emit('arenas', [...user.arenas]);
     })
 })
 
+/** user garbage collector **/
+setInterval(()=>{
+    Users.clearDisconnectUsers();
+    /** and that trigger remove unused game **/
+}, 20 * 1000);
+
+
 function welcome(socket, user) {
     socket.join(user.id)
-    user.model.disconnect = false;
     socket.client.request._query.uid = user.id;
+    user.connect();
     socket.emit('user', user.model);
     socket.emit('arenas', [...user.arenas]);
-    socket.emit('users-list', Users.list());
+    socket.emit('users-list', Users.list(true));
 
     socket.on('challenge', (_user2) => {
         if (!user) return;
         const user1 = Users.get(user.id);
         const user2 = Users.get(_user2.id);
+
         Arenas.createGame(user1, user2);
     })
     socket.on('remove-arena', (arenaId) => {
@@ -60,7 +69,7 @@ function welcome(socket, user) {
         socket.leave(user.id, _=>{
             const disconnected = !io.nsps["/"].adapter.rooms[user.id];
             console.log(`$user ${user.id} disconnect, online: ${!disconnected} `);
-            user.model.disconnect = disconnected;
+            disconnected && user.disconnect();
         })
     })
 }

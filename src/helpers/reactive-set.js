@@ -1,5 +1,5 @@
-function emitUpdate() {
-    for (let cb of this.updates) cb(...arguments)
+function emitUpdate(action, value) {
+    for (let cb of this.updates) cb(action, value, /*dis*/_=>this.unobserve(cb))
 }
 
 module.exports =
@@ -15,29 +15,27 @@ module.exports =
                 this.updates.add(cb);
                 cb(this);
             }
-            return function disconnect(){
-                this.updates.remove(cb);
-            }
+
         }
         unobserve(cb){
-            this.updates.remove(cb);
+            this.updates.delete(cb);
         }
         add(v) {
             if(super.has(v)) return this;
             super.add(v);
-            emitUpdate.call(this,'add',v)
+            emitUpdate.call(this,'ADD',v)
             return this;
         }
 
         delete(v) {
             if(!super.has(v)) return this
             super.delete(v);
-            emitUpdate.call(this,'delete',v)
+            emitUpdate.call(this,'DELETE',v)
         }
 
         clear() {
             super.clear();
-            emitUpdate.call(this,'clear')
+            emitUpdate.call(this,'CLEAR')
         }
 
 
