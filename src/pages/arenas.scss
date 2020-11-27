@@ -8,6 +8,12 @@ tk-arenas {
   gap: .1em;
   border: 1px solid black;
   padding: 1em;
+  @media (pointer: coarse) {
+    /* custom css for "touch targets" */
+    flex-flow: column nowrap;
+    padding: 0.1em;
+    font-size: 2.3em;
+  }
 
 }
 
@@ -20,17 +26,23 @@ tk-arena {
   grid-template-rows: 2em 1fr;
   padding: 0.2em;
   backdrop-filter: blur(1px);
+  @media (pointer: coarse) {
+    /* custom css for "touch targets" */
+    width: calc(100vmin - 0.2em);
+    height: calc(100vmin - 0.2em);;
+
+  }
 
   h4 {
     margin: 0;
     font-family: neuropol_xregular;
-    font-size: 18px;
+    font-size: 1.1em;
     background: var(--sw-color);
   }
 
-  tk-errors{
+  tk-errors {
     display: flex;
-    flex-flow: column-reverse ;
+    flex-flow: column-reverse;
     overflow-y: auto;
     pointer-events: none;
     user-select: none;
@@ -43,49 +55,56 @@ tk-arena {
 
   }
 
-  tk-error{
-    &:before{
+  tk-error {
+    &:before {
       content: "⚠";
       font-size: 1.4em;
       color: #8d8d1f;
       margin: 0 .5em 0 0em;
     }
+
     pointer-events: none;
     user-select: none;
     text-transform: capitalize;
     line-height: 1.5em;
-    font-size: 12px;
+    font-size: .7em;
     color: white;
-    font-family: neuropol_xregular ;
+    font-family: neuropol_xregular;
     animation: enter-out 4s ease-out both;
   }
+
   @keyframes enter-out {
-    from{
+    from {
       margin-bottom: -1.4em;
       opacity: 0;
     }
-    10%{
-      margin-bottom:0;
+    10% {
+      margin-bottom: 0em;
+      transform: translateY(-1em);
       opacity: 1;
     }
-    75%{
-      margin-bottom:0;
+    75% {
+      margin-bottom: 0;
+      transform: translateY(-1em);
       opacity: 1;
     }
-    to{
+    to {
       opacity: 0;
-      margin-bottom:0;
+      transform: translateY(-1em);
+      margin-bottom: 0;
     }
-
-
   }
 }
 
-tk-message{
+toggle-button {
+  justify-self: flex-end;
+}
+
+tk-message {
   grid-row: 1/-1;
   grid-column: 1/-1;
   -webkit-backdrop-filter: blur(1px);
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(4px);
   flex-flow: column;
   justify-content: center;
   align-items: center;
@@ -103,10 +122,11 @@ tk-game {
     flex-direction: row;
     justify-content: space-between;
   }
-  .time-out-marker{
+
+  .time-out-marker {
     display: grid;
 
-    tk-user{
+    tk-user {
       grid-row: 1/1;
       grid-column: 1/1;
     }
@@ -126,16 +146,16 @@ tk-game {
       color: var(--cell-color);
       background-color: var(--bg-color2);
 
-      &:active{
-        animation: activeCell 0.4s ease ;
+      &:active {
+        animation: activeCell 0.4s ease;
       }
 
-      &:hover{
+      &:hover {
         filter: brightness(120%);
       }
 
       @keyframes activeCell {
-        from{
+        from {
           background-color: var(--user-color);
         }
       }

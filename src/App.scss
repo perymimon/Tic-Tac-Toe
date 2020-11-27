@@ -30,6 +30,12 @@
   tk-user{
     width: 1em;
     overflow: visible;
+    font-size: 0.8em;
+    @media (pointer:coarse) {
+      .name{
+        display: none;
+      }
+    }
   }
 }
 
