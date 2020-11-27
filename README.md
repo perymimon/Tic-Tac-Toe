@@ -33,10 +33,23 @@ Helpers:
 ## General Architecture
 The whole project base on `React` and `socket.io` as external lib and some hands-write lib om mine.
 On the client it Heavily depends on custom `useSocket` React `Hooks` to bring the models updates from the server.
-On the Server it used [ReactiveModel](#helpers/reactive-model.js) that base on JS `proxy` to know and response to any change on the `Arena/Game` models.
+On the Server it used [ReactiveModel](#helpers/reactive-model.js) that base on JS `proxy` to know and response to any
+change on the `Arena/Game` models.
 The response can be as sent it to the client through `socket.io` or let the AI know about the change and respond to it.
 
+To represented game there is the `Arena` idea and the `Game` idea.
+`Arena` is all about to settle place for the game to run, 
+And it  mean difrent thing in the client and in the server.
+on the client `Arena` component is the dimension place that the game can show all is stages:
+`INVITATION``GAME``END``CANCEL``LOADING`.  
 
+On the server `Arena` is a function that warp the game instance and take care of everything 
+that should me made to have a `Game` that can be played. socket connection. memory free. 
+listen to `Users` instances that participate int the game. etc.
+So `Game` can be isolated and focus just on  updates his `model`.
+
+In this architecture different games can be established on the same arena function
+ 
 ## Before we dive some Helpers 
 #### On file helpers/let-map.js
 * `export default LetMap extend Map, mixed with EventEmitter` 
@@ -168,9 +181,9 @@ socket.on('challange', _=>{
 })
 // other place in the code
 const disconnect = arenas.observe( (action,arena) =>{
-    if(action==="add")    
+    if(action==="ADD")    
         arena.model.observe( makeMove );
-    if(action === "delete")
+    if(action === "DELETE")
         arena.model.unobserve( makeMove );
 })
 ```
@@ -182,19 +195,18 @@ Parameter|	type  |	description
 as `Set` | any   |  got any argument that constracture of `Set` can get
 
 #### `reactiveSet.observe(cb:function): function disconnect`
-register a `cb` that called `cb(actionType, value)` every time `ReactiveSet` updated. 
-i.e. after `add` `delete` or `clear`  
-It return `disconnect` function that remove the cb when called
+register a `cb` that called `cb(actionType, value, diconectedFn)` every time `ReactiveSet` updated. 
+i.e. after `ADD` `DELETE` or `CLEAR`  
 
 Parameter|	type  |	description
 ---------|-------|------------    
-cb       | function   |  function to call after set update. `cb` called with actionType that can be `add` `delete` or `clear`, and `value` that we mention
+cb       | function   |  function to call after set update. `cb` called with actionType , `value` that we mention, and unregistered callback to remove this callback
 
 #### `reactiveSet.unobserve(cb)`
     remove cb from callback updated list
         
 #### `reactiveSet.add` `reactiveSet.delete` `reactiveSet.clear` 
-Behave the same as Set expect it trigger the callback's observed
+Behave the same as Set expect. but trigger the callback's observed.
 
 -------------------------------------------------------------------------------------------------------
 #### on file service/socket.js
@@ -318,10 +330,140 @@ That sent the errors that belong to this user specific.
 
 All 3 action-events directly forward to run actions-function on the game instance.
 After each action any update to `game-model` emitted to client with `update` event, so the loop is close.   
+## Server - Data Models
+    there is 3 main data model that used for this app in the server
+### User
+Represent by:
+```js
+class User {
+    constructor(name) {
+        this.id = uid();
+        this.model = ReactiveModel({
+            id: this.id,
+            name,
+            color: randomColor(),
+            score: 0,
+            disconnect: false
+        })
+
+        /* arenas id of this user */
+        this.arenas = new ReactiveSet();
+    }
+    connect(){
+        // change model disconnected to false    
+    }
+    disconnect() {
+        // cancel all games participation in;
+        // change model disconnected to true
+    }
+
+}
+```
+Other parts of the code tracks after `user.model` and `user.arenas`. `user.model` is what consider
+`user` for the client. so it is the public trackble and reflected to client part of the `user`;
+`arena` is a list of all `arenas id` that user participate in. and it also trackble and reflected to the user.
+because arenas is not realy what made the users, and it changed a lot it designs separate from the user model.
+although technically if it was in user model the code was still work;
+### Users
+Users are singleton that inherited from `LetMap`. it manages the all users instance 
+and supply `create` that behave as a factory function that warp the user instance
+and proxy his model change outside so who can listen to `User.on('update, cb)` notify
+also when user model update.
+
+```js
+ new class Users extends LetMap {
+        create(name, useAI = false) {
+            // create user instance and register it    
+            // proxy `user.model` change as `Users.on('update', cb)`
+            // warp the user with AI if asked
+        }
+
+        list(withDisconnected = false) {
+            // return all users model for send to socket client.
+            // can filter out disconnected or not
+        }
+        clearDisconnectUsers(){
+            // check all register users and delete all of them that disconnected and not
+            // participate in any game
+        }
+}
+
+```
+### Game
+Represent by:
+```js
+class Game {
+    constructor(user1, user2, turnTime = 5) {
+        this.id = uid();
+        this.model = ReactiveModel({
+            id: this.id,
+            playersId: [user1.id, user2.id],
+            board: Array(9).fill(''),
+            turn: 0,
+            nextTurn: 0,
+            isStarted: false,
+            isCanceled: false,
+            turnTime,
+            stage: 'INVITATION',
+        })
+
+        this.errors = new LetMap(userid => ReactiveModel([]))
+    }
+
+    cancel(userid, force = false) {
+        // change model stage to 'CANCEL'
+        // stop turn time out timer
+        // recored who cancel the game     
+    }
+
+    approve(userid) {
+        // change model stage to 'GAME'
+        // start turn timer
+    }
+
+    selectCell(userid, cellNumber) {
+        // check if the move is ligal
+        // update model board with the new move
+        // check for and condiations, and mark the wins and losers
+    }
+}
+```
+So basically it what you accept from a tic-tac-teo game.
+`game.model` is the part that represent and reflected to the clients.
+`game.errors` is a channel for each player to know his errors.
+
+## Arenas
+Arenas are singleton that inherited from `LetMap`. it manages the all games instance 
+and supply `createGame` that behave as a factory function that warp the game instance
+and provide all it need to function on the serve without expose it to the connection architecture,
+and the real user instance. 
+    
+```js
+new class Arenas extends LetMap {
+        createGame(user1 : User, user2 : User) {
+            // check ligal stuff
+            // create a game instance and register it
+            // listen to users areans changes, and `Users` to know if it the time to free up the game 
+            // establis namespace socket connection for the game
+            // listen to game`s model change and reflect it to the sockets clients
+            // listen to commands that come from players socket and moved them to game methods
+            // update user instance with the right score
+        }
+
+        list() {
+            // return all games instances
+        }
+
+        attach(io) {
+            // helpers to set the main socket connection for `createGame` function 
+        }
+    }
+```    
+
 
 
 ## Technical Choices
-* There no use of redis for help with scaling `socket.io`, and the architecture not tested on 
+* There no use of redis to help with scaling `socket.io`, and the architecture not tested on 
 scaling environment  
 * There is no use for any redundant `redux` style design pattern as it unnecessary and make the code bloat
 * Try to make the code more readable than magic. But for Infrastructure I must do some deep magic, for it to work cleanr in other parts;
@@ -331,9 +473,9 @@ scaling environment
 * All events registered are literal string for the simplicity and clarity
 * No implantation yet for history playback . There is no reason not to add in the future.
 * most of the file un documents because lake of time and believe of self explanation. 
-* no implement of user disconnect from the server
+* implement user disconnect from the server as garbage-collector methods. every `X` seconds.
 * no implement for limit number of users that send back to each new connection
-* no specific time-out `turnMarker` componnect,I just reuse `User` component on color view
+* no specific time-out `turnMarker` component, I just reuse `User` component on color view
  
 ##Sources
 This project start as challenge from TalkSpace Company that ask for implement Tick-Tac-Tour game.
