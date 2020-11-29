@@ -55,7 +55,7 @@ So different games can be established with the same arena wrapper function.
 ## Before we dive, some - [Helpers](#helpers) 
 Or start diving
 
-### Client - Component Hierarchy
+## Client - Component Hierarchy
 * App  
     * Header  
         * Login User
