@@ -1,14 +1,18 @@
 const Arenas = require('./games')
-const thinkingTime = 3000;
+const thinkingTime = 1000;
 
 module.exports =
     function AI(user) {
         user.model.AI = true;
         user.arenas.observe(function (type, gameId) {
             const game = Arenas.get(gameId);
-
+            const play = model => action(user, game, model)
             if (type === 'ADD') {
-                game.model.observe(model => action(user, game, model))
+                game.model.observe(play)
+            }
+            if(type==='DELETE'){
+                clearTimeout(user.playTimer);
+                game.model.unobserve(play)
             }
         })
     }
@@ -21,7 +25,7 @@ function action(user, game, model) {
         return;
     }
     if (stage === 'GAME' && userId === playersId[turn]) {
-        setTimeout(_ => {
+        user.playTimer = setTimeout(_ => {
             game.selectCell(userId, selectCell(model))
         }, thinkingTime)
 
