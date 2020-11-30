@@ -24,6 +24,13 @@ module.exports =
                 userModels:
                 userModels.filter( m => m.disconnect == false)
         }
+        delete(userId){
+            const user = this.get(userId);
+            super.delete(userId)
+            // free possibles memory leaks
+            user.arenas.unobserve();
+            user.model.unobserve();
+        }
         clearDisconnectUsers(){
             console.log('Activate Clear Disconnect Users ');
             const connected = [];

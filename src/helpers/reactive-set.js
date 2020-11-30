@@ -1,5 +1,5 @@
 function emitUpdate(action, value) {
-    for (let cb of this.updates) cb(action, value, /*dis*/_=>this.unobserve(cb))
+    for (let cb of this.updates) cb(action, value, /*dis*/_ => this.unobserve(cb))
 }
 
 module.exports =
@@ -10,32 +10,35 @@ module.exports =
             this.updates = new Set();
         }
 
-        observe(cb){
+        observe(cb) {
             if (typeof cb === 'function') {
                 this.updates.add(cb);
                 cb(this);
             }
 
         }
-        unobserve(cb){
-            this.updates.delete(cb);
+
+        unobserve(cb) {
+            if (!cb) this.updates.clear();
+            else this.updates.delete(cb);
         }
+
         add(v) {
-            if(super.has(v)) return this;
+            if (super.has(v)) return this;
             super.add(v);
-            emitUpdate.call(this,'ADD',v)
+            emitUpdate.call(this, 'ADD', v)
             return this;
         }
 
         delete(v) {
-            if(!super.has(v)) return this
+            if (!super.has(v)) return this
             super.delete(v);
-            emitUpdate.call(this,'DELETE',v)
+            emitUpdate.call(this, 'DELETE', v)
         }
 
         clear() {
             super.clear();
-            emitUpdate.call(this,'CLEAR')
+            emitUpdate.call(this, 'CLEAR')
         }
 
 

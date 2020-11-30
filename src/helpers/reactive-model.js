@@ -6,7 +6,7 @@ module.exports =
         function emitUpdate() {
             clearTimeout(timerUpdate);
             timerUpdate = setTimeout(() => {
-                for (let cb of updates) cb(model)
+                for (let cb of updates) cb(model, unobserve.bind(this,cb))
             })
         }
 
@@ -15,14 +15,17 @@ module.exports =
                 updates.add(cb);
                 cb(model);
             }
-            return function disconnect(){
-                this.updates.remove(cb);
-            }
+            return unobserve.bind(this,cb)
+        }
+        function unobserve(cb){
+            if(!cb) updates.clear();
+            else updates.delete(cb);
         }
 
         return new Proxy(model, {
             set: function (model, prop, val) {
                 if(prop === observe.name) return true /*saved keyword*/;
+                if(prop === unobserve.name) return true /*saved keyword*/;
                 var oldValue = Reflect.get(model, prop);
                 var indicate = Reflect.set(model, prop, val, model);
                 if(oldValue != val)
@@ -32,6 +35,9 @@ module.exports =
             get: function (model, prop) {
                 if (prop === observe.name) {
                     return observe
+                }
+                if (prop === unobserve.name) {
+                    return unobserve
                 }
                 if(Symbol.toStringTag === prop){
                     return 'Reactive';

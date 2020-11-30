@@ -4,16 +4,16 @@ const thinkingTime = 1000;
 module.exports =
     function AI(user) {
         user.model.AI = true;
-        user.arenas.observe(function (type, gameId) {
+        user.arenas.observe(function (type, gameId, disconenting) {
             const game = Arenas.get(gameId);
             const play = model => action(user, game, model)
+
             if (type === 'ADD') {
-                game.model.observe(play)
+                game.model.observe(play);
             }
-            if(type==='DELETE'){
-                clearTimeout(user.playTimer);
-                game.model.unobserve(play)
-            }
+            // if (type === 'DELETE') {
+            //     game.model.unobserve(play);
+            // }
         })
     }
 
@@ -25,13 +25,13 @@ function action(user, game, model) {
         return;
     }
     if (stage === 'GAME' && userId === playersId[turn]) {
-        user.playTimer = setTimeout(_ => {
+        setTimeout(_ => {
             game.selectCell(userId, selectCell(model))
         }, thinkingTime)
 
         return
     }
-    if(['END','CANCEL'].includes(stage)) {
+    if (['END', 'CANCEL'].includes(stage)) {
         user.arenas.delete(game.id);
     }
 }

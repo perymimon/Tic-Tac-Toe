@@ -21,7 +21,6 @@ module.exports =
             user2.arenas.add(game.id);
             game.users = new Set([user1, user2])
 
-
             game.nsp = this.io.of(`game-${game.id}`);
             debug(`created: namespace ${game.nsp.name}`)
             const get = (userid) => [user1, user2].find(u => u.id === userid);
@@ -99,6 +98,7 @@ function tackingForUnused(game) {
             console.log(`game ${game.id} destroy`);
             // game.nsp.disconnect();
             Arenas.delete(game.id)
+            game.model.unobserve();
             for (let k in game)
                 delete game[k];
         }
