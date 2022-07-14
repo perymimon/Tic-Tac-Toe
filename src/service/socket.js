@@ -37,7 +37,6 @@ function createSocket(namespace) {
             'Access-Control-Allow-Origin': "*"
         }
     })
-    socket.binary(false) /*performance*/
     socket.onevent = socketEventWatcher;
     socket.connect();
     return socket

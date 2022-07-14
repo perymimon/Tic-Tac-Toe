@@ -1,0 +1,72 @@
+tk-board {
+  /* board properties */
+  --tile-color-1: #78bec5;
+  --tile-color-2: #ecaf4f;
+  --tile-hover-color: #3d4250;
+
+  font-family: "FontAwesome";
+
+  /* players properties */
+  --player-1-icon: "\f00d";
+  --player-2-icon: "\f10c";
+
+  --player-1-color: #dc685a;
+  --player-2-color: #ecaf4f;
+
+
+  /* background and border styling
+-------------------------------------------------------------- */
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.1em;
+
+  background-image: url(https://image.shutterstock.com/image-illustration/black-chalkboard-blackboard-chalk-texture-600w-628455962.jpg);
+  background-color: var(--tile-color-1);
+  background-blend-mode: lighten;
+
+  border: 0.3em solid var(--tile-color-1);
+  border-radius: 0.3em;
+
+  /* tiles and Player styling
+  -------------------------------------------------------------- */
+  tk-tile {
+    background-color: var(--tile-color-1);
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    &[data-player = "0"]{
+      --player-color: var(--player-1-color);
+      --player-icon: var(--player-1-icon);
+    }
+    &[data-player = "1"]{
+      --player-color: var(--player-2-color);
+      --player-icon: var(--player-2-icon);
+    }
+
+    &:hover:after {
+      content: "";
+      position: absolute;
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      border: 0.1em solid var(--tile-color-1);
+      border-radius: 0.5em;
+      background-color: var(--player-color, var(--tile-hover-color));
+      opacity: 0.5;
+    }
+
+    &:before {
+      color: var(--player-color);
+      content: var(--player-icon);
+      font-size: 2em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .2);
+    }
+
+  }
+}

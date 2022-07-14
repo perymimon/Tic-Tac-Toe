@@ -4,9 +4,9 @@ import Register from './pages/register';
 import Arenas from './pages/arenas'
 import ConnectionSVG from './images/connect2.inline.svg'
 import {
-    Switch,
+    Routes,
     Route,
-    useHistory
+    useNavigate
 } from "react-router-dom";
 
 import {useConnected, useLoginUser} from "./service/socket"
@@ -15,10 +15,10 @@ import {User} from "./components/user-list";
 function App() {
     const user = useLoginUser()
     const isConnected = useConnected();
-    let history = useHistory();
+    let navigate  = useNavigate();
     useEffect(_=>{
-        history.push(user.id ? "/" : "/register", '');
-    },[history,user.id])
+        navigate(user.id ? "/" : "/register", '');
+    },[user.id])
 
     const connectionStyle = {
         ...isConnected ? {} : {filter: 'grayscale(1)'}
@@ -30,19 +30,15 @@ function App() {
                 {user.id ? <User {...user} tagView/> :<span/>}
                 Tick Tac Toe {env}
                 <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}>
-                 <ConnectionSVG style={connectionStyle}/>
+                 {/*<ConnectionSVG style={connectionStyle}/>*/}
                 </span>
                 {/*<button onClick={sendMessage} >send message</button>*/}
             </header>
             <main className="introduce-finish">
-                <Switch>
-                    <Route exact path="/register">
-                        <Register/>
-                    </Route>
-                    <Route path="/">
-                        <Arenas/>
-                    </Route>
-                </Switch>
+                <Routes>
+                    <Route exact path="/register" element={<Register/>} />
+                    <Route index element={<Arenas/>} />
+                </Routes>
             </main>
         </div>
     );

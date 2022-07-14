@@ -1,3 +1,5 @@
+
+
 tk-arenas {
   display: flex;
   flex-flow: row wrap;
@@ -20,12 +22,12 @@ tk-arenas {
 tk-arena {
   background-color: var(--bg-color);
   position: relative;
-  width: 10em;
-  height: 10em;
+  min-width: 10em;
   display: grid;
   grid-template-rows: 2em 1fr;
   padding: 0.2em;
-  backdrop-filter: blur(1px);
+  min-height: 10em;
+
   @media (pointer: coarse) {
     /* custom css for "touch targets" */
     width: calc(100vmin - 0.2em);
@@ -126,18 +128,39 @@ tk-game {
   .time-out-marker {
     display: grid;
 
-    tk-user {
-      grid-row: 1/1;
-      grid-column: 1/1;
-    }
+
+  }
+
+  .svg-grid{
+      width:8em;
+      height: 8em;
+      path{
+        stroke:red;
+        fill:none;
+      }
   }
 
   .board {
     display: grid;
     justify-content: center;
+    border-left: 20px solid rgba(255,255,255,.8);
 
-    div {
-      border: 1px solid black;
+    border-image: url("~/src/images/border-image.png") 15 ;
+
+    .square{
+    //  --xyz-rotate-x: 90deg;
+    //  --xyz-rotate-z: -180deg;
+    //  --xyz-origin: -200%;
+    //  --xyz-stagger: 0.1s;
+    //  --xyz-duration: 0.75s;
+    //  --xyz-perspective: 100px;
+    //  --xyz-translate-z: 100px;
+    //  --xyz-translate-y: 10vh;
+    }
+
+    .square {
+      //border: 1px solid black;
+
       display: flex;
       font-size: 1.2em;
       justify-content: center;
@@ -147,7 +170,8 @@ tk-game {
       background-color: var(--bg-color2);
 
       &:active {
-        animation: activeCell 0.4s ease;
+        //animation: activeCell 0.4s ease;
+        //animation: none;
       }
 
       &:hover {

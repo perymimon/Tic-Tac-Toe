@@ -1,5 +1,5 @@
 import "./toggle-button.scss"
-import uid from 'uid'
+import {uid} from 'uid'
 import React,{useState} from "react";
 
 export default function ToggleButton({onInput, defaultValue=false, children}) {

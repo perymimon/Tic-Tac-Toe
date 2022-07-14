@@ -1,4 +1,4 @@
-const uid = require('uid')
+const {uid} = require('uid')
 const AI = require('./ai')
 const LetMap = require('./helpers/let-map');
 const ReactiveSet = require('../src/helpers/reactive-set');

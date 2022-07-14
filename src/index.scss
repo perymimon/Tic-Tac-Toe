@@ -1,96 +1,160 @@
-*, svg {
-    box-sizing: border-box;
-    --sw-color: white;
-    --bg-color:#282c34c0;
-    --bg-color2:rgba(100, 100, 100, 0.4);
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 
-:not(input,button){
-    color: white;
-}
-img, svg, object {
-    max-width: 100%;
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
 }
 
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+*, svg, *:before, *:after {
+  box-sizing: border-box;
+  --sw-color: white;
+  --bg-color: #282c34c0;
+  --bg-color2: rgba(100, 100, 100, 0.4);
+}
+
+:not(input,button) {
+  color: white;
+}
+
+img, svg, object {
+  max-width: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 
 /* mixers */
-.font-1{
-    font-family: neuropol_xregular;
-}
-.font-2{
-    font-family:arcaderegular ;
+.font-1 {
+  font-family: neuropol_xregular;
 }
 
-.sw-color-1{
-    color: var(--sw-color);
-}
-.bg-color-1{
-    background-color: var(--bg-color);
-}
-.bg-color-2{
-    background-color: var(--bg-color2);
+.font-2 {
+  font-family: arcaderegular;
 }
 
-.text-style-1{
-    color: var(--sw-color);
-    font-family: neuropol_xregular;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4em;
-    font-weight: 700;
+.sw-color-1 {
+  color: var(--sw-color);
 }
 
-.text-style-2{
-    color: var(--bg-color);
-    background-color: var(--sw-color);
-    font-family: ponderosaregular;
-    padding: 0.1em;
+.bg-color-1 {
+  background-color: var(--bg-color);
 }
 
-.text-style-3{
-    color: var(--bg-color2);
-    background-color: var(--sw-color);
-    font-family: ponderosaregular;
+.bg-color-2 {
+  background-color: var(--bg-color2);
 }
 
-.button-style-1{
-    display: block;
-    min-width: 4em;
+.text-style-1 {
+  color: var(--sw-color);
+  font-family: neuropol_xregular;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4em;
+  font-weight: 700;
 }
+
+.text-style-2 {
+  color: var(--bg-color);
+  background-color: var(--sw-color);
+  font-family: ponderosaregular;
+  padding: 0.1em;
+}
+
+.text-style-3 {
+  color: var(--bg-color2);
+  background-color: var(--sw-color);
+  font-family: ponderosaregular;
+}
+
+.button-style-1 {
+  display: block;
+  min-width: 4em;
+}
+
 /*
     elements general style
 */
 button {
-    background-color: #fff;
-    color: var(--bg-color);
-    text-transform: uppercase;
-    border-radius: 2em/.5em;
-    font-weight: 700;
-    font-size: 0.9em;
-    width: 6em;
-    height: 2em;
-    border: 0;
-    margin-top: .9em;
-}
-button:active {
-    outline: none;
+  background-color: #fff;
+  color: var(--bg-color);
+  text-transform: uppercase;
+  border-radius: 2em/.5em;
+  font-weight: 700;
+  font-size: 0.9em;
+  width: 6em;
+  height: 2em;
+  margin-top: .9em;
 }
 
-:focus-visible, :focus {
-    outline: none;
-    border: 0.1em dashed black;
-    box-shadow: -2px -2px var(--sw-color),
-    -2px 2px var(--sw-color),
-    2px -2px var(--sw-color),
-    2px 2px var(--sw-color);
+input, button {
+  border: 0.1em dashed transparent;
+}
+
+button:active {
+  outline: none;
+}
+
+:focus-visible, :focus, button:hover, input:hover {
+  outline: none;
+  border: 0.1em dashed black;
+  box-shadow: -2px -2px var(--sw-color),
+  -2px 2px var(--sw-color),
+  2px -2px var(--sw-color),
+  2px 2px var(--sw-color);
 }

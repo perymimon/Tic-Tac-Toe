@@ -34,10 +34,12 @@ export default function UserList({onChallenge}) {
 }
 
 
-export function User({
-     name, score, color, mark, id, onClick, avatar, disconnect,
-     showScore, tagView, colorView, nameView, AI, counterDown,
-                }) {
+export function User(props) {
+    const {
+        name, score, color, mark, id, onClick, avatar, disconnect,
+            showScore,showMark, tagView, colorView, nameView, AI, counterDown,
+    } = props;
+
     const style = {
         '--user-color': color || 'gray'
     }
@@ -52,8 +54,9 @@ export function User({
     const showColor = !nameView;
 
     const user = (
-        <tk-user mark={mark} style={style} avatar={avatar} time={counterDown} nameView={nameView} AI={AI}
+        <tk-user style={style} avatar={avatar} time={counterDown} nameView={nameView} AI={AI}
                  onClick={handleClick}>
+            {showMark && mark}
             {showColor && <div className="color"></div>}
             {showName && <div className="name">{name || ''}</div>}
             {showScore && <div className="score">{score}</div>}

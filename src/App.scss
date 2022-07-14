@@ -1,12 +1,21 @@
-@import "fonts.css";
+@import "./fonts/fonts.css";
+// Import the functions/mixins
 
+// Add all the core/utilities selectors
+// --- Or for more control and granularity ---
+//@include xyz-core;
+//@include xyz-utilities;
+
+// Add all the core/utilities selectors
+//@include xyz-all;
+//// --- Or for more control and granularity ---
+//@include xyz-core;
+//@include xyz-utilities;
 .App {
   text-align: center;
   display: grid;
   grid-template-rows: 5vh 95vh;
 }
-
-
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

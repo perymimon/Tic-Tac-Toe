@@ -1,8 +1,13 @@
 import React, {useMemo, useRef} from "react";
 import './arenas.scss'
-import socket, {useLoginUser, useSocket} from "../service/socket";
-import UserList, {User} from "../components/user-list";
-import useTimer from "../helpers/timer-hook"
+import socket, {useLoginUser, useSocket} from "service/socket";
+import UserList from "components/user-list";
+// import useTimer from "../helpers/timer-hook"
+import {useAnimeManager, STAY, APPEAR, DISAPPEAR, SWAP} from "@perymimon/react-anime-manager";
+import {Board} from "components/Board.jsx";
+import {Player} from "components/User.jsx";
+
+/*https://animxyz.com/*/
 
 function handleRemove(arenaId) {
     socket.emit('remove-arena', arenaId)
@@ -11,109 +16,107 @@ function handleRemove(arenaId) {
 export default function Arenas() {
     const [arenasId] = useSocket('arenas', [])
     const user = useLoginUser();
+    const [arenasStates, traverse] = useAnimeManager(arenasId);
+
+    // const isAppear = useAppear() || arenasId.length == 0;
 
     function handleChallenge(u1) {
-        if(user.id === u1.id) return ;
+        if (user.id === u1.id) return;
         socket.emit('challenge', u1)
     }
-    return (<tk-arenas>
+
+    const phase2class = {
+        [STAY]: 'xyz-appear-nested',
+        [APPEAR]: false ? 'xyz-appear' : 'xyz-in',
+        [DISAPPEAR]: 'xyz-out',
+        [SWAP]: 'xyz-out'
+    }
+
+    return (<tk-arenas xyz="fade-100% rotate-right-50% appear-stagger appear-stagger">
         {/* like : <Arena stage="LIST"></Arena> */}
         <tk-arena>
             <UserList onChallenge={handleChallenge}/>
         </tk-arena>
-        {arenasId.map((id) => <Arena id={id}
-                                     key={id}
-                                     onRemove={handleRemove}/>)}
+        {traverse(({item: id, phase, done}) => (
+            <Arena id={id}
+                   className={phase2class[phase]}
+                   onAnimationEnd={done}
+                   onRemove={handleRemove}/>
+        ))}
     </tk-arenas>)
+
 }
 
-const STAGE = {
-    "INVITATION": Invitation,
-    "GAME": Game,
-    "END": Game,
-    "CANCEL": Cancel,
-    "LOADING": Loading
-}
+export const Arena = React.forwardRef(
+    function Arena(props, ref) {
+        const {onRemove, id, ...rest} = props;
 
-export function Arena({onRemove, ...initModel} = {}) {
-    initModel.stage = 'LOADING';
+        const [gameModel, gSocket] = useSocket(`game-${id}/update`, {id, stage: 'LOADING'})
+        const [gameErrors] = useSocket(`game-${id}/game-errors`, [])
+        const [usersList] = useSocket('users-list', []);
 
-    const [gameModel, gSocket] = useSocket(`game-${initModel.id}/update`, initModel)
-    const [gameErrors] = useSocket(`game-${initModel.id}/game-errors`, [])
-    const [usersList] = useSocket('users-list', []);
+        const {stage, playersId} = gameModel;
 
-    const {stage, playersId} = gameModel;
+        gameModel.players = useMemo(() => {
+            return playersId?.map(pid => usersList.find(u => pid === u.id)) ?? []
+        }, [playersId, usersList])
 
-    gameModel.players = useMemo(() => {
-        if (!playersId) return []
-        return playersId.map(pid => usersList.find(u => pid === u.id))
-    }, [playersId, usersList])
+        function handleClick(event) {
+            const cell = event.target;
+            const cellNumber = cell.dataset.index;
+            gSocket.emit('playerSelectCell', cellNumber)
+        }
 
-    function handleClick(event) {
-        const cell = event.target;
-        const cellNumber = cell.dataset.index;
-        gSocket.emit('playerSelectCell', cellNumber)
-    }
+        const eventHandlers = {
+            onCancel: () => gSocket.emit('cancel'),
+            onApprove: () => gSocket.emit('approve'),
+            onRemove: () => onRemove && onRemove(gameModel.id),
+            onSelectTile: handleClick
+        }
+        const STAGE = {
+            "INVITATION": Invitation,
+            "GAME": Game,
+            "END": Game,
+            "CANCEL": Cancel,
+            "LOADING": Loading
+        }
+        const Element = STAGE[stage];
 
-    function handleApprove() {
-        gSocket.emit('approve')
-    }
-
-    function handleCancel() {
-        gSocket.emit('cancel')
-    }
-
-    const eventHandlers = {
-        onCancel: handleCancel,
-        onApprove: handleApprove,
-        onRemove: () => onRemove && onRemove(gameModel.id),
-        onSelectTile: handleClick
-    }
-    const Element = STAGE[stage];
-    return (
-        <tk-arena>
+        return (<tk-arena ref={ref} {...rest}>
             <Element {...gameModel} {...eventHandlers}  />
             {stage === "END" && <End {...gameModel} {...eventHandlers} />}
             <tk-errors>
-                {gameErrors.map( (e,i) => <tk-error key={e.id}>{e.text}</tk-error>)}
+                {gameErrors.map((e, i) => <tk-error key={e.id}>{e.text}</tk-error>)}
             </tk-errors>
-        </tk-arena>
-    )
-}
+        </tk-arena>)
+    }
+)
+
 
 function Game({onSelectTile, players, board, turn, nextTurn, turnTime, stage}) {
     const marks = ['✗', '○'];
     const gameDom = useRef();
     const loginUser = useLoginUser();
 
-    const timer = useTimer(turnTime * 1000, 100, timer => {
-        const dom = gameDom.current;
-        var deg = 360 - timer.progress * 360;
-        if (dom)
-            dom.style.setProperty('--progress', `${deg}deg`);
-
-    }, [turn])
+    // const timer = useTimer(turnTime * 1000, 100, timer => {
+    //     const dom = gameDom.current;
+    //     var deg = 360 - timer.progress * 360;
+    //     if (dom)
+    //         dom.style.setProperty('--progress', `${deg}deg`);
+    //
+    // }, [turn])
     if (stage === "END") {
-        timer.stop(0, false);
+        // timer.stop(0, false);
     }
+
+
     return <tk-game ref={gameDom}>
-        <div className="competitors">
-            <User {...players[0]} mark={marks[0]} avatar/>
-            <div className="time-out-marker">
-                <User {...players[nextTurn]} mark={marks[nextTurn]} colorView/>
-                <User {...players[turn]} mark={marks[turn]} colorView counterDown/>
-            </div>
-            <User {...players[1]} mark={marks[1]} avatar/>
-        </div>
-        <div className="board" style={{"--user-color":loginUser.color}}>
-            {Array.from({...board, length: 9}).map((turn, i) => {
-                const style = {"--cell-color": players[turn || 0].color};
-                const mark = marks[turn];
-                return <div key={i}
-                            data-index={i} style={style}
-                            onClick={onSelectTile}>{mark}</div>
-            })}
-        </div>
+        <menu className="competitors">
+            <Player user={players[0]} mark={marks[0]} />
+            <Player user={players[1]} mark={marks[1]} />
+        </menu>
+
+        <Board board={board} onSelectTile={onSelectTile}/>
     </tk-game>
 }
 
@@ -137,14 +140,14 @@ function Cancel({isCanceledBy, players, onRemove}) {
     const user = players.find(p => p.id === isCanceledBy);
 
     return <tk-message class="text-style-1">
-        <User {...user} nameView className="text-style-2"/>
+        <Player user={user} nameView className="text-style-2"/>
         cancel the game
         <button className="button-style-1" onClick={onRemove}>OK</button>
     </tk-message>
 }
 
 function Invitation({players, onCancel, onApprove}) {
-    const [by,against] = players;
+    const [by, against] = players;
     const loginUser = useLoginUser();
 
     const invited = (
