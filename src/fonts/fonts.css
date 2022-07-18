@@ -1,23 +1,15 @@
 @import url(//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css);
 
-@font-face {
-    font-family: arcaderegular;
-    src: url('arcade-webfont.woff2') format('woff2'),
-         url('arcade-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
+/*@font-face {*/
+/*    font-family: arcade;*/
+/*    src: url(arcade-webfont.woff2) format('woff2'),*/
+/*         url(arcade-webfont.woff) format('woff');*/
+/*    font-weight: normal;*/
+/*    font-style: normal;*/
+/*}*/
 
 @font-face {
-    font-family: kirby_no_kira_kizzu_brkRg;
-    src: url('kirbyss-webfont.woff2') format('woff2'),
-         url('kirbyss-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: neuropol_xregular;
+    font-family: neuropol;
     src: url('neuropol_x_rg-webfont.woff2') format('woff2'),
     url('neuropol_x_rg-webfont.woff') format('woff');
     font-weight: normal;
@@ -33,3 +25,27 @@
 
 }
 
+@font-face {
+    font-family: alovera;
+    src: url(Aloevera.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: eirian;
+    src: url(Eirian.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: strawberry;
+    src: url(StrawberryFields.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: unicorn;
+    src: url(SundayUnicorn.ttf) format('truetype');
+}
+
+
+/*---------------
+The available types are: "woff", "woff2", "truetype", "opentype", "embedded-opentype", and "svg".
+---------------*/

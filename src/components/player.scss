@@ -1,0 +1,200 @@
+
+/* <tk-user> User element
+  -----------------------------*/
+tk-user {
+  /* User style and Icons
+  -------------------------------*/
+  background-color: var(--app-color-bg-shade-1);
+  background-image: linear-gradient(to bottom,
+          var(--player-color) 1em, transparent 1.5em
+  );
+
+  border-radius: var(--border-radius-small);
+  outline: 0.1em solid var(--player-color-shade-1);
+  outline-offset: 0.1em;
+  align-items: center;
+
+  --from-color: var(--player-color-text);
+  --to-color: #1a4e64;
+  color: var(--mix-color);
+
+  svg{
+    width: 2.5em;
+    height: 2.5em;
+  }
+
+  svg,i {
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+    outline: 0.1em solid var(--player-color);
+    background-color: var(--player-color);
+    background-image: linear-gradient(to bottom,
+            var(--player-color) 1em, transparent 1.5em
+    );
+  }
+
+  i.fa-solid{
+      font-size: 2.4em;
+  }
+
+
+  dt {
+    color: rgb(117, 117, 117);
+  }
+
+
+
+  dd {
+    font-family: "FontAwesome";
+    mix-blend-mode: plus-lighter;
+  }
+
+  [name="name"] {
+    font-size: .8em;
+  }
+
+  [name="nickname"] {
+    font-size: 0.5em;
+  }
+
+  [data-online] {
+    color: green;
+  }
+
+  /* user layout
+---------------------------*/
+  display: grid;
+  justify-items: center;
+  gap: 0.1em;
+
+  width: 5em;
+  padding: 0.1em;
+
+
+  grid-template-areas:
+    "avatar name name"
+    "nickname nickname nickname";
+
+  grid-auto-columns:max-content;
+  justify-content: space-evenly;
+
+  dt {
+    grid-row: 5;
+  }
+
+  dd {
+    grid-row: 7;
+  }
+
+  dl {
+    display: contents;
+  }
+
+
+  svg,i /*avatar*/
+  {
+    grid-area: avatar;
+  }
+
+  [name="name"] {
+    grid-area: name;
+  }
+
+  [name="nickname"] {
+    grid-area: nickname;
+  }
+
+  [name="coconnection"] {
+    grid-area: avatar;
+  }
+
+}
+
+/************************************
+<tk-cover-user> movement mask element - reveal effect
+------------------------------------*/
+tk-cover-user {
+  position: relative;
+
+  width: 2.6em;
+  height: 2.6em;
+
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+
+  &:hover {
+    z-index: 2;
+    clip-path: polygon(-3em -3em, -3em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, -3em 10em, -3em 10em);
+
+    tk-user svg {
+      width: 1.5em;
+      height: 1.5em;
+    }
+
+    tk-user i {
+      font-size: 1.5em;
+    }
+  }
+
+  transition: all 0.2s ease-in-out;
+}
+
+/*
+  <tk-cover-user> disconnected
+************************************/
+tk-cover-user.disconnected {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+/*
+  <tk-user>
+  configurable user element
+*/
+tk-user:is([showscore],[showname],[showicon]){
+  :is(dt, dd) {
+    display: none;
+  }
+
+  &[showscore="true"] {
+    [name="score"]{
+      display: unset;
+    }
+  }
+  &[showname="true"] {
+    [name="name"], [name="nickname"]{
+      display: unset;
+    }
+  }
+  &[showicon="true"] {
+    [name="icon"]{
+      display: unset;
+    }
+  }
+}
+
+/*
+<tk-user> Small Banner
+----------------------------------*/
+tk-user.small-banner {
+  width: auto;
+  svg {
+    font-size: 1.3em;
+    width: 1.5em;
+    height: 1.5em;
+  }
+  i{
+    font-size: 2em;
+  }
+
+  grid-template-areas:
+    "avatar name name score"
+    "avatar nickname nickname score";
+
+
+  [name="score"]{
+    grid-column: 4;
+    grid-row: auto;
+  }
+
+}
+

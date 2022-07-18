@@ -1,0 +1,95 @@
+/*generate help by https://mycolor.space/?hex=%23DC685A&sub=1*/
+@property --deg {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@property --color-1 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: black;
+}
+
+:root {
+  /*App colors - Generic Gradient*/
+
+  --app-color-text: #F9F871;
+  --app-color-bg: #78BEC5;
+  --app-color-bg: #6A93C2;
+  --app-color-bg-shade-1: #65AAC7;
+  --app-color-bg-shade-2: #6A93C2;
+  --app-color-neumorphism-shadow-2: -0.1em -0.1em 1em hsl(0deg 0% 0% / 50%), 0.1em -0.2em 1em hsl(0deg 0% 100% / 50%);
+  --app-color-bg-shade-3: #7F79AF;
+  --app-color-shade-4: #905D8E;
+
+  //--app-color-primary: #954362;
+  --app-color-primary: var(--app-color-shade-4);
+  --app-color-secondry: var(--app-color-bg-shade-1);
+  --app-color-disabled: #3a2439;
+
+  --app-color-border-shade-1: var(--app-color-bg-shade-1);
+  --app-color-border-shade-2: var(--app-color-shade-4);
+
+  //--font-1: 'neuropol_xregular';
+  --font-2: alovera;
+  --font-1: Roboto, sans-serif;
+  --font-1: strawberry, sans-serif;
+
+  --border-radius-small: 0.5em;
+  --border-radius-medium: 1em;
+
+
+  /* User 1 colors - Skip Shade Gradient */
+
+  --user-1-color: #DC685A;
+  --user-1-color-shade-1: #FF8186;
+  --user-1-color-shade-2: #FF9DB5;
+  --user-1-color-shade-3: #FFBDE5;
+
+
+  /*user 2 colors - Skip Shade Gradient*/
+
+  --user-2-color: #ECAF4F;
+  --user-2-color-shade-1: #FFB36D;
+  --user-2-color-shade-2: #FFB890;
+  --user-2-color-shade-3: #FFC1B5;
+  --user-2-color-text: hwb(30deg 30% 50%);
+}
+
+.player-1, .user-inviting {
+  --player-color: var(--user-1-color);
+  --player-icon: var(--user-1-color-shade-1);
+  --player-color-shade-1: var(--user-1-color-shade-1);
+  --player-color-shade-2: var(--user-1-color-shade-2);
+  --player-color-shade-3: var(--user-1-color-shade-3);
+  --player-color-text: var(--user-1-color-text);
+
+}
+
+.player-2, .user-invited {
+  --player-color: var(--user-2-color);
+  --player-icon: var(--user-2-color-shade-1);
+  --player-color-shade-1: var(--user-2-color-shade-1);
+  --player-color-shade-2: var(--user-2-color-shade-2);
+  --player-color-shade-3: var(--user-2-color-shade-3);
+  --player-color-text: var(--user-2-color-text);
+}
+
+@property --mix-color {
+  syntax: "<color>";
+  initial-value: transparent;
+  inherits: true;
+}
+@keyframes color-mix {
+  0% {
+    --mix-color: var(--from-color);
+  }
+  100% {
+    --mix-color: var(--to-color);
+  }
+}
+
+.mix-color {
+  --mix-color:black;
+  animation: color-mix 1s calc(-1s * var(--mix-percent, 0.5)) linear forwards paused;
+}

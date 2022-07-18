@@ -1,0 +1,17 @@
+@keyframes circle {
+  0% {
+    --deg: 0deg;
+  }
+  100% {
+    --deg: 360deg;
+  }
+}
+
+@keyframes show-up {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

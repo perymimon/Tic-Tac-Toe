@@ -1,15 +1,14 @@
-
-
 tk-arenas {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat( auto-fill, 10em);
+  grid-template-row: repeat( auto-fill, 10em);
   align-content: flex-start;
+  gap:1em;
 
   width: 100%;
   height: 100%;
-  gap: .1em;
-  border: 1px solid black;
   padding: 1em;
+
   @media (pointer: coarse) {
     /* custom css for "touch targets" */
     flex-flow: column nowrap;
@@ -17,16 +16,28 @@ tk-arenas {
     font-size: 2.3em;
   }
 
+  tk-game {
+    grid-row: 1/-1;
+    grid-column: 1/-1;
+  }
+
+  tk-invitation {
+    grid-row: 1/-1;
+    grid-column: 1/-1
+  }
+
 }
 
 tk-arena {
-  background-color: var(--bg-color);
+  //background-color: var(--app-color-primary);
+  //background-color: var(--app-color-bg-shade-2);
   position: relative;
   min-width: 10em;
   display: grid;
-  grid-template-rows: 2em 1fr;
+  grid-template-rows: 2.5em 1fr;
   padding: 0.2em;
   min-height: 10em;
+
 
   @media (pointer: coarse) {
     /* custom css for "touch targets" */
@@ -34,6 +45,7 @@ tk-arena {
     height: calc(100vmin - 0.2em);;
 
   }
+
 
   h4 {
     margin: 0;
@@ -115,77 +127,3 @@ tk-message {
 }
 
 
-tk-game {
-  grid-row: 1/-1;
-  grid-column: 1/-1;
-
-  .competitors {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .time-out-marker {
-    display: grid;
-
-
-  }
-
-  .svg-grid{
-      width:8em;
-      height: 8em;
-      path{
-        stroke:red;
-        fill:none;
-      }
-  }
-
-  .board {
-    display: grid;
-    justify-content: center;
-    border-left: 20px solid rgba(255,255,255,.8);
-
-    border-image: url("~/src/images/border-image.png") 15 ;
-
-    .square{
-    //  --xyz-rotate-x: 90deg;
-    //  --xyz-rotate-z: -180deg;
-    //  --xyz-origin: -200%;
-    //  --xyz-stagger: 0.1s;
-    //  --xyz-duration: 0.75s;
-    //  --xyz-perspective: 100px;
-    //  --xyz-translate-z: 100px;
-    //  --xyz-translate-y: 10vh;
-    }
-
-    .square {
-      //border: 1px solid black;
-
-      display: flex;
-      font-size: 1.2em;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      color: var(--cell-color);
-      background-color: var(--bg-color2);
-
-      &:active {
-        //animation: activeCell 0.4s ease;
-        //animation: none;
-      }
-
-      &:hover {
-        filter: brightness(120%);
-      }
-
-      @keyframes activeCell {
-        from {
-          background-color: var(--user-color);
-        }
-      }
-    }
-
-    grid-template-rows: repeat(3, 2.4em);
-    grid-template-columns: repeat(3, 2.4em);
-  }
-}

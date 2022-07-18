@@ -11,6 +11,7 @@ import {
 
 import {useConnected, useLoginUser} from "./service/socket"
 import {User} from "./components/user-list";
+import {PlayerName} from "./components/Player";
 
 function App() {
     const user = useLoginUser()
@@ -27,7 +28,7 @@ function App() {
     return (
         <div className="App">
             <header className="app-header introduce-finish">
-                {user.id ? <User {...user} tagView/> :<span/>}
+                {user.id ? <PlayerName user={user} /> :<span/>}
                 Tick Tac Toe {env}
                 <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}>
                  {/*<ConnectionSVG style={connectionStyle}/>*/}
@@ -45,3 +46,11 @@ function App() {
 }
 
 export default App;
+
+
+// CSS.registerProperty({
+//     name: '--degrees',
+//     syntax: '<angle>',
+//     inherits: false,
+//     initialValue: 'blue',
+// });

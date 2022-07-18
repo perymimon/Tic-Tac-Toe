@@ -1,7 +1,6 @@
 tk-board {
   /* board properties */
-  --tile-color-1: #78bec5;
-  --tile-color-2: #ecaf4f;
+  --tile-color-1: var(--app-color-bg-shade-2);
   --tile-hover-color: #3d4250;
 
   font-family: "FontAwesome";
@@ -10,8 +9,8 @@ tk-board {
   --player-1-icon: "\f00d";
   --player-2-icon: "\f10c";
 
-  --player-1-color: #dc685a;
-  --player-2-color: #ecaf4f;
+  --player-1-color: var(--user-1-color);
+  --player-2-color: var(--user-2-color);
 
 
   /* background and border styling
@@ -19,13 +18,17 @@ tk-board {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.1em;
+  gap: 0.2em;
 
-  background-image: url(https://image.shutterstock.com/image-illustration/black-chalkboard-blackboard-chalk-texture-600w-628455962.jpg);
+  background-image: url(http://www.soundofnumbers.net/ammap/patterns/chalk/pattern4.jpg);
   background-color: var(--tile-color-1);
-  background-blend-mode: lighten;
+  background-blend-mode: screen;
+  background-size: 80%;
+  background-position: center;
+  background-repeat: no-repeat;
 
-  border: 0.3em solid var(--tile-color-1);
+  //border: 0.3em solid var(--tile-color-1);
+  //background-clip: content-box;
   border-radius: 0.3em;
 
   /* tiles and Player styling
@@ -53,7 +56,7 @@ tk-board {
       content: "";
       position: absolute;
       display: block;
-      width: 100%;
+      width: 90%;
       aspect-ratio: 1;
       border: 0.1em solid var(--tile-color-1);
       border-radius: 0.5em;

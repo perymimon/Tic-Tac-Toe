@@ -1,0 +1,44 @@
+tk-game {
+  display: grid;
+  grid-template-rows: inherit;
+  gap: .5em;
+
+  overflow: hidden;
+
+  .competitors {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    padding: 0.3em;
+
+    // no go - it change also the color of the background
+    //filter: drop-shadow( -0.1em 0.1em 1em hsl(212deg 42% 40%) ) drop-shadow(0.1em -0.1em 1em hsl(212deg 42% 80%) );
+
+    &:hover{
+      filter:none;
+    }
+  }
+
+  .time-out-marker {
+    display: grid;
+  }
+
+  /* <tk-game> style */
+
+  border-radius: var(--border-radius-medium);
+
+  //background-image: linear-gradient(45deg, #5f84af, #719dd0);;
+  box-shadow: var(--app-color-neumorphism-shadow-2);
+
+  /*
+   <tk-cover-user> player right side style
+  ------------------------------------------------*/
+  tk-cover-user:nth-child(2) {
+    direction: rtl;
+  }
+
+  xtk-cover-user:nth-child(1) {
+    display: none;
+  }
+}

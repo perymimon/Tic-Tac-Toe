@@ -1,0 +1,56 @@
+button {
+  --deg: 0deg; /* define in css-properties.scss*/
+  --color: var(--app-color-secondry);
+  --color-2: var(--app-color-shade-4);
+  --color-1: transparent;
+  cursor: pointer;
+
+  color: var(--color);
+  text-transform: uppercase;
+
+  border-radius: 2em/.5em;
+  font-weight: 700;
+  font-size: 0.9em;
+
+  border: 1px solid transparent;
+
+  background: linear-gradient(var(--app-color-bg-shade-2) 0 0) padding-box,
+  linear-gradient(var(--deg), var(--color-1) 80%, var(--color)) border-box;
+
+  transition: all .2s ease-in-out 1s;
+
+  &:hover {
+    transition-delay: 1.6s;
+    animation: button-active 1.5s linear 1 forwards;
+    box-shadow: 0 0 10px var(--color), 0 0 25px var(--color);
+  }
+}
+
+
+button.primary {
+  --color: var(--app-color-primary);
+  --color-2: var(--app-color-secondry);
+}
+
+button.disabled {
+  --color: var(--app-color-disabled);
+  cursor: not-allowed;
+  &:hover {
+    animation: none;
+  }
+}
+
+button.secondary {
+  --color: var(--app-color-secondry);
+  --color-2: var(--app-color-secondry);
+}
+
+@keyframes button-active {
+  80%{
+    --color-1: transparent;
+  }
+  100% {
+    --deg: -720deg;
+    --color-1: var(--color-2);
+  }
+}

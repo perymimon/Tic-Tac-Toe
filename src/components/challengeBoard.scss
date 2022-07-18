@@ -1,0 +1,15 @@
+tk-challenge-board{
+    display: grid;
+    grid-auto-flow: row;
+    gap: 0.5em;
+
+    tk-user{
+        width:auto;
+    }
+
+    ul{
+        display: grid;
+        grid-auto-flow: row;
+        gap: 0.5em;
+    }
+}
