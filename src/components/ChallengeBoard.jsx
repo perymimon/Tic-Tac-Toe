@@ -10,13 +10,10 @@ export function ChallengeBoard(props) {
     const user = useLoginUser();
 
     const Player = function PlayerItem({item: player}) {
-        // const properties ={
-        //     '--player-color': player.color,
-        //     '--player-color-text'  : player.color,
-        // } ;
-        return <>
+
+        return (
             <PlayerNameScore user={player} onClick={onChallenge} />
-        </>
+        )
     }
 
     return (

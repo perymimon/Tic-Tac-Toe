@@ -3,15 +3,13 @@
 import React, {forwardRef, useMemo, useRef} from "react";
 import './arenas.scss'
 import socket, {useLoginUser, useSocket} from "service/socket";
-import UserList from "components/user-list";
 // import useTimer from "../helpers/timer-hook"
 import {useAnimeManager, STAY, APPEAR, DISAPPEAR, SWAP} from "@perymimon/react-anime-manager";
-import {Board} from "components/Board.jsx";
-import {Player} from "components/Player.jsx";
+import { PlayerName} from "components/Player.jsx";
 import {Game} from "components/Game.jsx";
 import {Invitation} from "components/Invitation.jsx";
-import {ChallengeBoard} from "../components/ChallengeBoard";
-
+import {ChallengeBoard} from "components/ChallengeBoard";
+import {Message} from "components/Message.jsx";
 
 
 function handleRemove(arenaId) {
@@ -21,7 +19,7 @@ function handleRemove(arenaId) {
 export default function Arenas() {
     const [arenasId] = useSocket('arenas', [])
     const user = useLoginUser();
-    const [arenasStates, traverse] = useAnimeManager(arenasId, 'none',);
+    const [arenasStates, traverse] = useAnimeManager(arenasId, null, {skipPhases: [APPEAR, DISAPPEAR, SWAP]});
 
     function handleChallenge(u1) {
         if (user.id === u1.id) return;
@@ -30,9 +28,7 @@ export default function Arenas() {
 
     return (<tk-arenas xyz="fade-100% rotate-right-50% appear-stagger appear-stagger">
         {/* like : <Arena stage="LIST"></Arena> */}
-        <tk-arena>
-            <ChallengeBoard onChallenge={handleChallenge}/>
-        </tk-arena>
+        <ChallengeBoard onChallenge={handleChallenge}/>
         {traverse(({item: id, phase, done}) => (
             <Arena id={id}
 
@@ -89,34 +85,35 @@ export const Arena = forwardRef(
 )
 
 
-
 function End({winner, draw, onRemove, players}) {
     winner = players.find(p => p.id === winner);
     var message;
     if (draw) {
-        message = 'game end with draw'
+        message = 'draw'
     } else {
         message = `${winner.name} WIN`
     }
 
-    return <tk-message>
-        <span className="text-style-1">{message}</span>
+    return <Message>
+        <span >{message}</span>
         <button onClick={onRemove}>OK</button>
-    </tk-message>
+    </Message>
 
 }
 
 function Cancel({isCanceledBy, players, onRemove}) {
     const user = players.find(p => p.id === isCanceledBy);
 
-    return <tk-message class="text-style-1">
-        <Player user={user} nameView className="text-style-2"/>
-        cancel the game
-        <button className="button-style-1" onClick={onRemove}>OK</button>
-    </tk-message>
+    return <Message className="canceled">
+        <PlayerName user={user} />
+
+        just canceled
+
+        <button className="primary" onClick={onRemove}>Fine</button>
+    </Message>
 }
 
 
 function Loading() {
-    return <tk-message class="text-style-1"> Loading Arena </tk-message>
+    return <Message > Loading Arena </Message>
 }

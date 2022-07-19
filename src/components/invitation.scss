@@ -1,29 +1,8 @@
 tk-invitation {
-  --deg: 0deg; /* define in css-properties.scss*/
-
-  background: linear-gradient(var(--app-color-bg-shade-2) 0 0) padding-box,
-  linear-gradient(var(--deg), var(--app-color-border-shade-1) 40%, var(--app-color-border-shade-2) 40%) border-box;
-
-  //box-shadow: 0px 0px 5em var(--shadow-size) var(--app-color-border-shade-2);
-
-  color: var(--app-color-text);
 
   padding: 10px;
   border: 0.2em solid transparent;
   border-radius: var(--border-radius-medium);
-
-  height: fit-content;
-
-  animation: circle 5s linear infinite;
-
-  // easy approach but no border-radius :(
-  //border:  dashed ;
-  //border-image:
-  //        linear-gradient(163deg, #00ff75 0%, #3700ff 100%) 10 / 0.1em;
-  button {
-    width: 6em;
-    height: 2em;
-  }
 
   display: flex;
   flex-direction: column;
@@ -31,7 +10,6 @@ tk-invitation {
   align-items: center;
 
   gap:1em;
-
 
 }
 

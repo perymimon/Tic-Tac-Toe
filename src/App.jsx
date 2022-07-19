@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react';
 import './App.scss';
 import Register from './pages/register';
-import Arenas from './pages/arenas'
+import Arenas from './pages/arenas.jsx'
+import {isDev} from './helpers/environment.js';
 import ConnectionSVG from './images/connect2.inline.svg'
 import {
     Routes,
@@ -24,16 +25,13 @@ function App() {
     const connectionStyle = {
         ...isConnected ? {} : {filter: 'grayscale(1)'}
     }
-    const env = process.env.NODE_ENV ==='development'?'(dev)':'';
+    const env = isDev?'(dev)':'';
     return (
         <div className="App">
             <header className="app-header introduce-finish">
                 {user.id ? <PlayerName user={user} /> :<span/>}
-                Tick Tac Toe {env}
-                <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}>
-                 {/*<ConnectionSVG style={connectionStyle}/>*/}
-                </span>
-                {/*<button onClick={sendMessage} >send message</button>*/}
+                Tic Tac Toe {env}
+                <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}/>
             </header>
             <main className="introduce-finish">
                 <Routes>

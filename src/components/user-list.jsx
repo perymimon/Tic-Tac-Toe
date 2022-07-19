@@ -1,7 +1,7 @@
 import {useLoginUser, useSocket} from "../service/socket";
 import "./users-list.scss"
 import React, {useState} from "react";
-import ToggleButton from "./toggle-button";
+import ToggleButton from "./atoms/toggle-button";
 
 export default function UserList({onChallenge}) {
     const [usersList] = useSocket('users-list', [])

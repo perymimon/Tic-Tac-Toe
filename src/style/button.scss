@@ -14,6 +14,9 @@ button {
 
   border: 1px solid transparent;
 
+  min-width: 6em;
+  min-height: 2em;
+
   background: linear-gradient(var(--app-color-bg-shade-2) 0 0) padding-box,
   linear-gradient(var(--deg), var(--color-1) 80%, var(--color)) border-box;
 

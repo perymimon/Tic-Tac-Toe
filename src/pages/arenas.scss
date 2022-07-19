@@ -1,9 +1,9 @@
 tk-arenas {
   display: grid;
   grid-template-columns: repeat( auto-fill, 10em);
-  grid-template-row: repeat( auto-fill, 10em);
+  grid-template-row: repeat(auto-fill, 10em);
   align-content: flex-start;
-  gap:1em;
+  gap: 1em;
 
   width: 100%;
   height: 100%;
@@ -26,32 +26,28 @@ tk-arenas {
     grid-column: 1/-1
   }
 
+  tk-message {
+    grid-row: 1/-1;
+    grid-column: 1/-1
+  }
+
 }
 
 tk-arena {
-  //background-color: var(--app-color-primary);
-  //background-color: var(--app-color-bg-shade-2);
-  position: relative;
-  min-width: 10em;
   display: grid;
   grid-template-rows: 2.5em 1fr;
-  padding: 0.2em;
-  min-height: 10em;
+  align-items: center;
+  position: relative;
 
+  padding: 0.2em;
+  min-width: 10em;
+  min-height: 10em;
 
   @media (pointer: coarse) {
     /* custom css for "touch targets" */
     width: calc(100vmin - 0.2em);
     height: calc(100vmin - 0.2em);;
 
-  }
-
-
-  h4 {
-    margin: 0;
-    font-family: neuropol_xregular;
-    font-size: 1.1em;
-    background: var(--sw-color);
   }
 
   tk-errors {
@@ -67,6 +63,19 @@ tk-arena {
     //background-color: rebeccapurple;
     align-self: end;
 
+  }
+
+  toggle-button {
+    justify-self: flex-end;
+  }
+
+  filter: grayscale(0);
+
+  tk-message.canceled {
+    transition: all 5s ease;
+    border-color: gray;
+    filter: grayscale(.3);
+    mix-blend-mode: grayscale(0.6);
   }
 
   tk-error {
@@ -110,20 +119,7 @@ tk-arena {
   }
 }
 
-toggle-button {
-  justify-self: flex-end;
-}
 
-tk-message {
-  grid-row: 1/-1;
-  grid-column: 1/-1;
-  -webkit-backdrop-filter: blur(1px);
-  backdrop-filter: blur(4px);
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  text-transform: capitalize;
-}
+
 
 

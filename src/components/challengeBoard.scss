@@ -1,15 +1,23 @@
-tk-challenge-board{
+tk-challenge-board {
+  display: flex;
+  gap: 0.5em;
+  flex-direction: column;
+
+  tk-user {
+    width: auto;
+    cursor: pointer;
+
+    &:hover {
+      position: relative;;
+      outline: 0.15em solid currentColor;
+      outline-offset: .4em;
+      z-index: 1;
+    }
+  }
+
+  ul {
     display: grid;
     grid-auto-flow: row;
     gap: 0.5em;
-
-    tk-user{
-        width:auto;
-    }
-
-    ul{
-        display: grid;
-        grid-auto-flow: row;
-        gap: 0.5em;
-    }
+  }
 }
