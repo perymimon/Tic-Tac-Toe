@@ -8,35 +8,35 @@ import {useCallback} from "react";
 // } = props;
 
 export function Player(props) {
-    const {user:player, className = "", style, onClick, ...basicProps} = props;
+    const {user: player, className = "", style, onClick, ...basicProps} = props;
 
     const classesName = useCssClass({
         disconnected: !!player.disconnect,
         "mix-color": false,
         [className]: true,
-        [player.class]:true,
+        [player.class]: true,
     });
     const properties = {
         '--player-color': player.color,
-        '--player-color-text': player.color,
+        '--player-color-text': player.color2,
         ...style,
     }
 
     const handleClick = useCallback(() => {
         onClick?.(player)
-    },[player, onClick])
+    }, [player, onClick])
 
     const icon = player.AI ? (<i className="fa-solid fa-robot"></i>) : (<Avatar
         square={false}
         name={player.name}
         variant="beam"
-        colors={[player.color, "#F0AB3D", "#C271B4", "#C20D90"]}
+        colors={[player.color, player.color2, player.color3, "#F0AB3D", "#C271B4", "#C20D90"]}
     />);
     return (
         <tk-player {...basicProps} class={classesName} style={properties} onClick={handleClick}>
             {icon}
             <dd name="name">{player.name}</dd>
-            <dd name="nickname">"the beast"</dd>
+            <dd name="nickname">"{player.slogan}"</dd>
             <dt name="score">score</dt>
             <dd name="score">{player.score}</dd>
             <dt/>
@@ -47,7 +47,7 @@ export function Player(props) {
     )
 }
 
-export function PlayerCover({coverStyle,coverClass, ...otherProps}) {
+export function PlayerCover({coverStyle, coverClass, ...otherProps}) {
     return (
         <tk-cover-player style={coverStyle} class={coverClass}>
             <Player {...otherProps} />

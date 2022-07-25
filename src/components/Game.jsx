@@ -5,6 +5,7 @@ import {Board} from "./Board";
 import {Message} from "./Message";
 import {noAnimBubble} from "helpers/no-bubble-helper";
 import {useApplyCssInit} from "helpers/use";
+import useCssClass from "@perymimon/react-hooks/useCssClass";
 
 const END = "END";
 
@@ -13,15 +14,19 @@ const END = "END";
 * */
 export function Game({gameModel, onRemove, onSelectTile}) {
     const {players, board, turn, nextTurn, turnTime, stage} = gameModel;
-    const marks = ['✗', '○'];
     const gameDom = useRef();
     const [showSplash, setSplash] = useState(true);
 
     useApplyCssInit(gameDom)
 
+    const classString = useCssClass({
+        "game-end":stage === END
+    })
+
+
     return (
         <>
-            <tk-game ref={gameDom}>
+            <tk-game ref={gameDom} class={classString}>
                 <menu className="competitors">
                     <PlayerCover user={players[0]} class="player-1" />
                     <span className="vs">VS</span>
@@ -60,7 +65,7 @@ function SplashScreen({gameModel, show, onAnimationEnd, ...otherProp}) {
     return (
         <Message className="vs-annotation-message xyz-in"
                  onAnimationEnd={handleAnimationEnd}
-                 xyz="fade  out-delay-10 duration-10 out-delay-10" {...otherProp}
+                 xyz="fade out-delay-10 duration-10 out-delay-10" {...otherProp}
         >
             <PlayerName user={players[0]} className="player-1 xyz-nested"
                         xyz="inherit left-100% skew-left-2 wide-25%"/>
@@ -72,8 +77,7 @@ function SplashScreen({gameModel, show, onAnimationEnd, ...otherProp}) {
 }
 
 /*
-* <End>
-* */
+* <End> */
 function End({gameModel, show, onRemove, ...otherProp}) {
     if(!show) return null;
 
@@ -83,7 +87,7 @@ function End({gameModel, show, onRemove, ...otherProp}) {
     var message = draw && 'draw' || `${wonPlayer.name} Won`;
 
     return (
-        <Message {...otherProp}>
+        <Message className="game-end" {...otherProp}>
             <span>{message}</span>
             <button onClick={onRemove}>OK</button>
         </Message>

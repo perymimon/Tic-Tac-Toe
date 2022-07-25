@@ -16,7 +16,7 @@
 
   --app-color-bg: #78BEC5;
   --app-color-bg: #6A93C2;
-  --app-color-bg-shade-1: #65AAC7;
+  --app-color-bg-shade-1: #4888a8;
   --app-color-bg-shade-2: #6A93C2;
   --app-color-bg-shade-3: #7F79AF;
   --app-color-neumorphism-shadow-2: -0.1em -0.1em 1em hsl(0deg 0% 0% / 50%), 0.1em -0.2em 1em hsl(0deg 0% 100% / 50%);
@@ -86,8 +86,8 @@
 }
 
 .perspective{
-  perspective: 1000px;
-  perspective-origin: center 40em;
+  perspective: 800px;
+  perspective-origin: center center;
 }
 
 .preserve-3d, {

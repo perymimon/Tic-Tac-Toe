@@ -33,7 +33,7 @@ export default function Arenas() {
 
     // var animationClass = phase2xyz(phase, 'arena-appear', 'arena-in', 'arena-disappear')
 
-    return (<tk-arenas class="preserve-3d perspective">
+    return (<tk-arenas class="">
 
         <ChallengeBoard onChallenge={handleChallenge}/>
 
@@ -76,6 +76,7 @@ export const Arena = forwardRef(
 
         let classString = useCssClass({
             [className]: true,
+            "preserve-3d perspective": true,
         })
 
         const eventHandlers = {
@@ -107,12 +108,12 @@ export const Arena = forwardRef(
             </tk-errors>
         </tk-arena>)
     }
-    )
+)
 
-        function Loading() {
-            return (
-                <Message>
-                    Loading Arena
-                </Message>
-            )
-        }
+function Loading() {
+    return (
+        <Message>
+            Loading Arena
+        </Message>
+    )
+}

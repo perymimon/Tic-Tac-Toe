@@ -1,29 +1,21 @@
-tk-game {
-  --delay: 3s;
-
-  will-change: transform, margin-top, opacity;
-
-  transition: transform .3s var(--delay) ease-out;
-
-  .competitors:not(:hover) {
-    opacity: 1;
-    transition: all .4s calc(var(--delay) + .4s) ease-out;
-  }
-
-  .competitors:not(:hover) > * {
-    transition: all .1s calc(var(--delay) + .8s) ease-out;
-    will-change: transform, margin-top, left, right, opacity;
-  }
-
-
-}
-
-tk-game.init {
+tk-game:is(.init,.game-end) {
   transform: rotateX(0deg);
+
+  --delay: .5s;
+
+  transition-delay: calc(var(--delay) + 1s);
+  transition-duration: .2s;
 
   .competitors {
     opacity: 0;
     transform: rotateX(0deg) translateY(-2em);
+
+
+    transition-delay: calc(var(--delay) + .4s);
+
+    & * {
+      transition-delay: calc(var(--delay));
+    }
 
     tk-cover-player:not(.rtl) {
       left: 0
@@ -37,5 +29,32 @@ tk-game.init {
       margin-top: 0
     }
   }
+}
 
+
+tk-game {
+  --delay: 3s;
+
+  will-change: transform, margin-top, opacity;
+
+  transition: all .1s ease-out;
+
+  * {
+    transition: all .1s ease-out;
+  }
+
+  transition-delay: var(--delay);
+
+  .competitors {
+    opacity: 1;
+  }
+
+  .competitors:not(:hover) {
+    transition-delay: calc(var(--delay) + .4s);
+  }
+
+  .competitors:not(:hover) > * {
+    transition-delay: calc(var(--delay) + .8s);
+    will-change: transform, margin-top, left, right, opacity;
+  }
 }

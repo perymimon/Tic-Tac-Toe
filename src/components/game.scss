@@ -8,7 +8,7 @@ tk-game {
 
   will-change: transform;
 
-  transform: rotateX(25deg);
+  transform: rotateX(45deg);
   transform-origin: bottom;
 
   /* competitors
@@ -20,8 +20,6 @@ tk-game {
 
     transform-origin: bottom;
     transform: rotateX(-60deg) translateY(-2em);
-
-
 
 
     padding: 0.3em;
@@ -72,12 +70,15 @@ tk-game {
 
 }
 
-tk-message.vs-annotation-message {
+tk-message:is(.vs-annotation-message,.game-end)  {
   background-image: none;
-  //--xyz-ease: var(--timing-dramatic-stop);
   height: 100%;
   transform-origin: bottom;
-  //bottom: 0;
+
+  tk-player {
+    width: 80%
+  }
+
   &.xyz-out {
     pointer-events: none;
   }

@@ -36,7 +36,7 @@ tk-player {
   }
 
   i.fa-solid {
-    font-size: 2.4em;
+    font-size: 2em;
 
     &:before {
       mix-blend-mode: color-dodge;
@@ -52,7 +52,7 @@ tk-player {
 
   dd {
     font-family: "FontAwesome";
-    mix-blend-mode: plus-lighter;
+    mix-blend-mode: luminosity
   }
 
   [name="name"] {
@@ -60,8 +60,8 @@ tk-player {
   }
 
   [name="nickname"] {
-    font-size: 0.5em;
-    margin-top: 0.6em;
+    font-size: 0.6em;
+    margin-top: 0.5em;
   }
 
   [data-online] {
@@ -71,15 +71,15 @@ tk-player {
   /* player layout
 ---------------------------*/
   display: grid;
+  justify-content: space-between;
+  grid-auto-columns: max-content;
+
   justify-items: center;
   gap: 0.1em;
 
   grid-template-areas:
     "avatar name name"
     "nickname nickname nickname";
-
-  grid-auto-columns: max-content;
-  justify-content: space-evenly;
 
   dt {
     grid-row: 5;
@@ -101,6 +101,8 @@ tk-player {
 
   [name="name"] {
     grid-area: name;
+    place-self: start;
+
   }
 
   [name="nickname"] {
@@ -122,13 +124,41 @@ tk-cover-player {
   width: 2.6em;
   height: 2.6em;
 
-  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  transition: all 0.2s ease-in-out;
+
+  clip-path: polygon(30% 0%, 70% 0%, 85% 15%, 200% 30%, 200% 70%, 85% 85%, 70% 100%, 30% 100%, 30% 100%, 0% 70%, 0% 30%, 30% 0%);
+
+  &.rtl {
+    direction: rtl;
+    clip-path: polygon(30% 0%, 70% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 70% 100%, 30% 100%, 15% 85%, -100% 70%, -100% 30%, 15% 15%);
+  }
 
   will-change: clip-path, transform;
 
+  tk-player {
+    row-gap: 0.1em;
+
+    [name="name"] {
+      inset-block-start: 0.8em;
+      position: relative;
+    }
+
+    [name="nickname"] {
+      //font-size: 0.6em;
+      //margin-top: 0.5em;
+    }
+
+    &:is(svg,i) {
+      inset-inline-start: -0.1em;
+      position: relative;
+      inset-block-start: -0.2em;
+    }
+
+  }
+
   &:hover {
     z-index: 2;
-    clip-path: polygon(-3em -3em,-3em -3em, -3em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, -3em 10em, -3em 10em) !important;
+    clip-path: polygon(-3em -3em, 10em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, 10em 10em, -3em 10em, -3em 10em, -3em 10em, -3em -3em, -3em -3em) !important;
 
     tk-player svg {
       width: 1.5em;
@@ -138,20 +168,13 @@ tk-cover-player {
     tk-player i {
       font-size: 1.5em;
     }
+
+    [name="name"] {
+      inset-block-start: 0;
+    }
+
   }
-
-  transition: all 0.2s ease-in-out;
 }
-
-tk-cover-player.rtl{
-  direction: rtl;
-  clip-path: polygon(30% 0%,70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, -100% 70%, -100% 30%, 0% 10%);
-}
-
-tk-cover-player{
-  clip-path: polygon(30% 0%, 70% 0%, 70% 0%, 200% 30%, 200% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-}
-
 
 /*
   <tk-cover-player> disconnected

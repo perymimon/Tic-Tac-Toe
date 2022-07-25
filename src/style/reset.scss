@@ -55,9 +55,7 @@ table {
 
 *, svg, *:before, *:after {
   box-sizing: border-box;
-  --sw-color: white;
-  --bg-color: #282c34c0;
-  --bg-color2: rgba(100, 100, 100, 0.4);
+  transform-style: preserve-3d;
 }
 
 img, svg, object {
@@ -66,8 +64,4 @@ img, svg, object {
 
 :focus-visible, :focus, button:hover, input:hover {
   outline: none;
-}
-
-* {
-  transform: translate(0, 0) scale3d(1,1,1)  rotate(0) rotateX(0) rotateY(0) rotateZ(0);
 }

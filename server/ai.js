@@ -4,6 +4,8 @@ const thinkingTime = 0;
 module.exports =
     function AI(user) {
         user.model.AI = true;
+        user.model.slogan = "Can't Stop";
+
         user.arenas.observe(function (type, gameId, disconenting) {
             const game = Arenas.get(gameId);
             const play = model => action(user, game, model)

@@ -1,6 +1,7 @@
 tk-arenas {
   display: grid;
-  grid-template-columns: repeat( auto-fill, 10em);
+  grid-template-columns: repeat( auto-fill, 11em);
+  grid-auto-rows: max-content;
   align-content: flex-start;
   gap: 1em;
 
@@ -14,6 +15,11 @@ tk-arenas {
     flex-flow: column nowrap;
     padding: 0.1em;
     font-size: 2.3em;
+  }
+
+  tk-challenge-board{
+    position: sticky;
+    top: 1em;
   }
 
   tk-game {
@@ -42,7 +48,6 @@ tk-arena {
   min-width: 10em;
   min-height: 10em;
 
-  perspective: 1000px;
 
   @media (pointer: coarse) {
     /* custom css for "touch targets" */
