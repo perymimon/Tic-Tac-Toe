@@ -6,57 +6,46 @@ import {useRun} from "@perymimon/react-hooks";
 
 const INVITATION = "INVITATION", CANCEL = "CANCEL";
 
-export function Invitation(props) {
-    const {stage} = props.gameModel;
+export function Invitation({gameModel, onApprove, onCancel, onRemove}) {
+    const {stage, players, isCanceledBy} = gameModel;
+    const [by, against] = players;
+    const loginUser = useLoginUser();
 
     return (
         <tk-invitation>
             {useRun(() => {
-                if (stage === INVITATION) return <HandShake {...props}  />
-                if (stage === CANCEL) return <Cancel {...props} />;
+
+                if (stage === INVITATION && loginUser.id === against.id) return (
+                    /*  invited  */
+                    <Message attention>
+                        dual against <PlayerName user={by} className="user-inviting"/>
+                        <button className="primary" onClick={onApprove}>approve</button>
+                        <button className="secondary" onClick={onCancel}>decline</button>
+                    </Message>
+                )
+
+                if (stage === INVITATION && loginUser.id === by.id) return (
+                    /*  inviting  */
+                    <Message waiting>
+                        waiting to <PlayerName user={against} className="user-invited"/>
+                        <button className="secondary" onClick={onCancel}>cancel</button>
+                    </Message>
+                )
+
+                const player = players.find(p => p.id === isCanceledBy);
+                if (stage === CANCEL) return (
+                    /* cancel */
+                    <Message className="canceled">
+                        <PlayerName user={player}/>
+
+                        just canceled
+
+                        <button className="primary" onClick={onRemove}>Fine</button>
+                    </Message>
+                )
             }, [stage])}
         </tk-invitation>
     )
 
 }
 
-
-function HandShake({gameModel, onApprove, onCancel}) {
-    const {players} = gameModel;
-    const [by, against] = players;
-    const loginUser = useLoginUser();
-
-    /*  invited  */
-    if (loginUser.id === against.id) {
-        return (
-            <Message attention>
-                dual against <PlayerName user={by} className="user-inviting"/>
-                <button className="primary" onClick={onApprove}>approve</button>
-                <button className="secondary" onClick={onCancel}>decline</button>
-            </Message>
-        )
-    }
-
-    /*  inviting  */
-    if (loginUser.id === by.id) {
-        return (
-            <Message waiting>
-                waiting to <PlayerName user={against} className="user-invited"/>
-                <button className="secondary" onClick={onCancel}>cancel</button>
-            </Message>
-        )
-    }
-}
-
-function Cancel({gameModel, onRemove}) {
-    const {isCanceledBy, players} = gameModel;
-    const user = players.find(p => p.id === isCanceledBy);
-
-    return <Message className="canceled">
-        <PlayerName user={user}/>
-
-        just canceled
-
-        <button className="primary" onClick={onRemove}>Fine</button>
-    </Message>
-}
