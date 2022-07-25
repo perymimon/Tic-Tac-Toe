@@ -11,7 +11,7 @@ tk-game {
   }
 
   .competitors:not(:hover) > * {
-    transition: all .1s calc(var(--delay) + .4s) ease-out;
+    transition: all .1s calc(var(--delay) + .8s) ease-out;
     will-change: transform, margin-top, left, right, opacity;
   }
 
