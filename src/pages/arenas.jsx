@@ -1,15 +1,17 @@
 /*https://animxyz.com/*/
 
-import React, {forwardRef, useMemo, useRef} from "react";
+import React, {forwardRef, useMemo} from "react";
 import './arenas.scss'
 import socket, {useLoginUser, useSocket} from "service/socket";
 // import useTimer from "../helpers/timer-hook"
 import {useAnimeManager, STAY, APPEAR, DISAPPEAR, SWAP} from "@perymimon/react-anime-manager";
-import { PlayerName} from "components/Player.jsx";
 import {Game} from "components/Game.jsx";
 import {Invitation} from "components/Invitation.jsx";
 import {ChallengeBoard} from "components/ChallengeBoard";
 import {Message} from "components/Message.jsx";
+import {phase2xyz} from "helpers/xyz";
+import useCssClass from "@perymimon/react-hooks/useCssClass";
+import {useRun} from "@perymimon/react-hooks";
 
 
 function handleRemove(arenaId) {
@@ -19,29 +21,48 @@ function handleRemove(arenaId) {
 export default function Arenas() {
     const [arenasId] = useSocket('arenas', [])
     const user = useLoginUser();
-    const [arenasStates, traverse] = useAnimeManager(arenasId, null, {skipPhases: [APPEAR, DISAPPEAR, SWAP]});
+
+    const [arenasStates, traverse] = useAnimeManager(arenasId, null, {skipPhases: []});
 
     function handleChallenge(u1) {
         if (user.id === u1.id) return;
         socket.emit('challenge', u1)
     }
 
-    return (<tk-arenas xyz="fade-100% rotate-right-50% appear-stagger appear-stagger">
-        {/* like : <Arena stage="LIST"></Arena> */}
-        <ChallengeBoard onChallenge={handleChallenge}/>
-        {traverse(({item: id, phase, done}) => (
-            <Arena id={id}
+    // var animationClass = phase2xyz(phase, 'arena-appear', 'arena-in', 'arena-disappear')
 
-                   onAnimationEnd={done}
-                   onRemove={handleRemove}/>
-        ))}
+    return (<tk-arenas class="preserve-3d perspective">
+
+        <ChallengeBoard onChallenge={handleChallenge}/>
+
+        {traverse(({item: id, phase, done}, {isMove, dx, dy}) => {
+            const properties = {
+                '--dx': dx,
+                '--dy': dy,
+            };
+            return <Arena id={id}
+                          isMove={isMove}
+                          style={properties}
+                          phase={phase}
+                          onAnimationEnd={letAnimationEnd('puff',done)}
+                          onRemove={handleRemove}/>
+        })}
     </tk-arenas>)
+
+}
+
+function letAnimationEnd(name,callback){
+    return function (event){
+        if(event.currentTarget === event.target){
+            callback(event)
+        }
+    }
 
 }
 
 export const Arena = forwardRef(
     function Arena(props, ref) {
-        const {onRemove, id, ...rest} = props;
+        const {onRemove, id, className = "", ...rest} = props;
 
         const [gameModel, gSocket] = useSocket(`game-${id}/update`, {id, stage: 'LOADING'})
         const [gameErrors] = useSocket(`game-${id}/game-errors`, [])
@@ -53,30 +74,34 @@ export const Arena = forwardRef(
             return playersId?.map(pid => usersList.find(u => pid === u.id)) ?? []
         }, [playersId, usersList])
 
-        function handleClick(event) {
-            const cell = event.target;
-            const cellNumber = cell.dataset.index;
-            gSocket.emit('playerSelectCell', cellNumber)
-        }
+        let classString = useCssClass({
+            [className]: true,
+        })
 
         const eventHandlers = {
             onCancel: () => gSocket.emit('cancel'),
             onApprove: () => gSocket.emit('approve'),
-            onRemove: () => onRemove && onRemove(gameModel.id),
-            onSelectTile: handleClick
+            onRemove: () => {
+                onRemove && onRemove(gameModel.id)
+            },
+            onSelectTile: (event) => {
+                const cell = event.target;
+                const cellNumber = cell.dataset.index;
+                gSocket.emit('playerSelectCell', cellNumber)
+            }
         }
-        const STAGE = {
-            "INVITATION": Invitation,
-            "GAME": Game,
-            "END": Game,
-            "CANCEL": Cancel,
-            "LOADING": Loading
-        }
-        const Element = STAGE[stage];
 
-        return (<tk-arena ref={ref} {...rest}>
-            <Element {...gameModel} {...eventHandlers}  />
-            {stage === "END" && <End {...gameModel} {...eventHandlers} />}
+        const STAGE = useRun(() => {
+            if (["INVITATION", "CANCEL"].includes(stage))
+                return Invitation;
+            if (["GAME", "END"].includes(stage))
+                return Game;
+            if (["LOADING"].includes(stage))
+                return Loading
+        },[stage])
+
+        return (<tk-arena data-id={id} ref={ref} class={classString} {...rest}>
+            <STAGE gameModel={gameModel} {...eventHandlers}  />
             <tk-errors>
                 {gameErrors.map((e, i) => <tk-error key={e.id}>{e.text}</tk-error>)}
             </tk-errors>
@@ -84,36 +109,6 @@ export const Arena = forwardRef(
     }
 )
 
-
-function End({winner, draw, onRemove, players}) {
-    winner = players.find(p => p.id === winner);
-    var message;
-    if (draw) {
-        message = 'draw'
-    } else {
-        message = `${winner.name} WIN`
-    }
-
-    return <Message>
-        <span >{message}</span>
-        <button onClick={onRemove}>OK</button>
-    </Message>
-
-}
-
-function Cancel({isCanceledBy, players, onRemove}) {
-    const user = players.find(p => p.id === isCanceledBy);
-
-    return <Message className="canceled">
-        <PlayerName user={user} />
-
-        just canceled
-
-        <button className="primary" onClick={onRemove}>Fine</button>
-    </Message>
-}
-
-
 function Loading() {
-    return <Message > Loading Arena </Message>
+    return <Message> Loading Arena </Message>
 }

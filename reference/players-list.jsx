@@ -1,9 +1,9 @@
-import {useLoginUser, useSocket} from "../service/socket";
-import "./users-list.scss"
+import {useLoginUser, useSocket} from "../src/service/socket";
+import "./players-list.scss"
 import React, {useState} from "react";
-import ToggleButton from "./atoms/toggle-button";
+import ToggleButton from "../src/components/atoms/toggle-button";
 
-export default function UserList({onChallenge}) {
+export default function PlayersList({onChallenge}) {
     const [usersList] = useSocket('users-list', [])
     const user = useLoginUser();
     const [showTop, setShowTop] = useState('top10', true)
@@ -18,14 +18,14 @@ export default function UserList({onChallenge}) {
     return (
         <>
             <h4>challenge</h4>
-            <tk-users decorationText={showTop?"top10":""}>
+            <tk-players decorationText={showTop?"top10":""}>
                 {showList.map(user => (
                     <User {...user}
                           showScore
                           onClick={onChallenge}
                           key={user.id}/>)
                 )}
-            </tk-users>
+            </tk-players>
             <ToggleButton onInput={setShowTop} defaultValue={showTop}>
                 top 10
             </ToggleButton>
@@ -54,13 +54,13 @@ export function User(props) {
     const showColor = !nameView;
 
     const user = (
-        <tk-user style={style} avatar={avatar} time={counterDown} nameView={nameView} AI={AI}
+        <tk-player style={style} avatar={avatar} time={counterDown} nameView={nameView} AI={AI}
                  onClick={handleClick}>
             {showMark && mark}
             {showColor && <div className="color"></div>}
             {showName && <div className="name">{name || ''}</div>}
             {showScore && <div className="score">{score}</div>}
-        </tk-user>
+        </tk-player>
     )
 
     return user;

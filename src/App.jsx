@@ -11,7 +11,6 @@ import {
 } from "react-router-dom";
 
 import {useConnected, useLoginUser} from "./service/socket"
-import {User} from "./components/user-list";
 import {PlayerName} from "./components/Player";
 
 function App() {

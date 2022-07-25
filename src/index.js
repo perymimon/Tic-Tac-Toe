@@ -1,5 +1,4 @@
 import React from 'react';
-import '@animxyz/core';
 import './index.scss';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
@@ -9,11 +8,11 @@ import {createRoot} from 'react-dom/client';
 const rootContainer = document.getElementById('root');
 const root = createRoot(rootContainer);
 root.render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <BrowserRouter>
             <App/>
         </BrowserRouter>
-    </React.StrictMode>
+    // </React.StrictMode>
 )
 
 

@@ -13,3 +13,9 @@ tk-invitation {
 
 }
 
+tk-message.canceled {
+  transition: all 5s ease;
+  border-color: gray;
+  filter: grayscale(.3);
+  mix-blend-mode: grayscale(0.6);
+}

@@ -5,6 +5,9 @@ tk-game {
 
   overflow: hidden;
 
+  transform: rotateX(25deg);
+  transform-origin: bottom;
+
   .competitors {
     display: flex;
     flex-direction: row;
@@ -15,8 +18,8 @@ tk-game {
     // no go - it change also the color of the background
     //filter: drop-shadow( -0.1em 0.1em 1em hsl(212deg 42% 40%) ) drop-shadow(0.1em -0.1em 1em hsl(212deg 42% 80%) );
 
-    &:hover{
-      filter:none;
+    &:hover {
+      filter: none;
     }
   }
 
@@ -38,7 +41,15 @@ tk-game {
     direction: rtl;
   }
 
-  xtk-cover-user:nth-child(1) {
-    display: none;
+}
+
+tk-message.vs-annotation-message {
+  background-image: none;
+  //--xyz-ease: var(--timing-dramatic-stop);
+  height: 100%;
+  transform-origin: bottom;
+  //bottom: 0;
+  &.xyz-out{
+    pointer-events: none;
   }
 }

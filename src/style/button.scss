@@ -20,12 +20,15 @@ button {
   background: linear-gradient(var(--app-color-bg-shade-2) 0 0) padding-box,
   linear-gradient(var(--deg), var(--color-1) 80%, var(--color)) border-box;
 
-  transition: all .2s ease-in-out 1s;
+  transition: box-shadow .2s ease-in-out 1s;
 
   &:hover {
     transition-delay: 1.6s;
     animation: button-active 1.5s linear 1 forwards;
     box-shadow: 0 0 10px var(--color), 0 0 25px var(--color);
+  }
+  &:active{
+    transform:scale(0.9);
   }
 }
 

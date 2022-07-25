@@ -41,10 +41,10 @@ Users.on('new', function (userid, user) {
 })
 
 /** user garbage collector **/
-setInterval(()=>{
-    Users.clearDisconnectUsers();
-    /** and that trigger remove unused game **/
-}, 20 * 1000);
+// setInterval(()=>{
+//     Users.clearDisconnectUsers();
+//     /** and that trigger remove unused game **/
+// }, 20 * 1000);
 
 
 function welcome(socket, user) {

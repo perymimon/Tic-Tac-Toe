@@ -1,6 +1,6 @@
 import './challengeBoard.scss';
 import {useLoginUser, useSocket} from "../service/socket";
-import List from "./list";
+import List from "./generic/list";
 import {PlayerNameScore} from "./Player";
 
 
@@ -19,7 +19,7 @@ export function ChallengeBoard(props) {
     return (
         <tk-challenge-board>
             <h5>challenge board</h5>
-            <List data={users} component={Player}/>
+            <List data={users} keyName="id" component={Player}/>
         </tk-challenge-board>
     )
 

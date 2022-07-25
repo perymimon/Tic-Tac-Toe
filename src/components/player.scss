@@ -1,8 +1,7 @@
-
-/* <tk-user> User element
+/* <tk-player> User element
   -----------------------------*/
-tk-user {
-  /* User style and Icons
+tk-player {
+  /* player style and Icons
   -------------------------------*/
   background-color: var(--app-color-bg-shade-1);
   background-image: linear-gradient(to bottom,
@@ -14,16 +13,16 @@ tk-user {
   outline-offset: 0.1em;
   align-items: center;
 
-  --from-color: var(--player-color-text);
-  --to-color: #1a4e64;
-  color: var(--mix-color);
+  //--from-color: var(--player-color-text);
+  //--to-color: #1a4e64;
+  color: var(--player-color-text);
 
-  svg{
+  svg {
     width: 2.5em;
     height: 2.5em;
   }
 
-  svg,i {
+  svg, i {
     border-radius: 50%;
     transition: all 0.2s ease-in-out;
     outline: 0.1em solid var(--player-color);
@@ -33,15 +32,19 @@ tk-user {
     );
   }
 
-  i.fa-solid{
-      font-size: 2.4em;
-  }
+  i.fa-solid {
+    font-size: 2.4em;
 
+    &:before {
+      mix-blend-mode: color-dodge;
+    }
+
+  }
 
   dt {
-    color: rgb(117, 117, 117);
+    color: var(--player-color);
+    mix-blend-mode: multiply;
   }
-
 
 
   dd {
@@ -61,7 +64,7 @@ tk-user {
     color: green;
   }
 
-  /* user layout
+  /* player layout
 ---------------------------*/
   display: grid;
   justify-items: center;
@@ -75,7 +78,7 @@ tk-user {
     "avatar name name"
     "nickname nickname nickname";
 
-  grid-auto-columns:max-content;
+  grid-auto-columns: max-content;
   justify-content: space-evenly;
 
   dt {
@@ -91,7 +94,7 @@ tk-user {
   }
 
 
-  svg,i /*avatar*/
+  svg, i /*avatar*/
   {
     grid-area: avatar;
   }
@@ -111,9 +114,9 @@ tk-user {
 }
 
 /************************************
-<tk-cover-user> movement mask element - reveal effect
+<tk-cover-player> movement mask element - reveal effect
 ------------------------------------*/
-tk-cover-user {
+tk-cover-player {
   position: relative;
 
   width: 2.6em;
@@ -125,12 +128,12 @@ tk-cover-user {
     z-index: 2;
     clip-path: polygon(-3em -3em, -3em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, -3em 10em, -3em 10em);
 
-    tk-user svg {
+    tk-player svg {
       width: 1.5em;
       height: 1.5em;
     }
 
-    tk-user i {
+    tk-player i {
       font-size: 1.5em;
     }
   }
@@ -139,50 +142,54 @@ tk-cover-user {
 }
 
 /*
-  <tk-cover-user> disconnected
+  <tk-cover-player> disconnected
 ************************************/
-tk-cover-user.disconnected {
+tk-cover-player.disconnected {
   opacity: 0.5;
   filter: grayscale(100%);
 }
 
 /*
-  <tk-user>
-  configurable user element
+  <tk-player>
+  configurable player element
 */
-tk-user:is([showscore],[showname],[showicon]){
+tk-player:is([showscore],[showname],[showicon]) {
   :is(dt, dd) {
     display: none;
   }
 
   &[showscore="true"] {
-    [name="score"]{
+    [name="score"] {
       display: unset;
     }
   }
+
   &[showname="true"] {
-    [name="name"], [name="nickname"]{
+    [name="name"], [name="nickname"] {
       display: unset;
     }
   }
+
   &[showicon="true"] {
-    [name="icon"]{
+    [name="icon"] {
       display: unset;
     }
   }
 }
 
 /*
-<tk-user> Small Banner
+<tk-player> Small Banner
 ----------------------------------*/
-tk-user.small-banner {
+tk-player.small-banner {
   width: auto;
+
   svg {
     font-size: 1.3em;
     width: 1.5em;
     height: 1.5em;
   }
-  i{
+
+  i {
     font-size: 2em;
   }
 
@@ -191,7 +198,7 @@ tk-user.small-banner {
     "avatar nickname nickname score";
 
 
-  [name="score"]{
+  [name="score"] {
     grid-column: 4;
     grid-row: auto;
   }

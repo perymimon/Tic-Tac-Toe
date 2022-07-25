@@ -1,8 +1,11 @@
 @import "./style/reset.scss";
+@import "@animxyz/core" layer(xyz-animation);
 @import "./fonts/fonts.css";
 @import "./style/css-properties.scss";
 @import "./style/button.scss";
+@import "./style/tk-error.scss";
 @import "./style/keyframe-animation.scss";
+@import "style/anime-manager.scss";
 
 body {
   margin: 0;

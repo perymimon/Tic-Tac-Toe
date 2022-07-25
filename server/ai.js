@@ -1,5 +1,5 @@
 const Arenas = require('./games')
-const thinkingTime = 5000;
+const thinkingTime = 0;
 
 module.exports =
     function AI(user) {

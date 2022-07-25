@@ -8,7 +8,7 @@ export function Board(props) {
         <tk-board xyz={xyzTileEntrance}>
             {board.map((playerIndex, index) => {
 
-                return <tk-tile className="xyz-appear" key={index}
+                return <tk-tile key={index}
                             data-player={String(playerIndex)}
                             data-index={index}
                             onClick={onSelectTile}/>

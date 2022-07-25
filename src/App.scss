@@ -7,6 +7,9 @@
   display: grid;
   grid-template-rows: 5vh 95vh;
 
+  *{
+    user-select: none;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -29,7 +32,7 @@
   z-index: 1;
   padding: 0 0.5em;
 
-  tk-user{
+  tk-player{
     font-size: 0.5em;
     svg{
       font-size: .9em !important;
@@ -40,7 +43,7 @@
 .app-header.introduce-finish {
   animation: shrink-up 1s 1s both;
 
-  tk-user{
+  tk-player{
     //animation: show-up .5s 1.7s both;
   }
 

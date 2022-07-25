@@ -22,26 +22,28 @@ module.exports = new class Arenas extends LetMap {
 
         game.nsp = this.io.of(`game-${game.id}`);
         debug(`created: namespace ${game.nsp.name}`)
-        const get = (userid) => [user1, user2].find(u => u.id === userid);
+
+        const getUser = (userid) => [user1, user2].find(u => u.id === userid);
+
         game.nsp.on('connect', function connectSocket(socket) {
             /**  const userid = socket.handshake.query.uid; this way need browser reconnect */
             const userid = socket.client.request._query.uid; /*this way share connection*/
             if (![user1.id, user2.id].includes(userid)) return;
 
-            game.model.observe(model => {
-                const {stage, winner, loser, draw} = model;
+            game.model.observe(gameModel => {
+                const {stage, winner, loser, draw} = gameModel;
                 if (['END', 'CANCEL'].includes(stage)) {
                     if (draw) {
                         user1.model.score += tieScore
                         user2.model.score += tieScore
                     }
                     if (winner) {
-                        get(winner).model.score += victoryScore;
-                        get(loser).model.score += lossScore;
+                        getUser(winner).model.score += victoryScore;
+                        getUser(loser).model.score += lossScore;
                     }
                 }
 
-                socket.emit('update', model)
+                socket.emit('update', gameModel)
             })
             game.errors.for(userid).observe(errors => {
                 socket.emit('game-errors', errors.map(eText => ({id: uid(), text: eText})));
