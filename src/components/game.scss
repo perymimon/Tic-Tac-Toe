@@ -1,25 +1,40 @@
+@import './game-transition.scss';
+
 tk-game {
+
   display: grid;
   grid-template-rows: inherit;
   gap: .5em;
 
-  overflow: hidden;
+  will-change: transform;
 
   transform: rotateX(25deg);
   transform-origin: bottom;
 
+  /* competitors
+    --------------------------------------------------*/
   .competitors {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
+
+    transform-origin: bottom;
+    transform: rotateX(-60deg) translateY(-2em);
+
+
+
 
     padding: 0.3em;
 
     // no go - it change also the color of the background
     //filter: drop-shadow( -0.1em 0.1em 1em hsl(212deg 42% 40%) ) drop-shadow(0.1em -0.1em 1em hsl(212deg 42% 80%) );
-
-    &:hover {
-      filter: none;
+    span.vs {
+      position: absolute;
+      z-index: 2;
+      font-size: 1.1em;
+      margin-top: 0.8em;
+      //-webkit-text-stroke: 0.1em var(--app-color-primary);
+      text-shadow: 0 0 0.8em var(--app-color-primary);
     }
   }
 
@@ -37,8 +52,22 @@ tk-game {
   /*
    <tk-cover-user> player right side style
   ------------------------------------------------*/
-  tk-cover-user:nth-child(2) {
-    direction: rtl;
+  tk-cover-player {
+    position: absolute;
+    top: -1em;
+
+    &:hover {
+      transform: rotateX(45deg);
+    }
+
+  }
+
+  tk-cover-player.rtl {
+    right: -.5em;
+  }
+
+  tk-cover-player:not(.rtl) {
+    left: -.5em;
   }
 
 }
@@ -49,7 +78,7 @@ tk-message.vs-annotation-message {
   height: 100%;
   transform-origin: bottom;
   //bottom: 0;
-  &.xyz-out{
+  &.xyz-out {
     pointer-events: none;
   }
 }

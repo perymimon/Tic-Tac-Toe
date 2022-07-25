@@ -13,6 +13,9 @@ tk-player {
   outline-offset: 0.1em;
   align-items: center;
 
+  padding: 0.3em;
+  width: min-content;
+
   //--from-color: var(--player-color-text);
   //--to-color: #1a4e64;
   color: var(--player-color-text);
@@ -58,6 +61,7 @@ tk-player {
 
   [name="nickname"] {
     font-size: 0.5em;
+    margin-top: 0.6em;
   }
 
   [data-online] {
@@ -69,10 +73,6 @@ tk-player {
   display: grid;
   justify-items: center;
   gap: 0.1em;
-
-  width: 5em;
-  padding: 0.1em;
-
 
   grid-template-areas:
     "avatar name name"
@@ -124,9 +124,11 @@ tk-cover-player {
 
   clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 
+  will-change: clip-path, transform;
+
   &:hover {
     z-index: 2;
-    clip-path: polygon(-3em -3em, -3em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, -3em 10em, -3em 10em);
+    clip-path: polygon(-3em -3em,-3em -3em, -3em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, -3em 10em, -3em 10em) !important;
 
     tk-player svg {
       width: 1.5em;
@@ -140,6 +142,16 @@ tk-cover-player {
 
   transition: all 0.2s ease-in-out;
 }
+
+tk-cover-player.rtl{
+  direction: rtl;
+  clip-path: polygon(30% 0%,70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, -100% 70%, -100% 30%, 0% 10%);
+}
+
+tk-cover-player{
+  clip-path: polygon(30% 0%, 70% 0%, 70% 0%, 200% 30%, 200% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
 
 /*
   <tk-cover-player> disconnected

@@ -1,0 +1,41 @@
+tk-game {
+  --delay: 3s;
+
+  will-change: transform, margin-top, opacity;
+
+  transition: transform .3s var(--delay) ease-out;
+
+  .competitors:not(:hover) {
+    opacity: 1;
+    transition: all .4s calc(var(--delay) + .4s) ease-out;
+  }
+
+  .competitors:not(:hover) > * {
+    transition: all .1s calc(var(--delay) + .4s) ease-out;
+    will-change: transform, margin-top, left, right, opacity;
+  }
+
+
+}
+
+tk-game.init {
+  transform: rotateX(0deg);
+
+  .competitors {
+    opacity: 0;
+    transform: rotateX(0deg) translateY(-2em);
+
+    tk-cover-player:not(.rtl) {
+      left: 0
+    }
+
+    tk-cover-player.rtl {
+      right: 0
+    }
+
+    span.vs {
+      margin-top: 0
+    }
+  }
+
+}

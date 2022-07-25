@@ -14,11 +14,11 @@ export function Player(props) {
         disconnected: !!player.disconnect,
         "mix-color": false,
         [className]: true,
+        [player.class]:true,
     });
     const properties = {
         '--player-color': player.color,
         '--player-color-text': player.color,
-
         ...style,
     }
 
@@ -26,7 +26,7 @@ export function Player(props) {
         onClick?.(player)
     },[player, onClick])
 
-    const Icon = player.AI ? (<i className="fa-solid fa-robot"></i>) : (<Avatar
+    const icon = player.AI ? (<i className="fa-solid fa-robot"></i>) : (<Avatar
         square={false}
         name={player.name}
         variant="beam"
@@ -34,7 +34,7 @@ export function Player(props) {
     />);
     return (
         <tk-player {...basicProps} class={classesName} style={properties} onClick={handleClick}>
-            {Icon}
+            {icon}
             <dd name="name">{player.name}</dd>
             <dd name="nickname">"the beast"</dd>
             <dt name="score">score</dt>
@@ -47,10 +47,10 @@ export function Player(props) {
     )
 }
 
-export function PlayerCover(props) {
+export function PlayerCover({coverStyle,coverClass, ...otherProps}) {
     return (
-        <tk-cover-player>
-            {Player(props)}
+        <tk-cover-player style={coverStyle} class={coverClass}>
+            <Player {...otherProps} />
         </tk-cover-player>
     )
 }

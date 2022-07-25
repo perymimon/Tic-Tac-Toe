@@ -29,7 +29,9 @@ module.exports = new class Arenas extends LetMap {
             /**  const userid = socket.handshake.query.uid; this way need browser reconnect */
             const userid = socket.client.request._query.uid; /*this way share connection*/
             if (![user1.id, user2.id].includes(userid)) return;
-
+            if(game.model === undefined){
+                console.warn(game, 'game.model is undefined')
+            }
             game.model.observe(gameModel => {
                 const {stage, winner, loser, draw} = gameModel;
                 if (['END', 'CANCEL'].includes(stage)) {

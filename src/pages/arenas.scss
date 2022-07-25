@@ -8,8 +8,6 @@ tk-arenas {
   height: 100%;
   padding: 1em;
 
-  transform-style: preserve-3d;
-  perspective: 1000px;
 
   @media (pointer: coarse) {
     /* custom css for "touch targets" */

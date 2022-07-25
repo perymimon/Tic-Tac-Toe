@@ -12,6 +12,8 @@ import {Message} from "components/Message.jsx";
 import {phase2xyz} from "helpers/xyz";
 import useCssClass from "@perymimon/react-hooks/useCssClass";
 import {useRun} from "@perymimon/react-hooks";
+import {noBubble} from "../helpers/no-bubble-helper";
+import useArrayToMap from "@perymimon/react-hooks/experiment/useArrayToMap";
 
 
 function handleRemove(arenaId) {
@@ -44,21 +46,13 @@ export default function Arenas() {
                           isMove={isMove}
                           style={properties}
                           phase={phase}
-                          onAnimationEnd={letAnimationEnd('puff',done)}
+                          onAnimationEnd={noBubble(done)}
                           onRemove={handleRemove}/>
         })}
     </tk-arenas>)
 
 }
 
-function letAnimationEnd(name,callback){
-    return function (event){
-        if(event.currentTarget === event.target){
-            callback(event)
-        }
-    }
-
-}
 
 export const Arena = forwardRef(
     function Arena(props, ref) {
@@ -68,11 +62,17 @@ export const Arena = forwardRef(
         const [gameErrors] = useSocket(`game-${id}/game-errors`, [])
         const [usersList] = useSocket('users-list', []);
 
-        const {stage, playersId} = gameModel;
+        const userMap = useArrayToMap(usersList, 'id')
 
-        gameModel.players = useMemo(() => {
-            return playersId?.map(pid => usersList.find(u => pid === u.id)) ?? []
-        }, [playersId, usersList])
+        const {stage, playersId = []} = gameModel;
+
+        gameModel.players = [{
+            ...userMap.get(playersId[0]),
+            class: "player-1"
+        }, {
+            ...userMap.get(playersId[1]),
+            class: "player-2"
+        }]
 
         let classString = useCssClass({
             [className]: true,
@@ -98,7 +98,7 @@ export const Arena = forwardRef(
                 return Game;
             if (["LOADING"].includes(stage))
                 return Loading
-        },[stage])
+        }, [stage])
 
         return (<tk-arena data-id={id} ref={ref} class={classString} {...rest}>
             <STAGE gameModel={gameModel} {...eventHandlers}  />
@@ -107,8 +107,12 @@ export const Arena = forwardRef(
             </tk-errors>
         </tk-arena>)
     }
-)
+    )
 
-function Loading() {
-    return <Message> Loading Arena </Message>
-}
+        function Loading() {
+            return (
+                <Message>
+                    Loading Arena
+                </Message>
+            )
+        }

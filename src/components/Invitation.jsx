@@ -17,7 +17,7 @@ export function Invitation({gameModel, onApprove, onCancel, onRemove}) {
 
                 if (stage === INVITATION && loginUser.id === against.id) return (
                     /*  invited  */
-                    <Message attention>
+                    <Message attention key={1}>
                         dual against <PlayerName user={by} className="user-inviting"/>
                         <button className="primary" onClick={onApprove}>approve</button>
                         <button className="secondary" onClick={onCancel}>decline</button>
@@ -26,7 +26,7 @@ export function Invitation({gameModel, onApprove, onCancel, onRemove}) {
 
                 if (stage === INVITATION && loginUser.id === by.id) return (
                     /*  inviting  */
-                    <Message waiting>
+                    <Message waiting key={1}>
                         waiting to <PlayerName user={against} className="user-invited"/>
                         <button className="secondary" onClick={onCancel}>cancel</button>
                     </Message>
@@ -35,10 +35,10 @@ export function Invitation({gameModel, onApprove, onCancel, onRemove}) {
                 const player = players.find(p => p.id === isCanceledBy);
                 if (stage === CANCEL) return (
                     /* cancel */
-                    <Message className="canceled">
+                    <Message className="canceled" key={1}>
                         <PlayerName user={player}/>
 
-                        just canceled
+                        canceled
 
                         <button className="primary" onClick={onRemove}>Fine</button>
                     </Message>

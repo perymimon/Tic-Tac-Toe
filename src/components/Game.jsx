@@ -1,8 +1,10 @@
 import './game.scss'
-import {useState, useRef} from "react";
+import {useState, useRef, useLayoutEffect} from "react";
 import {PlayerCover, PlayerName} from "./Player";
 import {Board} from "./Board";
 import {Message} from "./Message";
+import {noAnimBubble} from "helpers/no-bubble-helper";
+import {useApplyCssInit} from "helpers/use";
 
 const END = "END";
 
@@ -15,18 +17,22 @@ export function Game({gameModel, onRemove, onSelectTile}) {
     const gameDom = useRef();
     const [showSplash, setSplash] = useState(true);
 
+    useApplyCssInit(gameDom)
+
     return (
         <>
             <tk-game ref={gameDom}>
                 <menu className="competitors">
-                    <PlayerCover user={players[0]} class="player-1" mark={marks[0]}/>
-                    <PlayerCover user={players[1]} class="player-2" mark={marks[1]}/>
+                    <PlayerCover user={players[0]} class="player-1" />
+                    <span className="vs">VS</span>
+                    <PlayerCover user={players[1]} class="player-2" coverClass="rtl"/>
                 </menu>
 
                 <Board board={board} onSelectTile={onSelectTile}/>
             </tk-game>
 
-            <SplashScreen show={showSplash} gameModel={gameModel}/>
+            <SplashScreen show={showSplash} gameModel={gameModel}
+                          onAnimationEnd={noAnimBubble('xyz-out-keyframes', _=>setSplash(false))}/>
 
             <End show={stage === END} gameModel={gameModel} onRemove={onRemove}/>
 
@@ -47,7 +53,7 @@ function SplashScreen({gameModel, show, onAnimationEnd, ...otherProp}) {
         if (evt.animationName === 'xyz-in-keyframes') {
             evt.target.classList.add('xyz-out')
         } else {
-            onAnimationEnd?.();
+            onAnimationEnd?.(evt);
         }
     }
 
