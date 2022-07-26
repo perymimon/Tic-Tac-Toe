@@ -7,6 +7,15 @@
   }
 }
 
+@keyframes present {
+  0% {
+    --present: 0%;
+  }
+  100% {
+    --present: 100%;
+  }
+}
+
 @keyframes puff {
   0% {
     filter: blur(4px);

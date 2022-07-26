@@ -3,10 +3,10 @@
 tk-player {
   /* player style and Icons
   -------------------------------*/
+  --deg: 0deg;
   background-color: var(--app-color-bg-shade-1);
-  background-image: linear-gradient(to bottom,
-          var(--player-color) 1em, transparent 1.5em
-  );
+  background-image: linear-gradient(to bottom, var(--player-color) 1em, transparent 1.5em);
+
 
   border-radius: var(--border-radius-small);
   outline: 0.1em solid var(--player-color-shade-1);
@@ -25,23 +25,12 @@ tk-player {
     height: 2.5em;
   }
 
-  svg, i {
-    border-radius: 50%;
-    transition: all 0.2s ease-in-out;
-    outline: 0.1em solid var(--player-color);
-    background-color: var(--player-color);
-    background-image: linear-gradient(to bottom,
-            var(--player-color) 1em, transparent 1.5em
-    );
+  i, svg {
+
   }
 
   i.fa-solid {
     font-size: 2em;
-
-    &:before {
-      mix-blend-mode: color-dodge;
-    }
-
   }
 
   dt {

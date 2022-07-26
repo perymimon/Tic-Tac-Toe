@@ -18,6 +18,8 @@ export function Player(props) {
     });
     const properties = {
         '--player-color': player.color,
+        '--player-color-2': player.color2,
+        '--player-color-3': player.color3,
         '--player-color-text': player.color2,
         ...style,
     }

@@ -1,60 +1,66 @@
-tk-game:is(.init,.game-end) {
-  transform: rotateX(0deg);
-
-  --delay: .5s;
-
-  transition-delay: calc(var(--delay) + 1s);
-  transition-duration: .2s;
-
-  .competitors {
-    opacity: 0;
-    transform: rotateX(0deg) translateY(-2em);
-
-
-    transition-delay: calc(var(--delay) + .4s);
-
-    & * {
-      transition-delay: calc(var(--delay));
-    }
-
-    tk-cover-player:not(.rtl) {
-      left: 0
-    }
-
-    tk-cover-player.rtl {
-      right: 0
-    }
-
-    span.vs {
-      margin-top: 0
-    }
+tk-game{
+  &, * {
+    transition: all .1s ease-out;
   }
 }
 
-
 tk-game {
-  --delay: 3s;
-
-  will-change: transform, margin-top, opacity;
-
-  transition: all .1s ease-out;
-
-  * {
-    transition: all .1s ease-out;
-  }
-
+  --delay: 0;
   transition-delay: var(--delay);
 
   .competitors {
     opacity: 1;
-  }
-
-  .competitors:not(:hover) {
     transition-delay: calc(var(--delay) + .4s);
+
+    & > * {
+      transition-delay: calc(var(--delay) + .8s);
+    }
   }
 
-  .competitors:not(:hover) > * {
-    transition-delay: calc(var(--delay) + .8s);
-    will-change: transform, margin-top, left, right, opacity;
+  &:is(.init,.game-end) {
+    transform: rotateX(0deg);
+
+    transition-delay: calc(var(--delay) + 1s);
+
+    .competitors {
+      opacity: 0;
+      transform: rotateX(0deg) translateY(-2em);
+
+      tk-cover-player {
+        left: 0
+      }
+
+      tk-cover-player.rtl {
+        left: auto;
+        right: 0
+      }
+
+      span.vs {
+        margin-top: 0
+      }
+    }
   }
+
+  &.stage-1 {
+    --delay: 3s;
+  }
+
+  &.game-end {
+    --delay: 0.5s;
+    transition-duration: .2s;
+
+    .competitors {
+      transition-delay: calc(var(--delay) + .4s);
+
+      * {
+        transition-delay: calc(var(--delay));
+      }
+    }
+  }
+
+}
+
+tk-game.running-turn-progress .competitors:before {
+  animation: circle 30s linear infinite,
+  progress 15s linear alternate infinite;
 }

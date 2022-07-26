@@ -6,7 +6,6 @@ tk-game {
   grid-template-rows: inherit;
   gap: .5em;
 
-  will-change: transform;
 
   transform: rotateX(45deg);
   transform-origin: bottom;
@@ -21,8 +20,34 @@ tk-game {
     transform-origin: bottom;
     transform: rotateX(-60deg) translateY(-2em);
 
+    &:before {
+      content: '';
+      --present: 10%;
+
+
+      transform: translateZ(-3em);
+
+      will-change: background-image;
+
+      --progress: clamp(10%, calc(var(--turn, 0) * 100%), 90%);
+      background-image: radial-gradient(circle at var(--progress) center, white 5%, transparent 10% 50%),
+      repeating-conic-gradient(
+                      from var(--deg) at var(--progress) center,
+                      hsl(0 0% 100%/.2) 0deg 10deg, hsl(0 0% 100% / 0) 10deg 20deg);
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+
+      display: block;
+      min-height: 4em;
+      inset: -1em;
+      position: absolute;
+      border-radius: var(--border-radius-medium);
+    }
+
 
     padding: 0.3em;
+    min-height: 2em;
+
 
     // no go - it change also the color of the background
     //filter: drop-shadow( -0.1em 0.1em 1em hsl(212deg 42% 40%) ) drop-shadow(0.1em -0.1em 1em hsl(212deg 42% 80%) );
@@ -34,6 +59,28 @@ tk-game {
       //-webkit-text-stroke: 0.1em var(--app-color-primary);
       text-shadow: 0 0 0.8em var(--app-color-primary);
     }
+
+    /*
+      <tk-cover-user> player right side style
+    ------------------------------------------------*/
+    tk-cover-player {
+      position: absolute;
+      bottom: 0em;
+
+      &:hover {
+        transform: rotateX(45deg);
+      }
+
+    }
+
+    tk-cover-player.rtl {
+      right: -.5em;
+    }
+
+    tk-cover-player:not(.rtl) {
+      left: -.5em;
+    }
+
   }
 
   .time-out-marker {
@@ -47,30 +94,10 @@ tk-game {
   //background-image: linear-gradient(45deg, #5f84af, #719dd0);;
   box-shadow: var(--app-color-neumorphism-shadow-2);
 
-  /*
-   <tk-cover-user> player right side style
-  ------------------------------------------------*/
-  tk-cover-player {
-    position: absolute;
-    top: -1em;
-
-    &:hover {
-      transform: rotateX(45deg);
-    }
-
-  }
-
-  tk-cover-player.rtl {
-    right: -.5em;
-  }
-
-  tk-cover-player:not(.rtl) {
-    left: -.5em;
-  }
 
 }
 
-tk-message:is(.vs-annotation-message,.game-end)  {
+tk-message:is(.vs-annotation-message,.game-end) {
   background-image: none;
   height: 100%;
   transform-origin: bottom;

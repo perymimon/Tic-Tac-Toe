@@ -1,10 +1,10 @@
 import './game.scss'
-import {useState, useRef, useLayoutEffect} from "react";
+import {useRef, useState} from "react";
 import {PlayerCover, PlayerName} from "./Player";
 import {Board} from "./Board";
 import {Message} from "./Message";
 import {noAnimBubble} from "helpers/no-bubble-helper";
-import {useApplyCssInit} from "helpers/use";
+import {useTimingsStages} from "helpers/use";
 import useCssClass from "@perymimon/react-hooks/useCssClass";
 
 const END = "END";
@@ -17,16 +17,21 @@ export function Game({gameModel, onRemove, onSelectTile}) {
     const gameDom = useRef();
     const [showSplash, setSplash] = useState(true);
 
-    useApplyCssInit(gameDom)
+    useTimingsStages(gameDom,[3400]) // use to set css states for flow anime
 
     const classString = useCssClass({
-        "game-end":stage === END
+        "game-end":stage === END,
+        "running-turn-progress":true,
     })
-
+    const properties = {
+        '--turn':turn,
+        '--nextTurn':nextTurn,
+        '--turnTime':turnTime
+    }
 
     return (
         <>
-            <tk-game ref={gameDom} class={classString}>
+            <tk-game ref={gameDom} class={classString} style={properties}>
                 <menu className="competitors">
                     <PlayerCover user={players[0]} class="player-1" />
                     <span className="vs">VS</span>

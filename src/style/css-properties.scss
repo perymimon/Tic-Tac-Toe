@@ -10,9 +10,21 @@
   initial-value: black;
 }
 
+@property --present {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --turn {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+
 :root {
   /*App colors - Generic Gradient*/
-
 
   --app-color-bg: #78BEC5;
   --app-color-bg: #6A93C2;
