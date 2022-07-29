@@ -80,10 +80,10 @@
 
 @keyframes charge-relocation {
   from {
-    transform: translate3d(calc(var(--dx) * 1px), calc(var(--dy) * 1px), 0) skewX(0deg)
+    transform: translate3d(calc(var(--dx) * 1px), 0, 0) skewX(0deg)
   }
   20%{
-    transform: translate3d(calc(var(--dx) * 1.5px), calc(var(--dy) * 1.5px), 0)
+    transform: translate3d(calc(var(--dx) * 1.2px), 0 , 0)
   }
   30% {
     transform: skewX(-20deg);

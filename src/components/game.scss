@@ -22,26 +22,35 @@ tk-game {
 
     &:before {
       content: '';
-      --present: 10%;
-
 
       transform: translateZ(-3em);
 
-      will-change: background-image;
+      will-change: translateZ(-3em), background-image;
 
-      --progress: clamp(10%, calc(var(--turn, 0) * 100%), 90%);
+      --progress: clamp(16%, calc(var(--turn, 0) * 100%), 84%);
+
+      transition: --turn 1s  linear ;
+
+      /* draw a sun */
+      -webkit-mask-image:
+              radial-gradient(circle closest-corner at var(--progress) center, black 30%, transparent 70%);
+
       background-image: radial-gradient(circle at var(--progress) center, white 5%, transparent 10% 50%),
       repeating-conic-gradient(
                       from var(--deg) at var(--progress) center,
-                      hsl(0 0% 100%/.2) 0deg 10deg, hsl(0 0% 100% / 0) 10deg 20deg);
-      background-size: 100% 100%;
+                      hsl(0 0% 100% /.2) 0deg 10deg,
+                      hsl(0 0% 100% / 0) 10deg 20deg,
+                      var(--player-color) 20deg 30deg
+       );
       background-repeat: no-repeat;
 
       display: block;
       min-height: 4em;
-      inset: -1em;
+      inset: -1.4em -2em;
       position: absolute;
       border-radius: var(--border-radius-medium);
+
+      //--progress: 18%;
     }
 
 

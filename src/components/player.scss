@@ -127,6 +127,10 @@ tk-cover-player {
   tk-player {
     row-gap: 0.1em;
 
+    grid-area: avatar;
+    margin-block-start: -0.2em;
+    margin-inline-start: -0.5em;
+
     [name="name"] {
       inset-block-start: 0.8em;
       position: relative;
@@ -149,14 +153,20 @@ tk-cover-player {
     z-index: 2;
     clip-path: polygon(-3em -3em, 10em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, 10em 10em, -3em 10em, -3em 10em, -3em 10em, -3em -3em, -3em -3em) !important;
 
-    tk-player svg {
-      width: 1.5em;
-      height: 1.5em;
-    }
+    //tk-player svg {
+    //  width: 1.5em;
+    //  height: 1.5em;
+    //}
+    //
+    //tk-player i {
+    //  font-size: 1.5em;
+    //}
 
-    tk-player i {
-      font-size: 1.5em;
-    }
+    //tk-player :is(i, svg){
+    //  margin-block-start: 0;
+    //  margin-inline-start: 0;
+    //}
+
 
     [name="name"] {
       inset-block-start: 0;

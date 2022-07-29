@@ -1,9 +1,20 @@
-tk-game{
+/* base transition speed and timing */
+tk-game {
   &, * {
     transition: all .1s ease-out;
   }
 }
 
+/* sun going circle  */
+tk-game {
+  .competitors:before {
+    animation: circle 30s linear infinite;
+  }
+}
+
+
+
+/* general thinks */
 tk-game {
   --delay: 0;
   transition-delay: var(--delay);
@@ -15,12 +26,11 @@ tk-game {
     & > * {
       transition-delay: calc(var(--delay) + .8s);
     }
+
   }
 
-  &:is(.init,.game-end) {
+  &:is(.init, .game-end) {
     transform: rotateX(0deg);
-
-    transition-delay: calc(var(--delay) + 1s);
 
     .competitors {
       opacity: 0;
@@ -42,16 +52,26 @@ tk-game {
   }
 
   &.stage-1 {
-    --delay: 3s;
+    --delay: 2s;
+
+    ::before {
+      --turn: 0.5;
+    }
   }
 
   &.game-end {
     --delay: 0.5s;
     transition-duration: .2s;
 
+    /* boar go last */
+    transition-delay: calc(var(--delay) + .8s);
+
+    /* <menu> fold after  */
     .competitors {
+      background-image: none;
       transition-delay: calc(var(--delay) + .4s);
 
+      /* 0 - player fold first */
       * {
         transition-delay: calc(var(--delay));
       }
@@ -60,7 +80,3 @@ tk-game {
 
 }
 
-tk-game.running-turn-progress .competitors:before {
-  animation: circle 30s linear infinite,
-  progress 15s linear alternate infinite;
-}

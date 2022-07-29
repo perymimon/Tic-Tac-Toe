@@ -57,7 +57,8 @@ tk-arena[phase="APPEAR"] {
 }
 
 tk-arena[phase="DISAPPEAR"] {
-  animation: puff 1s reverse both;
+  //position: absolute;
+  animation: puff .2s reverse both;
 }
 
 tk-arena[phase="SWAP"][ismove="true"]{

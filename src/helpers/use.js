@@ -29,5 +29,5 @@ export function useTimingsStages(ref, timings = [], classes = ['init']) {
         timings = [0, ...timings]
         nextStage(ref, 0, timings, classes)
 
-    }, [])
+    }, [ref.current])
 }

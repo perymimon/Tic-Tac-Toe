@@ -6,6 +6,9 @@ import {Message} from "./Message";
 import {noAnimBubble} from "helpers/no-bubble-helper";
 import {useTimingsStages} from "helpers/use";
 import useCssClass from "@perymimon/react-hooks/useCssClass";
+import usePrevious from "@perymimon/react-hooks/usePrevious";
+import {useLoginUser} from "../service/socket";
+import {rotateArray} from "../helpers/rotation-array";
 
 const END = "END";
 
@@ -16,26 +19,33 @@ export function Game({gameModel, onRemove, onSelectTile}) {
     const {players, board, turn, nextTurn, turnTime, stage} = gameModel;
     const gameDom = useRef();
     const [showSplash, setSplash] = useState(true);
+    const loginUser = useLoginUser();
+
+    const turnId = players[turn].id;
+    const rotateIndex = players.findIndex(p=> p.id === loginUser.id);
+    const rotationPlayers = rotateArray(players,rotateIndex);
+    const rotateTurn = (turn + rotateIndex) % players.length;
 
     useTimingsStages(gameDom,[3400]) // use to set css states for flow anime
-
+    const prevTurn = usePrevious(turn)
     const classString = useCssClass({
         "game-end":stage === END,
-        "running-turn-progress":true,
+        "player-1": rotateTurn === 0,
+        "player-2": rotateTurn === 1,
+
     })
     const properties = {
-        '--turn':turn,
-        '--nextTurn':nextTurn,
-        '--turnTime':turnTime
+        '--turnTime':turnTime,
+        '--turn':rotateTurn
     }
 
     return (
         <>
             <tk-game ref={gameDom} class={classString} style={properties}>
                 <menu className="competitors">
-                    <PlayerCover user={players[0]} class="player-1" />
+                    <PlayerCover user={rotationPlayers[0]} class="player-1" />
                     <span className="vs">VS</span>
-                    <PlayerCover user={players[1]} class="player-2" coverClass="rtl"/>
+                    <PlayerCover user={rotationPlayers[1]} class="player-2" coverClass="rtl"/>
                 </menu>
 
                 <Board board={board} onSelectTile={onSelectTile}/>

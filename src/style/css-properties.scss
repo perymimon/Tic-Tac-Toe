@@ -10,13 +10,20 @@
   initial-value: black;
 }
 
-@property --present {
+@property --progress {
   syntax: '<percentage>';
   inherits: true;
   initial-value: 50%;
 }
 
 @property --turn {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+
+@property --timeout {
   syntax: '<number>';
   inherits: true;
   initial-value: 0;
