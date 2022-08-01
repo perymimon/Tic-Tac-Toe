@@ -11,8 +11,34 @@ tk-game {
     animation: circle 30s linear infinite;
   }
 }
+/* timer behind the sun*/
+tk-game {
+  --timout:1;
 
+  &.player-1  {
+    animation: timeout calc( var(--turn-time) * 1s) ease-in forwards,  circle 30s linear infinite ;
+  }
+  &.player-2  {
+    animation: timeout-2 calc( var(--turn-time) * 1s) ease-in forwards,  circle 30s linear infinite;
+  }
+}
 
+@keyframes timeout{
+  1%{
+    --timeout:1;
+  }
+  to{
+    --timeout:0;
+  }
+}
+@keyframes timeout-2{
+  1%{
+    --timeout:1;
+  }
+  to{
+    --timeout:0;
+  }
+}
 
 /* general thinks */
 tk-game {

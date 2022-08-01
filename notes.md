@@ -16,6 +16,9 @@ to successfully import a module without `../` all around ( just in create-react 
 ## css effect list
 
 - mix-blend-mode : content with his background and elment's parent contant
+
+- filter: applies graphical effects like blur or color shift to an element. Filters are commonly used to adjust the rendering of images, backgrounds, and borders.
+
 - background-blend-mode : sets how an element's background images should blend with each other and with the element's background color.
 
   background-blend-mode: darken, luminosity;
@@ -32,3 +35,15 @@ to successfully import a module without `../` all around ( just in create-react 
   --turn-progress: calc(var(--turn, 0) + (1 - 2 * var(--turn)) * var(--timeout, 0) );
 - simple algo to rotation array
 - how splice k from end of array.
+- sun in just with background:
+
+  background-image: radial-gradient(circle at var(--progress) center, white 5%, transparent 10% 50%),
+  repeating-conic-gradient(
+  from var(--deg) at var(--progress) center,
+  hsl(0 0% 100% /.2) 0deg 10deg,
+  hsl(0 0% 100% / 0) 10deg 20deg,
+  var(--player-color) 20deg 30deg
+  ),
+
+  -webkit-mask-image: radial-gradient(circle closest-corner at var(--progress) center, black 30%, transparent 70%);
+- 

@@ -20,20 +20,20 @@ tk-game {
     transform-origin: bottom;
     transform: rotateX(-60deg) translateY(-2em);
 
+    /* background rotated sun */
     &:before {
       content: '';
 
       transform: translateZ(-3em);
 
-      will-change: translateZ(-3em), background-image;
+      will-change: translateZ, background-image;
 
       --progress: clamp(16%, calc(var(--turn, 0) * 100%), 84%);
 
-      transition: --turn 1s  linear ;
+      transition: --turn 1s linear;
 
       /* draw a sun */
-      -webkit-mask-image:
-              radial-gradient(circle closest-corner at var(--progress) center, black 30%, transparent 70%);
+      -webkit-mask-image: radial-gradient(circle closest-corner at var(--progress) center, black 30%, transparent 70%);
 
       background-image: radial-gradient(circle at var(--progress) center, white 5%, transparent 10% 50%),
       repeating-conic-gradient(
@@ -41,7 +41,8 @@ tk-game {
                       hsl(0 0% 100% /.2) 0deg 10deg,
                       hsl(0 0% 100% / 0) 10deg 20deg,
                       var(--player-color) 20deg 30deg
-       );
+      ),
+      ;
       background-repeat: no-repeat;
 
       display: block;
@@ -67,6 +68,28 @@ tk-game {
       margin-top: 0.8em;
       //-webkit-text-stroke: 0.1em var(--app-color-primary);
       text-shadow: 0 0 0.8em var(--app-color-primary);
+    }
+    /*
+      <tk-stopwatch>
+    -------------------------------------------------*/
+    tk-stopwatch{
+      //position: absolute;
+      //font-size:2em;
+      //top:-1em;
+      //color:var(--app-color-bg-shade-1);
+      //
+      //&:after{
+      //  content:'';
+      //  position:absolute;
+      //  inset:0;
+      //  filter: opacity(0.5);
+      //  -webkit-mask-image: radial-gradient(circle closest-side at center, black 80%, transparent 85%);
+      //  transition: background 0.1s linear;
+      //  background: conic-gradient(from -5deg at center,
+      //          var(--player-color) 10deg calc(10deg + var(--timeout) * 350deg), transparent 10deg
+      //  );
+      //}
+
     }
 
     /*

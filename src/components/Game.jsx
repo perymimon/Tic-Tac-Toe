@@ -9,6 +9,7 @@ import useCssClass from "@perymimon/react-hooks/useCssClass";
 import usePrevious from "@perymimon/react-hooks/usePrevious";
 import {useLoginUser} from "../service/socket";
 import {rotateArray} from "../helpers/rotation-array";
+import {StopWatch} from "./generic/StopWatch";
 
 const END = "END";
 
@@ -32,10 +33,9 @@ export function Game({gameModel, onRemove, onSelectTile}) {
         "game-end":stage === END,
         "player-1": rotateTurn === 0,
         "player-2": rotateTurn === 1,
-
     })
     const properties = {
-        '--turnTime':turnTime,
+        '--turn-time':turnTime,
         '--turn':rotateTurn
     }
 
@@ -44,13 +44,14 @@ export function Game({gameModel, onRemove, onSelectTile}) {
             <tk-game ref={gameDom} class={classString} style={properties}>
                 <menu className="competitors">
                     <PlayerCover user={rotationPlayers[0]} class="player-1" />
+                    {/*<tk-stopwatch><i className="fa-solid fa-stopwatch"></i></tk-stopwatch>*/}
+                    <StopWatch />
                     <span className="vs">VS</span>
                     <PlayerCover user={rotationPlayers[1]} class="player-2" coverClass="rtl"/>
                 </menu>
 
                 <Board board={board} onSelectTile={onSelectTile}/>
             </tk-game>
-
             <SplashScreen show={showSplash} gameModel={gameModel}
                           onAnimationEnd={noAnimBubble('xyz-out-keyframes', _=>setSplash(false))}/>
 
