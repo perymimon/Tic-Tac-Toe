@@ -6,7 +6,7 @@ const debug = require('debug')('arena')
 const victoryScore = 100;
 const lossScore = 0;
 const tieScore = 10;
-const turnTime = 60; // 5 sec
+const turnTime =  10 //sec
 
 
 module.exports = new class Arenas extends LetMap {
@@ -185,7 +185,7 @@ function nextPlayer() {
     model.nextTurn = (model.turn + 1) % 2;
 
     clearTimeout(turnTimer);
-    // this.turnTimer = setTimeout(nextPlayer.bind(this), model.turnTime * 1000);
+    this.turnTimer = setTimeout(nextPlayer.bind(this), model.turnTime * 1000);
 
 }
 
