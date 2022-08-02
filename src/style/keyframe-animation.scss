@@ -7,6 +7,15 @@
   }
 }
 
+@keyframes opacity {
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
+
 @keyframes present {
   0% {
     --present: 0%;
@@ -43,13 +52,13 @@
 
 @keyframes come-in {
   from {
-    box-shadow: 0px 0em 0em var(--player-color-shade-1);
+    box-shadow: 0 0 0 var(--player-color-shade-1);
   }
   80%, 100% {
     transform: translateZ(3em);
   }
   to {
-    box-shadow: 0px .4em .5em var(--player-color-shade-1);
+    box-shadow: 0 .4em .5em var(--player-color-shade-1);
   }
 }
 
