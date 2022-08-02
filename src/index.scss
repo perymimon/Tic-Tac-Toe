@@ -1,96 +1,21 @@
-*, svg {
-    box-sizing: border-box;
-    --sw-color: white;
-    --bg-color:#282c34c0;
-    --bg-color2:rgba(100, 100, 100, 0.4);
-}
-
-:not(input,button){
-    color: white;
-}
-img, svg, object {
-    max-width: 100%;
-}
+@import "./style/reset.scss";
+@import "@animxyz/core" layer(xyz-animation);
+@import "./fonts/fonts.css";
+@import "./style/css-properties.scss";
+@import "./style/button.scss";
+@import "./style/tk-error.scss";
+@import "./style/keyframe-animation.scss";
+@import "style/anime-manager.scss";
 
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 
-/* mixers */
-.font-1{
-    font-family: neuropol_xregular;
-}
-.font-2{
-    font-family:arcaderegular ;
-}
 
-.sw-color-1{
-    color: var(--sw-color);
-}
-.bg-color-1{
-    background-color: var(--bg-color);
-}
-.bg-color-2{
-    background-color: var(--bg-color2);
-}
 
-.text-style-1{
-    color: var(--sw-color);
-    font-family: neuropol_xregular;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4em;
-    font-weight: 700;
-}
-
-.text-style-2{
-    color: var(--bg-color);
-    background-color: var(--sw-color);
-    font-family: ponderosaregular;
-    padding: 0.1em;
-}
-
-.text-style-3{
-    color: var(--bg-color2);
-    background-color: var(--sw-color);
-    font-family: ponderosaregular;
-}
-
-.button-style-1{
-    display: block;
-    min-width: 4em;
-}
-/*
-    elements general style
-*/
-button {
-    background-color: #fff;
-    color: var(--bg-color);
-    text-transform: uppercase;
-    border-radius: 2em/.5em;
-    font-weight: 700;
-    font-size: 0.9em;
-    width: 6em;
-    height: 2em;
-    border: 0;
-    margin-top: .9em;
-}
-button:active {
-    outline: none;
-}
-
-:focus-visible, :focus {
-    outline: none;
-    border: 0.1em dashed black;
-    box-shadow: -2px -2px var(--sw-color),
-    -2px 2px var(--sw-color),
-    2px -2px var(--sw-color),
-    2px 2px var(--sw-color);
-}

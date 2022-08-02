@@ -1,0 +1,497 @@
+{ 
+	"outputFolder": "dist/",
+	"animations": 
+	[
+		{
+			"name": "bounceInRight",
+			"tension": 50,
+			"friction": 5,
+			"fadeIn": 150,
+			"hardBounce": true,
+			"bounceDamp": 0.4,
+			"properties": {
+				"translateX": { 
+					"start": 500, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "bounceInLeft",
+			"tension": 50,
+			"friction": 1,
+			"fadeIn": 150,
+			"hardBounce": true,
+			"bounceDamp": 0.4,
+			"properties": {
+				"translateX": { 
+					"start": -500, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "bounceInDown",
+			"tension": 50,
+			"friction": 1,
+			"fadeIn": 300,
+			"hardBounce": true,
+			"bounceDamp": 0.4,
+			"properties": {
+				"translateY": { 
+					"start": -500, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "bounceInDrop",
+			"tension": 30,
+			"friction": 1,
+			"fadeIn": 150,
+			"hardBounce": true,
+			"bounceDamp": 0.4,
+			"properties": {
+				"translateZ": { 
+					"start": 100, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "glideInRight",
+			"steps": 20,
+			"fadeIn": 300,
+			"tension": 25,
+			"friction": 10,
+			"hardBounce": false,
+			"properties": {
+				"translateX": { 
+					"start": 500, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "glideInLeft",
+			"steps": 20,
+			"fadeIn": 300,
+			"tension": 25,
+			"friction": 10,
+			"hardBounce": false,
+			"properties": {
+				"translateX": { 
+					"start": -500, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "glideInUp",
+			"steps": 20,
+			"fadeIn": 300,
+			"tension": 25,
+			"friction": 10,
+			"hardBounce": false,
+			"properties": {
+				"translateY": { 
+					"start": 500, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "glideInDown",
+			"steps": 20,
+			"fadeIn": 300,
+			"tension": 25,
+			"friction": 10,
+			"hardBounce": false,
+			"properties": {
+				"translateY": { 
+					"start": -500, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"steps": 25,
+			"name": "bounceInScale",
+			"tension": 30,
+			"friction": 5,
+			"hardBounce": false,
+			"bounceDamp": 0.5,
+			"fadeIn": 100,
+			"properties": {
+				"scaleX": { 
+					"start": 0, 
+					"end": 1.00 
+				},
+				"scaleY": { 
+					"start": 0, 
+					"end": 1.00 
+				}
+			}
+		},
+		{
+			"steps": 25,
+			"name": "bounceInScale2",
+			"tension": 10,
+			"friction": 3,
+			"hardBounce": false,
+			"initialVelocity": 20,
+			"fadeIn": 100,
+			"properties": {
+				"scaleX": { 
+					"start": 0, 
+					"end": 1.00 
+				},
+				"scaleY": { 
+					"start": 0, 
+					"end": 1.00 
+				}
+			}
+		},
+		{
+			"name": "springScaleOut",
+			"steps": 25,
+			"tension": 30,
+			"friction": 5,
+			"hardBounce": false,
+			"bounceDamp": 0.5,
+			"fadeOut": 500,
+			"properties": {
+				"scaleX": { 
+					"initialVelocity": 30,
+					"start": 1.00, 
+					"end": 0.00 
+				},
+				"scaleY": { 
+					"initialVelocity": 30,
+					"start": 1.00, 
+					"end": 0.00 
+				}
+			}
+		},
+		{
+			"name": "hoverJiggle",
+			"steps": 25,
+			"tension": 50,
+			"friction": 3,
+			"initialVelocity": 10,
+			"properties": {
+				"scaleX": { 
+					"start": 1.1,
+					"end": 1.00
+				},
+				"scaleY": { 
+					"start": 1.1, 
+					"end": 1.00
+				}
+			}
+		},
+		{
+			"name": "hoverJiggle2",
+			"steps": 25,
+			"tension": 50,
+			"friction": 3,
+			"initialVelocity": 10,
+			"properties": {
+				"rotate": { 
+					"start": 0.0,
+					"end": 0.0,
+					"initialVelocity": 360
+				},
+				"scaleX": { 
+					"start": 1.5,
+					"end": 1.00
+				},
+				"scaleY": { 
+					"start": 1.1, 
+					"end": 1.00
+				}
+			}
+		},
+		{
+			"name": "twirlIn",
+			"tension": 50,
+			"friction": 3,
+			"initialVelocity": 10,
+			"fadeIn": 300,
+			"properties": {
+				"rotateZ": { 
+					"friction": 2,
+					"start": 180.0,
+					"end": 0.0,
+					"initialVelocity": 180
+				},
+				"scaleX": { 
+					"start": 0.1,
+					"end": 1.00
+				},
+				"scaleY": { 
+					"start": 0.1, 
+					"end": 1.00
+				}
+			}
+		},
+		{
+			"name": "rubberband",
+			"tension": 80,
+			"friction": 3,
+			"properties": {
+				"scaleX": { 
+					"start": 1.25,
+					"end": 1.00,
+					"initialVelocity": 30
+				},
+				"scaleY": { 
+					"start": 0.75, 
+					"end": 1.00,
+					"initialVelocity": -1
+				}
+			}
+		},
+		{
+			"name": "jellyfall",
+			"tension": 120,
+			"friction": 7,
+			"hardBounce": true,
+			"bounceDamp": 0.3,
+			"fadeIn": 200,
+			"originX": 0.5,
+			"originY": 1.0,
+			"properties": {
+				"translateY": { 
+					"start": -300, 
+					"end": 0 
+				},
+				"scaleY": {
+					"tension": 40,
+					"hardBounce": false,
+					"friction": 1, 
+					"start": 1.5, 
+					"end": 1.00
+				},
+				"scaleX": {
+					"tension": 40, 
+					"hardBounce": false,
+					"friction": 1,
+					"start": 0.5, 
+					"end": 1.00
+				}
+			}
+		},
+		{
+			"name": "jellyfall2",
+			"tension": 120,
+			"friction": 5,
+			"hardBounce": true,
+			"bounceDamp": 0.25,
+			"fadeIn": 200,
+			"originX": 0.5,
+			"originY": 1.0,
+			"properties": {
+				"translateY": { 
+					"start": -300, 
+					"end": 0 
+				},
+				"scaleY": {
+					"tension": 40,
+					"hardBounce": false,
+					"friction": 10, 
+					"start": 1.5, 
+					"end": 1.00
+				},
+				"scaleX": {
+					"tension": 40, 
+					"hardBounce": false,
+					"friction": 10,
+					"start": 0.5, 
+					"end": 1.00
+				}
+			}
+		},
+		{
+			"steps": 25,
+			"name": "slideInRight",
+			"tension": 50,
+			"friction": 10,
+			"fadeIn": 200,
+			"originX": 0.0,
+			"originY": 1.0,
+			"properties": {
+				"translateX": { 
+					"start": 300, 
+					"end": 0 
+				},
+				"skewX": { 
+					"tension": 2,
+					"friction": 2,
+					"start": -45, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"steps": 25,
+			"name": "slideInLeft",
+			"tension": 50,
+			"friction": 10,
+			"fadeIn": 200,
+			"originX": 1.0,
+			"originY": 1.0,
+			"properties": {
+				"translateX": { 
+					"start": -300, 
+					"end": 0 
+				},
+				"skewX": { 
+					"tension": 2,
+					"friction": 2,
+					"start": 45, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "flipInLeft",
+			"tension": 30,
+			"friction": 5,
+			"hardBounce": false,
+			"bounceDamp": 0.5,
+			"fadeIn": 200,
+			"properties": {
+				"rotateY": { 
+					"start": -90, 
+					"end": 0.0
+				}
+			}
+		},
+		{
+			"name": "flipInRight",
+			"tension": 30,
+			"friction": 5,
+			"hardBounce": false,
+			"bounceDamp": 0.5,
+			"fadeIn": 200,
+			"properties": {
+				"rotateY": { 
+					"start": 90, 
+					"end": 0.0
+				}
+			}
+		},
+		{
+			"name": "flipInBottom",
+			"tension": 30,
+			"friction": 5,
+			"hardBounce": false,
+			"bounceDamp": 0.5,
+			"fadeIn": 200,
+			"properties": {
+				"rotateX": { 
+					"start": 90, 
+					"end": 0.0
+				}
+			}
+		},
+		{
+			"name": "flipInTop",
+			"tension": 30,
+			"friction": 5,
+			"hardBounce": false,
+			"bounceDamp": 0.5,
+			"fadeIn": 200,
+			"properties": {
+				"rotateX": { 
+					"start": -90, 
+					"end": 0.0
+				}
+			}
+		},
+		{
+			"name": "kitchenSink",
+			"tension": 20,
+			"friction": 3,
+			"fadeIn": 100,
+			"properties": {
+				"rotateX": { 
+					"start": -90, 
+					"end": 0.0
+				},
+				"rotateZ": { 
+					"start": -90, 
+					"end": 0.0
+				},
+				"scaleX": { 
+					"start": 0.1, 
+					"end": 1.00 
+				},
+				"scaleY": { 
+					"tension": 5,
+					"friction": 1,
+					"start": 0.1, 
+					"end": 1.00 
+				}
+			}
+		},
+		{
+			"name": "flyInBottom",
+			"tension": 10,
+			"friction": 5,
+			"fadeIn": 200,
+			"bounceDamp": 0.5,
+			"originX": 0.5,
+			"originY": 1.0,
+			"properties": {
+				"rotateX": { 
+					"start": 30, 
+					"end": 0.0
+				},
+				"translateZ": { 
+					"start": -100, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "flyInLeft",
+			"tension": 10,
+			"friction": 5,
+			"fadeIn": 200,
+			"bounceDamp": 0.5,
+			"originX": 0.5,
+			"originY": 1.0,
+			"properties": {
+				"rotateY": { 
+					"start": 30, 
+					"end": 0.0
+				},
+				"translateZ": { 
+					"start": -100, 
+					"end": 0 
+				}
+			}
+		},
+		{
+			"name": "flyInRight",
+			"tension": 10,
+			"friction": 5,
+			"fadeIn": 200,
+			"bounceDamp": 0.5,
+			"originX": 0.5,
+			"originY": 1.0,
+			"properties": {
+				"rotateY": { 
+					"start": -30, 
+					"end": 0.0
+				},
+				"translateZ": { 
+					"start": -100, 
+					"end": 0 
+				}
+			}
+		}
+	]
+}

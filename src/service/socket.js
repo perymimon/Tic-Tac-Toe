@@ -37,7 +37,6 @@ function createSocket(namespace) {
             'Access-Control-Allow-Origin': "*"
         }
     })
-    socket.binary(false) /*performance*/
     socket.onevent = socketEventWatcher;
     socket.connect();
     return socket
@@ -66,13 +65,13 @@ export function useSocket(nspEvent, defaultValue) {
         "event"     - for register listener under default ns `/`
      */
     const [nsp, key] = useMemo(() => nspEventKey(nspEvent), [nspEvent]);
-    const [, setValue] = useState(/*just for we have a trigger RENDER*/);
+    const [, forceRender] = useState(/*just for we have a trigger RENDER*/);
 
     useLayoutEffect(() => {
         const setters = eventsHooks.for(key)
-        setters.add(setValue)
+        setters.add(forceRender)
         return () => {
-            setters.delete(setValue)
+            setters.delete(forceRender)
         }
     }, [key])
     return [socketMemo.get(key) ?? defaultValue, sockets.for(nsp)];

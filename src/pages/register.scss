@@ -1,11 +1,4 @@
-@keyframes show-up {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
+
 
 .register-form.introduce-finish {
   animation: both show-up 1s 2s;

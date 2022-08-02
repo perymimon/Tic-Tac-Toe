@@ -492,7 +492,7 @@ scaling environment
 * no specific time-out `turnMarker` component, I just reuse `User` component on color view
  
 ##Sources
-This project start as challenge from TalkSpace Company that ask for implement Tick-Tac-Tour game.
+This project start as challenge from TalkSpace Company that ask for implement Tic-Tac-Toe game.
 
 ## Rights 
 All right reserve to pery mimon that this project created by him. 

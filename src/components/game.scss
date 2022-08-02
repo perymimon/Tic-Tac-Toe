@@ -1,0 +1,144 @@
+@import './game-transition.scss';
+
+tk-game {
+
+  display: grid;
+  grid-template-rows: inherit;
+  gap: .5em;
+
+
+  transform: rotateX(45deg);
+  transform-origin: bottom;
+
+  /* competitors
+    --------------------------------------------------*/
+  .competitors {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    transform-origin: bottom;
+    transform: rotateX(-60deg) translateY(-2em);
+
+    /* background rotated sun */
+    &:before {
+      content: '';
+
+      transform: translateZ(-3em);
+
+      will-change: translateZ, background-image;
+
+      --progress: clamp(16%, calc(var(--turn, 0) * 100%), 84%);
+
+      transition: --turn 1s linear;
+
+      /* draw a sun */
+      -webkit-mask-image: radial-gradient(circle closest-corner at var(--progress) center, black 30%, transparent 70%);
+
+      background-image: radial-gradient(circle at var(--progress) center, white 5%, transparent 10% 50%),
+      repeating-conic-gradient(
+                      from var(--deg) at var(--progress) center,
+                      hsl(0 0% 100% /.2) 0deg 10deg,
+                      hsl(0 0% 100% / 0) 10deg 20deg,
+                      var(--player-color) 20deg 30deg
+      ),
+      ;
+      background-repeat: no-repeat;
+
+      display: block;
+      min-height: 4em;
+      inset: -1.4em -2em;
+      position: absolute;
+      border-radius: var(--border-radius-medium);
+
+      //--progress: 18%;
+    }
+
+
+    padding: 0.3em;
+    min-height: 2em;
+
+
+    // no go - it change also the color of the background
+    //filter: drop-shadow( -0.1em 0.1em 1em hsl(212deg 42% 40%) ) drop-shadow(0.1em -0.1em 1em hsl(212deg 42% 80%) );
+    span.vs {
+      position: absolute;
+      z-index: 2;
+      font-size: 1.1em;
+      margin-top: 0.8em;
+      //-webkit-text-stroke: 0.1em var(--app-color-primary);
+      text-shadow: 0 0 0.8em var(--app-color-primary);
+    }
+    /*
+      <tk-stopwatch>
+    -------------------------------------------------*/
+    tk-stopwatch{
+      //position: absolute;
+      //font-size:2em;
+      //top:-1em;
+      //color:var(--app-color-bg-shade-1);
+      //
+      //&:after{
+      //  content:'';
+      //  position:absolute;
+      //  inset:0;
+      //  filter: opacity(0.5);
+      //  -webkit-mask-image: radial-gradient(circle closest-side at center, black 80%, transparent 85%);
+      //  transition: background 0.1s linear;
+      //  background: conic-gradient(from -5deg at center,
+      //          var(--player-color) 10deg calc(10deg + var(--timeout) * 350deg), transparent 10deg
+      //  );
+      //}
+
+    }
+
+    /*
+      <tk-cover-user> player right side style
+    ------------------------------------------------*/
+    tk-cover-player {
+      position: absolute;
+      bottom: 0em;
+
+      &:hover {
+        transform: rotateX(45deg);
+      }
+
+    }
+
+    tk-cover-player.rtl {
+      right: -.5em;
+    }
+
+    tk-cover-player:not(.rtl) {
+      left: -.5em;
+    }
+
+  }
+
+  .time-out-marker {
+    display: grid;
+  }
+
+  /* <tk-game> style */
+
+  border-radius: var(--border-radius-medium);
+
+  //background-image: linear-gradient(45deg, #5f84af, #719dd0);;
+  box-shadow: var(--app-color-neumorphism-shadow-2);
+
+
+}
+
+tk-message:is(.vs-annotation-message,.game-end) {
+  background-image: none;
+  height: 100%;
+  transform-origin: bottom;
+
+  tk-player {
+    width: 80%
+  }
+
+  &.xyz-out {
+    pointer-events: none;
+  }
+}

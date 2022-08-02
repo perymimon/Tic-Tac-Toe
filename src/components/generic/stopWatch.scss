@@ -1,0 +1,35 @@
+/*
+  <tk-stopwatch>
+-------------------------------------------------*/
+tk-stopwatch {
+  width: 1.5em;
+  top: -1.4em;
+  position: absolute;
+
+  svg {
+    fill: var(--app-color-bg-shade-1);
+    transform-box: fill-box;
+
+    [name="calipers"] {
+      fill: black;
+      transform: translateY(-2em) rotate(calc(var(--timeout) * 360deg));
+      transform-origin: bottom;
+      transform-box: fill-box;
+
+    }
+  }
+
+  /* make the color of the active player in the middle of the watch*/
+  &:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    filter: opacity(0.7);
+    -webkit-mask-image: radial-gradient(circle closest-side at 0.72em 1.05em, black 80%, transparent 85%);
+    transition: background 0.1s linear;
+    background: conic-gradient(from -1deg at 0.72em 1.05em,
+            var(--player-color) 10deg calc(var(--timeout) * 360deg), transparent 10deg
+    );
+    //background-size: 80%;
+  }
+}

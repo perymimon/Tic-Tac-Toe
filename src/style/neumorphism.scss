@@ -1,0 +1,12 @@
+.neu-flat {
+  box-shadow:
+      -0.1em -0.1em 1em hsl(0deg 0% 0% / 50%),
+      0.1em -0.2em 1em hsl(0deg 0% 100% / 50%);
+}
+
+.neu-raised {
+  background: linear-gradient(45deg, var(--bg-color-1), var(--bg-color-2));
+  box-shadow:
+      -0.1em -0.1em 1em hsl(0deg 0% 0% / 50%),
+      0.1em -0.2em 1em hsl(0deg 0% 100% / 50%);
+}

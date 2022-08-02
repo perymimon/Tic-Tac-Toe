@@ -1,51 +1,53 @@
 import React, {useEffect} from 'react';
 import './App.scss';
 import Register from './pages/register';
-import Arenas from './pages/arenas'
+import Arenas from './pages/arenas.jsx'
+import {isDev} from './helpers/environment.js';
 import ConnectionSVG from './images/connect2.inline.svg'
 import {
-    Switch,
+    Routes,
     Route,
-    useHistory
+    useNavigate
 } from "react-router-dom";
 
 import {useConnected, useLoginUser} from "./service/socket"
-import {User} from "./components/user-list";
+import {PlayerName} from "./components/Player";
 
 function App() {
     const user = useLoginUser()
     const isConnected = useConnected();
-    let history = useHistory();
+    let navigate  = useNavigate();
     useEffect(_=>{
-        history.push(user.id ? "/" : "/register", '');
-    },[history,user.id])
+        navigate(user.id ? "/" : "/register", '');
+    },[user.id])
 
     const connectionStyle = {
         ...isConnected ? {} : {filter: 'grayscale(1)'}
     }
-    const env = process.env.NODE_ENV ==='development'?'(dev)':'';
+    const env = isDev?'(dev)':'';
     return (
         <div className="App">
             <header className="app-header introduce-finish">
-                {user.id ? <User {...user} tagView/> :<span/>}
-                Tick Tac Toe {env}
-                <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}>
-                 <ConnectionSVG style={connectionStyle}/>
-                </span>
-                {/*<button onClick={sendMessage} >send message</button>*/}
+                {user.id ? <PlayerName user={user} /> :<span/>}
+                Tic Tac Toe {env}
+                <span className="connection-icon" title={isConnected?"socket connected":"socket disconnected"}/>
             </header>
             <main className="introduce-finish">
-                <Switch>
-                    <Route exact path="/register">
-                        <Register/>
-                    </Route>
-                    <Route path="/">
-                        <Arenas/>
-                    </Route>
-                </Switch>
+                <Routes>
+                    <Route exact path="/register" element={<Register/>} />
+                    <Route index element={<Arenas/>} />
+                </Routes>
             </main>
         </div>
     );
 }
 
 export default App;
+
+
+// CSS.registerProperty({
+//     name: '--degrees',
+//     syntax: '<angle>',
+//     inherits: false,
+//     initialValue: 'blue',
+// });

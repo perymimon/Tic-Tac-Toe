@@ -1,4 +1,4 @@
-const uid = require('uid');
+const {uid} = require('uid');
 const LetMap = require('./helpers/let-map');
 const ReactiveModel = require('../src/helpers/reactive-model');
 const debug = require('debug')('arena')
@@ -6,74 +6,76 @@ const debug = require('debug')('arena')
 const victoryScore = 100;
 const lossScore = 0;
 const tieScore = 10;
-const turnTime = 5; // 5 sec
+const turnTime =  10 //sec
 
 
-module.exports =
-    new class Arenas extends LetMap {
-        createGame(user1, user2) {
-            if (user1.model.disconnect || user2.model.disconnect)
-                return "can't challenge disconnected user";
+module.exports = new class Arenas extends LetMap {
+    createGame(user1, user2) {
+        if (user1.model.disconnect || user2.model.disconnect)
+            return "can't challenge disconnected user";
 
-            const game = new Game(user1, user2, turnTime);
-            this.set(game.id, game);
-            user1.arenas.add(game.id);
-            user2.arenas.add(game.id);
-            game.users = new Set([user1, user2])
+        const game = new Game(user1, user2, turnTime);
+        this.set(game.id, game);
+        user1.arenas.add(game.id);
+        user2.arenas.add(game.id);
+        game.users = new Set([user1, user2])
 
-            game.nsp = this.io.of(`game-${game.id}`);
-            debug(`created: namespace ${game.nsp.name}`)
-            const get = (userid) => [user1, user2].find(u => u.id === userid);
-            game.nsp.on('connect', function connectSocket(socket) {
-                /**  const userid = socket.handshake.query.uid; this way need browser reconnect */
-                const userid = socket.client.request._query.uid; /*this way share connection*/
-                if (![user1.id, user2.id].includes(userid)) return;
+        game.nsp = this.io.of(`game-${game.id}`);
+        debug(`created: namespace ${game.nsp.name}`)
 
-                game.model.observe(model => {
-                    const {stage, winner, loser, draw} = model;
-                    if (['END', 'CANCEL'].includes(stage)) {
-                        if (draw) {
-                            user1.model.score += tieScore
-                            user2.model.score += tieScore
-                        }
-                        if (winner) {
-                            get(winner).model.score += victoryScore;
-                            get(loser).model.score += lossScore;
-                        }
+        const getUser = (userid) => [user1, user2].find(u => u.id === userid);
+
+        game.nsp.on('connect', function connectSocket(socket) {
+            /**  const userid = socket.handshake.query.uid; this way need browser reconnect */
+            const userid = socket.client.request._query.uid; /*this way share connection*/
+            if (![user1.id, user2.id].includes(userid)) return;
+            if(game.model === undefined){
+                console.warn(game, 'game.model is undefined')
+            }
+            game.model.observe(gameModel => {
+                const {stage, winner, loser, draw} = gameModel;
+                if (['END', 'CANCEL'].includes(stage)) {
+                    if (draw) {
+                        user1.model.score += tieScore
+                        user2.model.score += tieScore
                     }
+                    if (winner) {
+                        getUser(winner).model.score += victoryScore;
+                        getUser(loser).model.score += lossScore;
+                    }
+                }
 
-                    socket.emit('update', model)
-                })
-                game.errors.for(userid).observe(errors => {
-                    socket.emit('game-errors', errors.map(eText => ({id: uid(), text: eText})));
-                    setTimeout(_ => errors.length = 0)
-                })
-                socket.on('cancel', () => game.cancel(userid))
-                socket.on('approve', () => game.approve(userid))
-                socket.on('playerSelectCell', (number) => game.selectCell(userid, number));
-
+                socket.emit('update', gameModel)
             })
+            game.errors.for(userid).observe(errors => {
+                socket.emit('game-errors', errors.map(eText => ({id: uid(), text: eText})));
+                setTimeout(_ => errors.length = 0)
+            })
+            socket.on('cancel', () => game.cancel(userid))
+            socket.on('approve', () => game.approve(userid))
+            socket.on('playerSelectCell', (number) => game.selectCell(userid, number));
 
-            tackingForUnused.call(this,game);
-            return game;
-        }
+        })
 
-
-
-        list() {
-            return [...this.values()];
-        }
-
-        attach(io) {
-            this.io = io;
-        }
-
+        tackingForUnused.call(this, game);
+        return game;
     }
 
-    //todo: simplify it
+
+    list() {
+        return [...this.values()];
+    }
+
+    attach(io) {
+        this.io = io;
+    }
+
+}
+
+//todo: simplify it
 function tackingForUnused(game) {
     const Users = require('./users');
-    const Arenas = module.exports ;
+    const Arenas = module.exports;
     game.users.forEach(user => {
         user.arenas.observe((action, gameId, dis) => {
             if (!user.arenas.has(game.id)) {
@@ -144,18 +146,18 @@ class Game {
     selectCell(userid, cellNumber) {
         const {model, errors} = this;
         if (model.stage !== 'GAME') return;
-        const {turn, playersId, board} = model;
+        const {playersId, board} = model;
         const userErrors = errors.for(userid);
         if (!model.isStarted || model.isCanceledBy)
             return userErrors.push(`game not started`)
         if (cellNumber < 0 && cellNumber > 8)
             return userErrors.push(`cell number ${cellNumber} is out of range`)
-        if (userid !== playersId[turn])
+        if (userid !== playersId[model.turn])
             return userErrors.push('not your turn')
-        if ([0, 1].includes(board[cellNumber])) {
+        if ([0, 1, 2].includes(board[cellNumber])) {
             return userErrors.push('cell not empty')
         }
-        board[cellNumber] = turn;
+        board[cellNumber] = model.turn;
         const {isDraw, isVictory} = checkEndSituation(model);
 
         if (isVictory || isDraw) {
@@ -163,8 +165,8 @@ class Game {
             model.stage = `END`;
 
             if (isVictory) {
-                model.winner = playersId[turn];
-                model.loser = playersId[(turn + 1) % 2];
+                model.winner = playersId[model.turn];
+                model.loser = playersId[(model.turn + 1) % 2];
             }
             if (isDraw) {
                 model.draw = true;

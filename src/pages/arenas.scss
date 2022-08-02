@@ -1,13 +1,15 @@
 tk-arenas {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat( auto-fill, 11em);
+  grid-auto-rows: max-content;
   align-content: flex-start;
+  gap: 1em;
 
   width: 100%;
   height: 100%;
-  gap: .1em;
-  border: 1px solid black;
   padding: 1em;
+
+
   @media (pointer: coarse) {
     /* custom css for "touch targets" */
     flex-flow: column nowrap;
@@ -15,153 +17,59 @@ tk-arenas {
     font-size: 2.3em;
   }
 
+  tk-challenge-board{
+    position: sticky;
+    top: 1em;
+  }
+
+  tk-game {
+    grid-row: 1/-1;
+    grid-column: 1/-1;
+  }
+
+  tk-invitation {
+    grid-row: 1/-1;
+    grid-column: 1/-1
+  }
+
+  tk-message {
+    grid-row: 1/-1;
+    grid-column: 1/-1
+  }
+
 }
 
 tk-arena {
-  background-color: var(--bg-color);
-  position: relative;
-  width: 10em;
-  height: 10em;
   display: grid;
-  grid-template-rows: 2em 1fr;
-  padding: 0.2em;
-  backdrop-filter: blur(1px);
+  //grid-template-rows: 2.5em 1fr;
+  align-items: center;
+  position: relative;
+
+  min-width: 10em;
+  min-height: 10em;
+
+  will-change: transition;
+
   @media (pointer: coarse) {
     /* custom css for "touch targets" */
     width: calc(100vmin - 0.2em);
     height: calc(100vmin - 0.2em);;
 
   }
-
-  h4 {
-    margin: 0;
-    font-family: neuropol_xregular;
-    font-size: 1.1em;
-    background: var(--sw-color);
+  .game-id{
+    color: var(--app-color-bg-shade-2);
+    /* font-size: 0.5em; */
+    box-shadow: var(--app-color-neumorphism-shadow-2);
+    position: absolute;
+    inset: auto 0 0;
+    background: var(--app-color-border-shade-1);
+    height: min-content;
+    font-family: monospace;
   }
 
-  tk-errors {
-    display: flex;
-    flex-flow: column-reverse;
-    overflow-y: auto;
-    pointer-events: none;
-    user-select: none;
-    height: 50%;
-    grid-row: 2/3;
-    grid-column: 1/-1;
-    bottom: 0;
-    //background-color: rebeccapurple;
-    align-self: end;
-
-  }
-
-  tk-error {
-    &:before {
-      content: "⚠";
-      font-size: 1.4em;
-      color: #8d8d1f;
-      margin: 0 .5em 0 0em;
-    }
-
-    pointer-events: none;
-    user-select: none;
-    text-transform: capitalize;
-    line-height: 1.5em;
-    font-size: .7em;
-    color: white;
-    font-family: neuropol_xregular;
-    animation: enter-out 4s ease-out both;
-  }
-
-  @keyframes enter-out {
-    from {
-      margin-bottom: -1.4em;
-      opacity: 0;
-    }
-    10% {
-      margin-bottom: 0em;
-      transform: translateY(-1em);
-      opacity: 1;
-    }
-    75% {
-      margin-bottom: 0;
-      transform: translateY(-1em);
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-      transform: translateY(-1em);
-      margin-bottom: 0;
-    }
-  }
-}
-
-toggle-button {
-  justify-self: flex-end;
-}
-
-tk-message {
-  grid-row: 1/-1;
-  grid-column: 1/-1;
-  -webkit-backdrop-filter: blur(1px);
-  backdrop-filter: blur(4px);
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  text-transform: capitalize;
 }
 
 
-tk-game {
-  grid-row: 1/-1;
-  grid-column: 1/-1;
 
-  .competitors {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
 
-  .time-out-marker {
-    display: grid;
 
-    tk-user {
-      grid-row: 1/1;
-      grid-column: 1/1;
-    }
-  }
-
-  .board {
-    display: grid;
-    justify-content: center;
-
-    div {
-      border: 1px solid black;
-      display: flex;
-      font-size: 1.2em;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      color: var(--cell-color);
-      background-color: var(--bg-color2);
-
-      &:active {
-        animation: activeCell 0.4s ease;
-      }
-
-      &:hover {
-        filter: brightness(120%);
-      }
-
-      @keyframes activeCell {
-        from {
-          background-color: var(--user-color);
-        }
-      }
-    }
-
-    grid-template-rows: repeat(3, 2.4em);
-    grid-template-columns: repeat(3, 2.4em);
-  }
-}
