@@ -6,11 +6,11 @@ import {useMemo} from "react";
 
 
 export function ChallengeBoard(props) {
-    const {players, onChallenge} = props;
+    const {onChallenge} = props;
     const [users] = useSocket('users-list', [])
     const user = useLoginUser();
 
-    const usersWithoutMe = useMemo(_ => users.filter(u => u.id != user.id), [users, user])
+    const usersWithoutMe = useMemo(_ => users.filter(u => u.id !== user.id), [users, user])
     /* make the challenge thake more span if needed. hope one day it can done just by css*/
     const properties = {
         'gridRowEnd': `span ${Math.ceil(users.length / 4)} `

@@ -29,5 +29,5 @@ export function useTimingsStages(ref, timings = [], classes = ['init']) {
         let t = [0, ...timings]
         nextStage(ref, 0, t, classes)
 
-    }, [ref.current])
+    }, [ref, classes, timings])
 }
