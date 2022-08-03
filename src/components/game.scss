@@ -24,11 +24,11 @@ tk-game {
     &:before {
       content: '';
 
-      transform: translateZ(-3em);
+      transform: translateZ(-5em);
 
-      will-change: translateZ, background-image;
+      will-change: background-image;
 
-      --progress: clamp(16%, calc(var(--turn, 0) * 100%), 84%);
+      --progress: clamp(12%, calc(var(--turn, 0) * 100%), 88%);
 
       transition: --turn 1s linear;
 

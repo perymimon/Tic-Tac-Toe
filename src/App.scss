@@ -1,78 +1,64 @@
-.App {
-  background-color: var(--app-color-bg);
-  color: var(--app-color-text);
-  font-family: var(--font-1);
+@layer components {
+  .App {
+    background-color: var(--app-color-bg);
+    color: var(--app-color-text);
+    font-family: var(--font-1);
 
-  text-align: center;
-  display: grid;
-  grid-template-rows: 5vh 95vh;
+    text-align: center;
+    display: grid;
+    grid-template-rows: 5vh 95vh;
 
-  *{
-    user-select: none;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.app-header {
-  background-color: var(--app-color-bg-shade-1);
-  font-family: var(--font-2);
-
-  min-height: 100vh;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  font-size: calc(10px + 5vmin);
-
-  z-index: 1;
-  padding: 0 0.5em;
-
-  tk-player{
-    font-size: 0.4em;
-    svg{
-      font-size: .9em !important;
+    * {
+      user-select: none;
     }
   }
-}
 
-.app-header.introduce-finish {
-  animation: shrink-up 1s 1s both;
+  .app-header {
+    background-color: var(--app-color-bg-shade-1);
+    font-family: var(--font-2);
 
-  tk-player{
-    animation: opacity .5s 1.7s both;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    justify-content: space-between;
+    font-size: calc(10px + 5vmin);
+
+    padding: 0 0.5em;
+
+    tk-player {
+      font-size: 0.4em;
+
+      svg {
+        font-size: .9em !important;
+      }
+    }
+  }
+
+  .app-header.introduce-finish {
+    animation: shrink-up 1s 1s both;
+
+    tk-player {
+      animation: opacity .5s 1.7s both;
+    }
+
+    .disconnect-icon {
+      animation: opacity .5s 2s both;
+    }
+  }
+
+  main {
+    display: flex;
+    overflow-y: auto;
+    place-items: center;
+    place-content: center;
   }
 
   .disconnect-icon {
-    animation: opacity .5s 2s both;
+    width: 1em;
+    height: 1em;
+    color: var(--app-color-text-error)
+
   }
-
-}
-
-main{
-  display: flex;
-  overflow-y: auto;
-}
-
-
-
-@keyframes shrink-up {
-  100%{
-    min-height: 1em;
-  }
-}
-.App-link {
-  color: #61dafb;
-}
-
-
-.disconnect-icon{
-  width: 1em;
-  height: 1em;
-  color:var(--app-color-text-error)
-
 }

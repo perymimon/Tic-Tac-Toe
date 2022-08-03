@@ -22,7 +22,7 @@ tk-message{
     //border-image:
     //        linear-gradient(163deg, #00ff75 0%, #3700ff 100%) 10 / 0.1em;
 
-    padding: 10px;
+    padding: 0.4em;
     border: 0.2em solid transparent;
     border-radius: var(--border-radius-medium);
 
@@ -31,3 +31,6 @@ tk-message{
 
 }
 
+//tk-message[waiting] {
+//    //background-color: var(--app-color-bg-shade-1);
+//}

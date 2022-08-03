@@ -62,6 +62,12 @@
   }
 }
 
+@keyframes shrink-up {
+  100%{
+    min-height: 1em;
+  }
+}
+
 @keyframes swing-in-top-bck {
   0% {
     transform: rotateX(70deg);

@@ -1,11 +1,15 @@
-@import "./style/reset.scss";
-@import "@animxyz/core" layer(xyz-animation);
+@layer  reset, components, animation, coarse;
+
+@import "./style/reset.scss" layer(reset);
+@import "@animxyz/core" layer(animation);
 @import "./fonts/fonts.css";
 @import "./style/css-properties.scss";
 @import "./style/button.scss";
 @import "./style/tk-error.scss";
 @import "./style/keyframe-animation.scss";
 @import "style/anime-manager.scss";
+@import "style/media-pointer-coarse.scss" (pointer: coarse) ;
+
 
 body {
   margin: 0;

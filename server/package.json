@@ -1,0 +1,36 @@
+{
+  "name": "tick-tac-toe-18",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "18.x",
+    "npm": "8.x"
+  },
+  "scripts": {
+    "server": "nodemon --inspect server",
+    "server:brk": "nodemon --inspect-brk server",
+    "server:production": "nodemon server",
+    "killnode": "taskkill /f /im node.exe"
+  },
+  "dependencies": {
+    "@perymimon/let-map": "^1.0.1-beta.2",
+    "@perymimon/timer": "^1.0.7",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1",
+    "uid": "^2.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

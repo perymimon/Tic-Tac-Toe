@@ -29,5 +29,6 @@ export function useTimingsStages(ref, timings = [], classes = ['init']) {
         let t = [0, ...timings]
         nextStage(ref, 0, t, classes)
 
-    }, [ref, classes, timings])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ref])
 }
