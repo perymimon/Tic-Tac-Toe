@@ -17,7 +17,7 @@ export default function Arenas() {
     const [arenasId] = useSocket('arenas', [])
     const user = useLoginUser();
 
-    const [arenasStates, traverse] = useAnimeManager(arenasId, null, {skipPhases: []});
+    const [, traverse] = useAnimeManager(arenasId, null, {skipPhases: []});
 
     function handleChallenge(u1) {
         if (user.id === u1.id) return;

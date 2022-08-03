@@ -6,7 +6,6 @@ import {Message} from "./Message";
 import {noAnimBubble} from "helpers/no-bubble-helper";
 import {useTimingsStages} from "helpers/use";
 import useCssClass from "@perymimon/react-hooks/useCssClass";
-import usePrevious from "@perymimon/react-hooks/usePrevious";
 import {useLoginUser} from "../service/socket";
 import {rotateArray} from "../helpers/rotation-array";
 import {StopWatch} from "./generic/StopWatch";
@@ -17,18 +16,17 @@ const END = "END";
 * <Game>
 * */
 export function Game({gameModel, onRemove, onSelectTile}) {
-    const {players, board, turn, nextTurn, turnTime, stage} = gameModel;
+    const {players, board, turn, turnTime, stage} = gameModel;
     const gameDom = useRef();
     const [showSplash, setSplash] = useState(true);
     const loginUser = useLoginUser();
 
-    const turnId = players[turn].id;
     const rotateIndex = players.findIndex(p=> p.id === loginUser.id);
     const rotationPlayers = rotateArray(players,rotateIndex);
     const rotateTurn = (turn + rotateIndex) % players.length;
 
     useTimingsStages(gameDom,[3400]) // use to set css states for flow anime
-    const prevTurn = usePrevious(turn)
+
     const classString = useCssClass({
         "game-end":stage === END,
         "player-1": rotateTurn === 0,
@@ -100,7 +98,7 @@ function End({gameModel, show, onRemove, ...otherProp}) {
     var {draw, winner, players} = gameModel;
 
     var wonPlayer = players.find(p => p.id === winner);
-    var message = draw && 'draw' || `${wonPlayer.name} Won`;
+    var message = draw? 'draw' : `${wonPlayer.name} Won`;
 
     return (
         <Message className="game-end" {...otherProp}>

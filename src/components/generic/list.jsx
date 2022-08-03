@@ -3,7 +3,7 @@ import {useAnimeManager} from '@perymimon/react-anime-manager'
 
 export default function List(props) {
     const {data, keyName, component, sortedKeys, style, ...otherProps} = props;
-    const [dataState, transitions] = useAnimeManager(data, keyName);
+    const [, transitions] = useAnimeManager(data, keyName);
 
     const items = transitions(({item, phase, done}, {dy, isMove}) => {
         const properties = {

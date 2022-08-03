@@ -2,7 +2,6 @@ import './register.scss'
 import React, {useEffect, useRef} from "react"
 import socket from "../service/socket";
 
-
 export default function RegisterPage(){
     const input = useRef();
     const button = useRef();

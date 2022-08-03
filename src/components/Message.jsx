@@ -2,7 +2,7 @@ import './message.scss'
 import useCssClass from "@perymimon/react-hooks/useCssClass";
 import useEventListener from "@perymimon/react-hooks/useEventListener";
 import useTimeout from "@perymimon/react-hooks/useTimeout";
-import {useEffect, useRef} from "react";
+import {useRef} from "react";
 
 export function Message({waiting,className="", children, ...otherProps}) {
     const classString = useCssClass({
