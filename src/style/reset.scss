@@ -64,3 +64,7 @@ img, svg, object {
 :focus-visible, :focus, button:hover, input:hover {
   outline: none;
 }
+
+input, textarea, [contenteditable]{
+  -webkit-user-select: text;
+}
