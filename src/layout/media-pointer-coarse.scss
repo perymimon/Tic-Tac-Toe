@@ -1,0 +1,33 @@
+.App{
+    font-size:2vw;
+}
+tk-challenge-board {
+    width: max-content;
+
+    ul{
+        width: max-content;
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+tk-arenas{
+    grid-template-columns: 1fr;
+    font-size: 2.3em;
+
+    tk-arena {
+
+    }
+}
+
+tk-message{
+    font-size: 8vw;
+}
+
+tk-game .competitors{
+    font-size:1.5em;
+}
+
+tk-board tk-tile{
+    font-size:2em;
+}

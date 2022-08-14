@@ -1,7 +1,9 @@
+import 'atoms/index.scss';
+
 import React from 'react';
-import './index.scss';
+
 import * as serviceWorker from './serviceWorker';
-import App from './App';
+import App from './app/App';
 import {BrowserRouter} from "react-router-dom";
 import {createRoot} from 'react-dom/client';
 

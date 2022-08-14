@@ -1,0 +1,11 @@
+/* <tk-tile>
+the player marker */
+tk-tile {
+  position: relative;
+
+  &:before {
+    position: absolute;
+    animation: bounceInScale2 1.850s linear 0s 1;
+
+  }
+}

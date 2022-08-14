@@ -1,9 +1,11 @@
-
 import io from 'socket.io-client';
 import {useLayoutEffect, useMemo, useState} from "react";
-import LetMap from '../helpers/let-map'
+// import LetMap from '../helpers/let-map'
+import {LetMap} from '@perymimon/let-map'
+
 /** enable Verbose on devtool logs to see that logs*/
 import debuggers from 'debug'
+
 const debug = debuggers("socket");
 /**********************************
 listen to all event under socket ns .
@@ -13,7 +15,7 @@ function socketEventWatcher({type, nsp, data}) {
     const [event, datum] = data;
     debug('Event Watcher', event, nsp, datum)
     const [, key] = nspEventKey(nsp, event);
-    const setters = eventsHooks.for(key)
+    const setters = eventsHooks.let(key)
     socketMemo.set(key, datum);
     setters.forEach(set => set(datum))
 }
@@ -47,7 +49,7 @@ const sockets = new LetMap(ns => createSocket(ns))
 const socketMemo = new LetMap(); // use it for events
 
 /* need to reconnect for query get place on the request*/
-socketMemo.on('/user', function (key, user) {
+socketMemo.on('/user', function ({key, value:user}) {
     debug('/user', user);
     if (localStorage.userId !== user.id) {
         localStorage.userId = user.id
@@ -56,7 +58,7 @@ socketMemo.on('/user', function (key, user) {
     }
 })
 
-const socket = window.socket = sockets.for('/')
+const socket = window.socket = sockets.let('/')
 
 export function useSocket(nspEvent, defaultValue) {
     /*****************
@@ -68,13 +70,13 @@ export function useSocket(nspEvent, defaultValue) {
     const [, forceRender] = useState(/*just for we have a trigger RENDER*/);
 
     useLayoutEffect(() => {
-        const setters = eventsHooks.for(key)
+        const setters = eventsHooks.let(key)
         setters.add(forceRender)
         return () => {
             setters.delete(forceRender)
         }
     }, [key])
-    return [socketMemo.get(key) ?? defaultValue, sockets.for(nsp)];
+    return [socketMemo.get(key) ?? defaultValue, sockets.let(nsp)];
 }
 
 export function useLoginUser() {

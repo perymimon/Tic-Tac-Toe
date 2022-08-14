@@ -1,0 +1,17 @@
+/* <tk-arena>
+ manger of channel section */
+tk-arena[phase="APPEAR"] {
+  animation: puff 1s normal both;
+}
+
+tk-arena[phase="DISAPPEAR"] {
+  //position: absolute;
+  animation: puff .2s reverse both;
+}
+
+tk-arena[phase="SWAP"][ismove="true"]{
+  transform-origin: left;
+  animation: charge-relocation 1s normal both;
+  //animation: slideInRight 1s normal both;
+
+}

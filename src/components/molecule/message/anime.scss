@@ -1,0 +1,30 @@
+tk-invitation {
+  animation: jellyfall2 2s linear 1;
+}
+
+/*
+  <tk-message>
+*/
+tk-message[waiting] {
+  animation: circle 5s linear infinite;
+}
+
+tk-message[attention] {
+  animation: outline-attention 2s 2s linear infinite alternate;
+
+  &:hover  {
+    animation-play-state: paused;
+  }
+
+  tk-player.user-inviting{
+    animation:
+            kitchenSink 3.633s none,
+            come-in 1s 2s forwards;
+  }
+
+  // make button seek for attention every X sec
+  &.poke button.primary {
+    animation: shakeY 1s linear 2;
+  }
+
+}

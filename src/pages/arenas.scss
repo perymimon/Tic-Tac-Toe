@@ -34,31 +34,6 @@
 
   }
 
-  tk-arena {
-    display: grid;
-    grid-template-rows: 1fr max-content 1em;
-    align-items: center;
-    position: relative;
 
-    min-width: 10em;
-    min-height: 10em;
-
-    will-change: transition;
-
-
-
-    .game-id {
-      color: var(--app-color-bg-shade-2);
-      /* font-size: 0.5em; */
-      box-shadow: var(--app-color-neumorphism-shadow-2);
-      /* position: absolute; */
-      /* inset: auto 0 0; */
-      background: var(--app-color-border-shade-1);
-      //height: min-content;
-      font-family: monospace;
-      user-select: text;
-    }
-
-  }
 
 }

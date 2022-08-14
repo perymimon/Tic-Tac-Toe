@@ -1,0 +1,46 @@
+@use '../../../atoms/@keyframes' as keyframes;
+
+header {
+  background-color: var(--app-color-bg-shade-1);
+  font-family: var(--font-2);
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  justify-content: space-between;
+  font-size: calc(10px + 5vmin);
+
+  padding: 0 0.5em;
+
+  tk-player {
+    font-size: 0.4em;
+
+    svg {
+      font-size: .9em !important;
+    }
+  }
+
+  &.introduce-finish {
+    animation: shrink-up 1s 1s both;
+
+    tk-player {
+      @extend .an-opacity;
+    }
+
+    .disconnect-icon {
+      @extend .an-opacity;
+      animation-delay: 2s;
+    }
+  }
+
+  .disconnect-icon {
+    width: 1em;
+    height: 1em;
+    color: var(--app-color-text-error)
+
+  }
+
+}
+

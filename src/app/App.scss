@@ -1,0 +1,28 @@
+@layer components {
+  tk-app {
+    background-color: var(--app-color-bg);
+    color: var(--app-color-text);
+    font-family: var(--font-1);
+
+    text-align: center;
+    display: grid;
+    grid-template-rows: 5vh 95vh;
+
+    * {
+      user-select: none;
+    }
+    input, textarea{
+      -webkit-user-select: text;
+      user-select: text;
+    }
+  }
+
+  main {
+    display: flex;
+    overflow-y: auto;
+    place-items: center;
+    place-content: center;
+  }
+
+
+}

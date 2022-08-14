@@ -8,8 +8,8 @@ var http = require('http').createServer(app);
 app.get('/', (req, res) => {
     res.send('server up')
 })
-const Users = require('./users');
-const Arenas = require('./games');
+const Users = require('./src/users');
+const Arenas = require('./src/games');
 
 /*Create One AI*/
 Users.create('bob', true)

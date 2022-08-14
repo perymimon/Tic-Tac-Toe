@@ -1,0 +1,38 @@
+@import './anime.scss';
+
+tk-message{
+    --deg: 0deg; /* define in css-properties.scss*/
+
+    backdrop-filter: blur(4px);
+
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+
+    text-transform: capitalize;
+
+    font-family: var(--font-1);
+
+    color: var(--app-color-text);
+
+    height: fit-content;
+
+    // easy approach but no border-radius 😔 :(
+    //border:  dashed ;
+    //border-image:
+    //        linear-gradient(163deg, #00ff75 0%, #3700ff 100%) 10 / 0.1em;
+
+    padding: 0.4em;
+    border: 0.2em solid transparent;
+    border-radius: var(--border-radius-medium);
+
+    background: linear-gradient(var(--app-color-bg-shade-2) 0 0) padding-box,
+    linear-gradient(var(--deg), var(--app-color-border-shade-1) 40%, var(--app-color-border-shade-2) 40%) border-box;
+
+}
+
+//tk-message[waiting] {
+//    //background-color: var(--app-color-bg-shade-1);
+//}

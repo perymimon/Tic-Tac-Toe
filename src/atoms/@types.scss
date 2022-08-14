@@ -1,0 +1,32 @@
+/*generate help by https://mycolor.space/?hex=%23DC685A&sub=1*/
+
+@property --deg {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+
+@property --progress {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --turn {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --color-1 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: black;
+}
+
+@property --timeout {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
