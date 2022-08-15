@@ -3,7 +3,7 @@ import {forwardRef, useImperativeHandle, useRef} from "react";
 import useEventListener from "@perymimon/react-hooks/useEventListener";
 
 export const Button = forwardRef(
-    function Button({children, onClick}, ref) {
+    function Button({children, onClick, ...otherProps}, ref) {
 
         const internalRef = useRef();
         useImperativeHandle(ref, () => internalRef.current);
@@ -13,7 +13,7 @@ export const Button = forwardRef(
         },internalRef)
 
         return (
-            <button onClick={onClick} ref={internalRef}>{children}</button>
+            <button onClick={onClick} ref={internalRef} {...otherProps}>{children}</button>
         )
     }
 )

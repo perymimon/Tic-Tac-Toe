@@ -112,7 +112,7 @@ function End({gameModel, show, onRemove, ...otherProp}) {
     return (
         <Message className="game-end" {...otherProp}>
             <span>{message}</span>
-            <Button onClick={onRemove}>OK</Button>
+            <Button className="primary" onClick={onRemove}>OK</Button>
         </Message>
     )
 }
