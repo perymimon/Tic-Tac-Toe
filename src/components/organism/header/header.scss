@@ -23,7 +23,7 @@ header {
   }
 
   &.introduce-finish {
-    animation: shrink-up 1s 1s both;
+    animation: height-shrink 1s 1s both;
 
     tk-player {
       @extend .an-opacity;

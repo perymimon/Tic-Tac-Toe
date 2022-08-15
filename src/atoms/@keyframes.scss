@@ -1,4 +1,4 @@
-.an-enter-and-out{
+.an-enter-and-out {
   animation: enter-and-out 0.5s ease-in-out;
 }
 
@@ -7,7 +7,7 @@
     transform: translateY(1.4em);
     opacity: 0;
   }
-  10% , 75%{
+  10%, 75% {
     transform: translateY(-1em);
     opacity: 1;
   }
@@ -19,7 +19,7 @@
 }
 
 
-.an-shakeY{
+.an-shakeY {
   animation: shakeY 1s ease-in-out both;
 }
 
@@ -37,8 +37,8 @@
   }
 }
 
-.an-text-blur-out{
-    animation: an-text-blur-out 1s 1.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+.an-text-blur-out {
+  animation: an-text-blur-out 1s 1.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 @keyframes text-blur-out {
@@ -52,9 +52,7 @@
 }
 
 
-
-
-.an-angry-error{
+.an-angry-error {
   animation: angry-enter 2s ease-out both;
 }
 
@@ -76,7 +74,7 @@
   }
 }
 
-.an-circle{
+.an-circle {
   animation: circle 1s linear infinite;
 }
 
@@ -88,30 +86,31 @@
     --deg: 360deg;
   }
 }
-.an-opacity{
+
+.an-opacity {
   animation: opacity .5s 1.7s both;
 }
 
 @keyframes opacity {
-  from{
+  from {
     opacity: 0;
   }
-  to{
+  to {
     opacity: 1;
   }
 }
 
-@keyframes timeout{
-  1%{
-    --timeout:1;
+@keyframes timeout {
+  1% {
+    --timeout: 1;
   }
-  to{
-    --timeout:0;
+  to {
+    --timeout: 0;
   }
 }
 
 
-.an-puff{
+.an-puff {
   animation: puff 1s ease-in-out both;
 }
 
@@ -126,7 +125,7 @@
   }
 }
 
-.an-outline-attention{
+.an-outline-attention {
   animation: outline-attention 1s ease-in-out both;
 }
 
@@ -141,11 +140,11 @@
   }
 }
 
-.an-come-in{
-    animation: come-in 1s ease-in-out both;
+.an-come-in {
+  animation: transform-z-up 1s ease-in-out both;
 }
 
-@keyframes come-in {
+@keyframes transform-z-up {
   from {
     box-shadow: 0 0 0 var(--player-color-shade-1);
   }
@@ -157,15 +156,15 @@
   }
 }
 
-.an-shring-up{
-  animation: shring-up 1s ease-in-out both;
+.height-shrink {
+  animation: height-shrink 1s ease-in-out both;
 }
 
-@keyframes shrink-up {
-  from{
+@keyframes height-shrink {
+  from {
     min-height: 100vh;
   }
-  100%{
+  100% {
     min-height: 1em;
   }
 }
@@ -183,16 +182,58 @@
   }
 }
 
+@keyframes trans-opacity-move {
+  from {
+    opacity: 1;
+    transform: translate3d(var(--dxpx), var(--dypx), 0) skewX(0deg)
+  }
+  50% {
+    opacity: 0;
+    transform: translate3d(calc(var(--dxpx) * 0.5 ), var(--dypx), 0) ;
+  }
+  52% {
+    opacity: 0;
+    transform: translate3d(calc(var(--dxpx) * 0.2 ), 0, 0) ;
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0), skewX(0deg);
+  }
+}
+@keyframes trans-opacity-move-2 {
+  from {
+    opacity: 1;
+    transform: translate3d(var(--dxpx), var(--dypx), 0) skewX(0deg)
+  }
+  50% {
+    opacity: 0;
+    transform: translate3d(calc(var(--dxpx)  - 100%  ), var(--dypx), 0) ;
+  }
+  52% {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0) ;
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0), skewX(0deg);
+  }
+}
 
-
-
+@keyframes trans-move {
+  from {
+    transform: translate3d(var(--dxpx), 0, 0) skewX(0deg)
+  }
+  to {
+    transform: translate3d(0, 0, 0), skewX(0deg);
+  }
+}
 
 @keyframes charge-relocation {
   from {
     transform: translate3d(calc(var(--dx) * 1px), 0, 0) skewX(0deg)
   }
-  20%{
-    transform: translate3d(calc(var(--dx) * 1.2px), 0 , 0)
+  20% {
+    transform: translate3d(calc(var(--dx) * 1.2px), 0, 0)
   }
   30% {
     transform: skewX(-20deg);

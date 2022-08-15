@@ -11,7 +11,11 @@ tk-arena[phase="DISAPPEAR"] {
 
 tk-arena[phase="SWAP"][ismove="true"]{
   transform-origin: left;
-  animation: charge-relocation 1s normal both;
-  //animation: slideInRight 1s normal both;
+  --dxpx: calc(var(--dx) * 1px);
+  --dypx: calc(var(--dy) * 1px);
+  animation: trans-move 1s normal both;
+}
 
+tk-arena.between-lines[phase="SWAP"][ismove="true"]{
+  animation: trans-opacity-move-2 1s normal both;
 }

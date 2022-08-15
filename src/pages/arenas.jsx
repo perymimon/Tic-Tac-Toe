@@ -28,7 +28,9 @@ export default function Arenas() {
         <ChallengeBoard onChallenge={handleChallenge}/>
 
         {traverse(({item: id, phase, done}, {isMove, dx, dy}) => {
-            return <Arena id={id}
+            var className = dy !== 0 ? 'between-lines' : '';
+
+            return <Arena id={id} className={className}
                           isMove={isMove}
                           style={{'--dx': dx, '--dy': dy,}}
                           phase={phase}
