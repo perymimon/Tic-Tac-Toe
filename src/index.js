@@ -1,4 +1,4 @@
-import 'atoms/index.scss';
+import 'index.scss';
 
 import React from 'react';
 

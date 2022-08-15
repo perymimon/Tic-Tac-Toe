@@ -1,13 +1,13 @@
 @layer  reset, components, animation, coarse;
 // assets
-@import "reset";
+@import "atoms/reset";
 @import 'animate.css';
-@import "@animxyz/core"
-layer(  animation);
+@import "../node_modules/@animxyz/core"
+layer(  animation );
 // app setting
-@import "css-properties";
-@import "@types";
-@import "@keyframes";
+@import "atoms/css-properties";
+@import "atoms/@types";
+@import "atoms/@keyframes";
 
 
 @import "assets/fonts/fonts.css";

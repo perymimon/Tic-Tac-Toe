@@ -113,7 +113,7 @@ tk-cover-player {
   width: 2.6em;
   height: 2.6em;
 
-  transition: all 0.2s ease-in-out;
+  transition: width,height 0.2s ease-in-out;
 
   clip-path: polygon(30% 0%, 70% 0%, 85% 15%, 200% 30%, 200% 70%, 85% 85%, 70% 100%, 30% 100%, 30% 100%, 0% 70%, 0% 30%, 30% 0%);
 

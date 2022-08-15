@@ -18,6 +18,9 @@ tk-game {
     transform-origin: bottom;
     transform: rotateX(-60deg) translateY(-2em);
 
+    //padding: 0.3em;
+    min-height: 2em;
+
     /* background rotated sun */
     &:before {
       content: '';
@@ -43,42 +46,15 @@ tk-game {
       border-radius: var(--border-radius-medium);
     }
 
-    padding: 0.3em;
-    min-height: 2em;
-
-
     // no go - it change also the color of the background
     //filter: drop-shadow( -0.1em 0.1em 1em hsl(212deg 42% 40%) ) drop-shadow(0.1em -0.1em 1em hsl(212deg 42% 80%) );
     span.vs {
       position: absolute;
       z-index: 2;
       font-size: 1.1em;
-      margin-top: 0.8em;
+      transform: translateY(0.8em);
       //-webkit-text-stroke: 0.1em var(--app-color-primary);
       text-shadow: 0 0 0.8em var(--app-color-primary);
-    }
-
-    /*
-      <tk-stopwatch>
-    -------------------------------------------------*/
-    tk-stopwatch {
-      //position: absolute;
-      //font-size:2em;
-      //top:-1em;
-      //color:var(--app-color-bg-shade-1);
-      //
-      //&:after{
-      //  content:'';
-      //  position:absolute;
-      //  inset:0;
-      //  filter: opacity(0.5);
-      //  -webkit-mask-image: radial-gradient(circle closest-side at center, black 80%, transparent 85%);
-      //  transition: background 0.1s linear;
-      //  background: conic-gradient(from -5deg at center,
-      //          var(--player-color) 10deg calc(10deg + var(--timeout) * 350deg), transparent 10deg
-      //  );
-      //}
-
     }
 
     /*
@@ -95,11 +71,13 @@ tk-game {
     }
 
     tk-cover-player.rtl {
-      right: -.5em;
+      right: 0;
+      transform:translateX(.5em);
     }
 
     tk-cover-player:not(.rtl) {
-      left: -.5em;
+      left: 0;
+      transform:translateX(-.5em);
     }
 
   }

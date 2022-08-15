@@ -1,34 +1,32 @@
-/* sun going circle  */
 tk-game {
-  .competitors:before {
-    animation: circle 30s linear infinite;
+  /* timer behind the sun*/
+  --timout: 1;
+  animation: timeout calc(var(--turn-time) * 1s) ease-in forwards, circle 30s linear infinite;
+  /* Fold in and out animation */
+  --delay: 0s;
+  --timeline-marker: 0s;
+
+
+  &, .competitors, .competitors > * {
+    transition: all 0.2s linear;
+    transition-property: transform, opacity;
+    transition-delay: calc(var(--delay) + var(--timeline-marker));
+    //--timeline-marker: .8s;
+
   }
-}
-/* timer behind the sun*/
-tk-game {
-  --timout:1;
-  animation: timeout calc( var(--turn-time) * 1s) ease-in forwards,  circle 30s linear infinite ;
-}
-/* Moving the sun from player to player (left and right) */
-tk-game  .competitors:before{
-  transition: --turn 1s linear; // --turn is update by js
-  --progress: clamp(12%, calc(var(--turn, 0) * 100%), 88%);
-}
-
-
-/* Fold in and out animation */
-tk-game {
-  --delay: 0;
-  transition-delay: var(--delay);
 
   .competitors {
     opacity: 1;
-    transition-delay: calc(var(--delay) + .4s);
+    --timeline-marker: .4s;
+  }
 
-    & > * {
-      transition-delay: calc(var(--delay) + .8s);
-    }
-
+  .competitors:before {
+    /* Moving Sun from player to player (left and right) */
+    transition: 1s linear; // --turn is update by js
+    transition-property: --turn;
+    /* sun going circle  */
+    animation: circle 30s linear infinite;
+    --progress: clamp(12%, calc(var(--turn, 0) * 100%), 88%);
   }
 
   &:is(.init, .game-end) {
@@ -38,17 +36,16 @@ tk-game {
       opacity: 0;
       transform: rotateX(0deg) translateY(-2em);
 
-      tk-cover-player {
-        left: 0
+      tk-cover-player{
+        transform:translateX(0em) !important;
       }
 
-      tk-cover-player.rtl {
-        left: auto;
-        right: 0
+      tk-stopwatch {
+        opacity: 0;
       }
 
       span.vs {
-        margin-top: 0
+        transform: translateY(0em);
       }
     }
   }
@@ -65,20 +62,29 @@ tk-game {
     --delay: 0.5s;
     transition-duration: .2s;
 
-    /* boar go last */
-    transition-delay: calc(var(--delay) + .8s);
+    /* board go last */
+    --timeline-marker: .8s;
 
     /* <menu> fold after  */
     .competitors {
-      background-image: none;
-      transition-delay: calc(var(--delay) + .4s);
+      --timeline-marker: .4s;
+
+
+      &:before {
+        animation: blank-content calc(var(--delay) + 1s) steps(1, end) forwards;
+      }
 
       /* 0 - player fold first */
       * {
-        transition-delay: calc(var(--delay));
+        --timeline-marker: 0s;
       }
     }
   }
-
 }
 
+
+@keyframes blank-content {
+  to {
+    content: unset;
+  }
+}
