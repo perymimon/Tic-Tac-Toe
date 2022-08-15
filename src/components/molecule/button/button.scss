@@ -32,6 +32,15 @@ button {
   }
 }
 
+@keyframes button-active {
+  80%{
+    --color-1: transparent;
+  }
+  100% {
+    --deg: -720deg;
+    --color-1: var(--color-2);
+  }
+}
 
 button.primary {
   --color: var(--app-color-primary);
@@ -51,12 +60,3 @@ button.secondary {
   --color-2: var(--app-color-secondry);
 }
 
-@keyframes button-active {
-  80%{
-    --color-1: transparent;
-  }
-  100% {
-    --deg: -720deg;
-    --color-1: var(--color-2);
-  }
-}

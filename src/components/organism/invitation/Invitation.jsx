@@ -3,6 +3,7 @@ import './invitation.scss';
 import {PlayerName} from "../../molecule/player/Player";
 import {Message} from "../../molecule/message/Message";
 import {useRun} from "@perymimon/react-hooks";
+import {Button} from "../../molecule/button/button";
 
 const INVITATION = "INVITATION", CANCEL = "CANCEL";
 
@@ -19,8 +20,8 @@ export function Invitation({gameModel, onApprove, onCancel, onRemove}) {
                     /*  invited  */
                     <Message attention key={1}>
                         dual against <PlayerName user={by} className="user-inviting"/>
-                        <button className="primary" onClick={onApprove}>approve</button>
-                        <button className="secondary" onClick={onCancel}>decline</button>
+                        <Button className="primary" onClick={onApprove}>approve</Button>
+                        <Button className="secondary" onClick={onCancel}>decline</Button>
                     </Message>
                 )
 

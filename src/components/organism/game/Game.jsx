@@ -9,6 +9,7 @@ import useCssClass from "@perymimon/react-hooks/css/useCssClass";
 import {useLoginUser} from "service/socket";
 import {rotate} from "@perymimon/js-tools-belt";
 import {StopWatch} from "components/molecule/stop-watch/StopWatch";
+import {Button} from "components/molecule/button/button";
 
 const END = "END";
 
@@ -58,7 +59,7 @@ export function Game({gameModel, onRemove, onSelectTile}) {
 
                 <Board board={board} onSelectTile={onSelectTile}/>
             </tk-game>
-            <SplashScreen show={showSplash} gameModel={gameModel}
+            <SplashScreen show={stage !== END && showSplash} gameModel={gameModel}
                           onAnimationEnd={noAnimBubble('xyz-out-keyframes', _ => setSplash(false))}/>
 
             <End show={stage === END} gameModel={gameModel} onRemove={onRemove}/>
@@ -111,7 +112,7 @@ function End({gameModel, show, onRemove, ...otherProp}) {
     return (
         <Message className="game-end" {...otherProp}>
             <span>{message}</span>
-            <button onClick={onRemove}>OK</button>
+            <Button onClick={onRemove}>OK</Button>
         </Message>
     )
 }

@@ -47,3 +47,6 @@ to successfully import a module without `../` all around ( just in create-react 
 
   -webkit-mask-image: radial-gradient(circle closest-corner at var(--progress) center, black 30%, transparent 70%);
 - 
+
+## react are broke
+- they not thinking about forward ref with the need of internally ref

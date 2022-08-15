@@ -1,6 +1,7 @@
 import './register.scss'
 import React, {useEffect, useRef} from "react"
 import socket from "../service/socket";
+import {Button} from "../components/molecule/button/button";
 
 export default function RegisterPage(){
     const input = useRef();
@@ -27,7 +28,7 @@ export default function RegisterPage(){
         <form onSubmit={handleSubmit}>
             <h5>Put Your Name</h5>
             <input autoFocus autoComplete="off" ref={input} minLength="2" maxLength="4" placeholder="2-4 letters" type="text" name="playerName" />
-            <button ref={button}>Submit</button>
+            <Button ref={button}>Submit</Button>
         </form>
     </div>)
 
