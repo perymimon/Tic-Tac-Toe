@@ -17,7 +17,7 @@ const END = "END";
 * <Game>
 * */
 export function Game({gameModel, onRemove, onSelectTile}) {
-    const {players, board, turn, turnTime, stage} = gameModel;
+    const {players, board, turn, turnTime, stage, id} = gameModel;
     const gameDom = useRef();
     const [showSplash, setSplash] = useState(true);
     const loginUser = useLoginUser();
@@ -58,6 +58,7 @@ export function Game({gameModel, onRemove, onSelectTile}) {
                 </menu>
 
                 <Board board={board} onSelectTile={onSelectTile}/>
+                <div className="game-id">{id}</div>
             </tk-game>
             <SplashScreen show={stage !== END && showSplash} gameModel={gameModel}
                           onAnimationEnd={noAnimBubble('xyz-out-keyframes', _ => setSplash(false))}/>

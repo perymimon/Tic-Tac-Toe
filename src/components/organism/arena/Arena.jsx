@@ -68,7 +68,7 @@ export const Arena = forwardRef(
                 <tk-errors>
                     {gameErrors.map((e, i) => <tk-error key={e.id}>{e.text}</tk-error>)}
                 </tk-errors>
-                <div className="game-id">{id}</div>
+
             </tk-arena>
         )
     }
