@@ -6,16 +6,21 @@ import * as serviceWorker from './serviceWorker';
 import App from './app/App';
 import {BrowserRouter} from "react-router-dom";
 import {createRoot} from 'react-dom/client';
+import { Debug } from 'components/organism/debug';
 
 const rootContainer = document.getElementById('root');
 const root = createRoot(rootContainer);
+ // <React.StrictMode>
 root.render(
-    // <React.StrictMode>
+    <>
         <BrowserRouter>
             <App/>
         </BrowserRouter>
-    // </React.StrictMode>
+        <Debug />
+    </>
 )
+// </React.StrictMode>
+
 
 
 // If you want your app to work offline and load faster, you can change
