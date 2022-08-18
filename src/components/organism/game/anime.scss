@@ -3,41 +3,55 @@ tk-game {
   --timout: 1;
   animation: timeout calc(var(--turn-time) * 1s) ease-in forwards, circle 30s linear infinite;
   /* Fold in and out animation */
-  --delay: 0s;
+  --base-delay: 0s;
   --timeline-marker: 0s;
 
-
-  &, .competitors, .competitors > * {
-    transition: all 0.2s linear;
-    transition-property: transform, opacity;
-    transition-delay: calc(var(--delay) + var(--timeline-marker));
-    //--timeline-marker: .8s;
-
+  tk-board:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(0);
+    pointer-events: none;
+    transition: backdrop-filter 0.2s ease-in-out;
   }
 
-  .competitors {
+
+  &,
+  * {
+    transition: all 0.2s linear;
+    transition-property: transform, opacity, clip-path;
+    transition-delay: calc(var(--base-delay) + var(--timeline-marker));
+    //--timeline-marker: .8s;
+  }
+
+  menu {
     opacity: 1;
     --timeline-marker: .4s;
+
+    &:before {
+      /* Moving Sun from player to player (left and right) */
+      transition: 1s linear; // --turn is update by js
+      transition-property: --turn;
+      /* sun going circle  */
+      animation: circle 30s linear infinite;
+      --progress: clamp(12%, calc(var(--turn, 0) * 100%), 88%);
+    }
+    tk-cover-player {
+      --timeline-marker: 0s;
+    }
+
   }
 
-  .competitors:before {
-    /* Moving Sun from player to player (left and right) */
-    transition: 1s linear; // --turn is update by js
-    transition-property: --turn;
-    /* sun going circle  */
-    animation: circle 30s linear infinite;
-    --progress: clamp(12%, calc(var(--turn, 0) * 100%), 88%);
-  }
 
-  &:is(.init, .game-end) {
+  &.init {
     transform: rotateX(0deg);
 
     .competitors {
       opacity: 0;
       transform: rotateX(0deg) translateY(-2em);
 
-      tk-cover-player{
-        transform:translateX(0em) !important;
+      tk-cover-player {
+        transform: translateX(0em) !important;
       }
 
       tk-stopwatch {
@@ -50,41 +64,82 @@ tk-game {
     }
   }
 
+  /*
+    GAME OVER - folding animation
+    ---------------------------------------------*/
+  &.game-over {
+    transform: rotateX(0deg);
+
+    --base-delay: 0.1s;
+    transition-duration: .2s;
+    /* board go last */
+    --timeline-marker: 0s;
+
+    tk-board:after {
+      backdrop-filter: blur(0.1em);
+      pointer-events: all;
+    }
+
+    menu {
+      --timeline-marker: 0s;
+
+      * {
+        --timeline-marker: .4s;
+      }
+
+      &:before {
+        animation: none; // remove background animation
+        content: unset; // remove background
+      }
+
+      opacity: 1;
+      transform: translateZ(0.1em) rotateX(0deg) translateY(1em);
+
+    }
+
+    tk-stopwatch,
+    .vs {
+      opacity: 0;
+      --timeline-marker: .2s;
+    }
+
+    /*  show just the winner player */
+
+    tk-cover-player {
+      transform: translateX(0em) !important;
+
+      :hover {
+        transform: none !important;
+      }
+    }
+
+    tk-cover-player.winner {
+      opacity: 1;
+      clip-path: polygon(-30em -30em, 30em -30em, 30em -30em, 30em -30em, 30em 30em, 30em 30em, 30em 30em, -30em 30em, -30em 30em, -30em 30em, -30em -30em, -30em -30em) !important;
+      transform: translateX(var(--tX)) translateZ(10px) translateY(2em) !important;
+    }
+
+    tk-cover-player:not(.winner) {
+      filter: grayscale(80%)
+    }
+
+    tk-cover-player:not(.rtl) {
+      --tX: 3.5em;
+    }
+
+    tk-cover-player.rtl {
+      --tX: -3.5em;
+    }
+
+
+  }
+
   &.stage-1 {
-    --delay: 2s;
+    --base-delay: 2s;
 
     ::before {
       --turn: 0.5;
     }
   }
 
-  &.game-end {
-    --delay: 0.5s;
-    transition-duration: .2s;
-
-    /* board go last */
-    --timeline-marker: .8s;
-
-    /* <menu> fold after  */
-    .competitors {
-      --timeline-marker: .4s;
-
-
-      &:before {
-        animation: blank-content calc(var(--delay) + 1s) steps(1, end) forwards;
-      }
-
-      /* 0 - player fold first */
-      * {
-        --timeline-marker: 0s;
-      }
-    }
-  }
-}
-
-
-@keyframes blank-content {
-  to {
-    content: unset;
-  }
 }

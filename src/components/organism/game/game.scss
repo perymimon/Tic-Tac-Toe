@@ -1,22 +1,25 @@
-@import 'anime';
-
 tk-game {
   display: grid;
   grid-template-rows: inherit;
-  gap: .5em;
+  // gap: .5em;
 
   transform: rotateX(45deg);
   transform-origin: bottom;
 
+  border-radius: var(--border-radius-medium);
+
+  //background-image: linear-gradient(45deg, #5f84af, #719dd0);;
+  box-shadow: var(--app-color-neumorphism-shadow-2);
+
   /* competitors
     --------------------------------------------------*/
-  .competitors {
+  menu {
     display: flex;
     flex-direction: row;
     justify-content: center;
 
     transform-origin: bottom;
-    transform: rotateX(-60deg) translateY(-2em);
+    transform: translateZ(0.1em) rotateX(-60deg) translateY(-2em);
 
     //padding: 0.3em;
     min-height: 2em;
@@ -31,12 +34,10 @@ tk-game {
       -webkit-mask-image: radial-gradient(circle closest-corner at var(--progress) center, black 30%, transparent 70%);
 
       background-image: radial-gradient(circle at var(--progress) center, white 5%, transparent 10% 50%),
-      repeating-conic-gradient(
-                      from var(--deg) at var(--progress) center,
-                      hsl(0 0% 100% /.2) 0deg 10deg,
-                      hsl(0 0% 100% / 0) 10deg 20deg,
-                      var(--player-color) 20deg 30deg
-      );
+        repeating-conic-gradient(from var(--deg) at var(--progress) center,
+          hsl(0 0% 100% /.2) 0deg 10deg,
+          hsl(0 0% 100% / 0) 10deg 20deg,
+          var(--player-color) 20deg 30deg);
       background-repeat: no-repeat;
 
       display: block;
@@ -63,21 +64,22 @@ tk-game {
     tk-cover-player {
       position: absolute;
       bottom: 0em;
+      transform: translate3d(var(--dx, 0), var(--dy, 0), var(--dz, 0)) rotateX(var(--ax, 0));
 
       &:hover {
-        transform: rotateX(45deg);
+        --ax: 45deg;
       }
 
     }
 
     tk-cover-player.rtl {
       right: 0;
-      transform: translateX(.5em);
+      --dx: 0.5em;
     }
 
     tk-cover-player:not(.rtl) {
       left: 0;
-      transform: translateX(-.5em);
+      --dx: -0.5em;
     }
 
   }
@@ -86,14 +88,6 @@ tk-game {
     display: grid;
   }
 
-  /* <tk-game> style */
-
-  border-radius: var(--border-radius-medium);
-
-  //background-image: linear-gradient(45deg, #5f84af, #719dd0);;
-  box-shadow: var(--app-color-neumorphism-shadow-2);
-
-  //<game-id>
   .game-id {
     color: var(--app-color-bg-shade-1);
     font-family: monospace;
@@ -101,7 +95,7 @@ tk-game {
   }
 }
 
-tk-message:is(.vs-annotation-message,.game-end) {
+tk-message:is(.vs-annotation-message, .game-over) {
   background-image: none;
   height: 100%;
   transform-origin: bottom;
@@ -114,5 +108,14 @@ tk-message:is(.vs-annotation-message,.game-end) {
     pointer-events: none;
   }
 
+
+}
+
+.game-over-anotation {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  inset: auto 0;
+  bottom: 0;
 
 }
