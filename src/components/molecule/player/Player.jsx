@@ -75,3 +75,11 @@ export function PlayerName({className = "", ...basicProps}) {
     return <Player {...basicProps} showName className={classesString}/>
 }
 
+export function PlayerHead({className = "", ...basicProps}) {
+    const classesString = useCssClass({
+        'just-head': true,
+        [className]: true,
+    });
+    return <Player {...basicProps} showTag={false} showName={false} className={classesString}/>
+}
+

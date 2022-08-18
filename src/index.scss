@@ -1,29 +1,15 @@
-@layer  reset, components, animation, coarse;
+@layer  reset, component, animation, coarse;
 // assets
 @import "atoms/reset";
-@import 'animate.css';
-@import "../node_modules/@animxyz/core"
+@import 'animate.css' layer(  animation );
+@import "@animxyz/core"
 layer(  animation );
 // app setting
 @import "atoms/css-properties";
 @import "atoms/@types";
 @import "atoms/@keyframes";
 
-
 @import "assets/fonts/fonts.css";
 @import "components/molecule/button/button";
 @import "components/molecule/error/tk-error";
 @import "layout/media-pointer-coarse.scss" (pointer: coarse) ;
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-
-
-

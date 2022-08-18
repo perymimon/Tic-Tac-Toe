@@ -45,6 +45,11 @@
     src: url(SundayUnicorn.ttf) format('truetype');
 }
 
+@font-face {
+    font-family: pillot;
+    src: url(pillot-command/PilotCommand.otf) ;
+}
+
 
 /*---------------
 The available types are: "woff", "woff2", "truetype", "opentype", "embedded-opentype", and "svg".

@@ -117,5 +117,23 @@ tk-message:is(.vs-annotation-message, .game-over) {
   flex-direction: column;
   inset: auto 0;
   bottom: 0;
+  text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;
+  
+  font-family: var(--font-3);
+
+  .message{
+    transform: translateY(-9em) translateZ(0.2em);
+    animation: opacity .5s 0s both;
+  }
+  .prize{
+    transform: translateY(0em) translateZ(12px);
+    animation: .8s .5s forwards ease-out ;
+    --dy:-2em;
+    --dz: 12px;
+    animation-direction: normal, reverse;
+    animation-name: transform, opacity;
+    z-index: 1;
+
+  }
 
 }

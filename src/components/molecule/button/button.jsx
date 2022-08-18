@@ -9,7 +9,7 @@ export const Button = forwardRef(
         useImperativeHandle(ref, () => internalRef.current);
 
         useEventListener('animationend', function (event) {
-            event.animationName === 'button-active' && onClick()
+            event.animationName === 'button-active' && onClick?.()
         },internalRef)
 
         return (

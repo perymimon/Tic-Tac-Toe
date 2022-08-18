@@ -1,18 +1,13 @@
 import './style.scss'
 
 import { useEffect, useRef } from "react"
+import { useEventListener } from '@perymimon/react-hooks';
 
 export function Debug() {
     var debuger = useRef();
-
-    useEffect(() => {
-        window.addEventListener('error', event => {
-            debugger;
-            debuger.innerHTML = JSON.stringify(event);
-        })
+    useEventListener('error', (e) => {
+        debuger.innerHTML = JSON.stringify(e.message);
     })
-
-
 
     return (
         <div className="debug" ref={debuger}>

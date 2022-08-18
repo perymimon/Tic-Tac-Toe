@@ -113,7 +113,7 @@ tk-cover-player {
   width: 2.6em;
   height: 2.6em;
 
-  transition: width,height 0.2s ease-in-out;
+  // transition: width,height 0.2s ease-in-out;
 
   clip-path: polygon(30% 0%, 70% 0%, 85% 15%, 200% 30%, 200% 70%, 85% 85%, 70% 100%, 30% 100%, 30% 100%, 0% 70%, 0% 30%, 30% 0%);
 
@@ -122,7 +122,7 @@ tk-cover-player {
     clip-path: polygon(30% 0%, 70% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 70% 100%, 30% 100%, 15% 85%, -100% 70%, -100% 30%, 15% 15%);
   }
 
-  will-change: clip-path, transform;
+  // will-change: clip-path, transform;
 
   tk-player {
     row-gap: 0.1em;
@@ -152,21 +152,6 @@ tk-cover-player {
   &:hover {
     z-index: 2;
     clip-path: polygon(-3em -3em, 10em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, 10em 10em, -3em 10em, -3em 10em, -3em 10em, -3em -3em, -3em -3em) !important;
-
-    //tk-player svg {
-    //  width: 1.5em;
-    //  height: 1.5em;
-    //}
-    //
-    //tk-player i {
-    //  font-size: 1.5em;
-    //}
-
-    //tk-player :is(i, svg){
-    //  margin-block-start: 0;
-    //  margin-inline-start: 0;
-    //}
-
 
     [name="name"] {
       inset-block-start: 0;

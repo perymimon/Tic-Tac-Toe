@@ -6,7 +6,7 @@ tk-game {
   --base-delay: 0s;
   --timeline-marker: 0s;
 
-  tk-board:after {
+  tk-board:after, menu:after {
     content: '';
     position: absolute;
     inset: 0;
@@ -75,7 +75,7 @@ tk-game {
     /* board go last */
     --timeline-marker: 0s;
 
-    tk-board:after {
+    tk-board:after, menu:after {
       backdrop-filter: blur(0.1em);
       pointer-events: all;
     }
@@ -116,7 +116,7 @@ tk-game {
     tk-cover-player.winner {
       opacity: 1;
       clip-path: polygon(-30em -30em, 30em -30em, 30em -30em, 30em -30em, 30em 30em, 30em 30em, 30em 30em, -30em 30em, -30em 30em, -30em 30em, -30em -30em, -30em -30em) !important;
-      transform: translateX(var(--tX)) translateZ(10px) translateY(2em) !important;
+      transform: translateX(var(--tX)) translateZ(10px) translateY(3em) !important;
     }
 
     tk-cover-player:not(.winner) {

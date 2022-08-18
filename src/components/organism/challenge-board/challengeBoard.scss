@@ -2,6 +2,7 @@ tk-challenge-board {
   display: flex;
   gap: 0.5em;
   flex-direction: column;
+  z-index: 1;
 
   tk-player {
     width: auto;

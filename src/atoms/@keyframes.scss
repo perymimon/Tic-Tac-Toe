@@ -100,6 +100,24 @@
   }
 }
 
+.an-transform{
+  animation : transform 1s 1.7s both;
+}
+
+// @keyframes transform {
+//   from{
+//     transform: translate3d(var(--dx, 0), var(--dy, 0), var(--dz, 0)) 
+//     rotate3d(var(--rx, 0), var(--ry, 0), var(--rz, 0), var(--deg, 0));
+//   }
+  
+// }
+
+@keyframes transform {
+  to{
+    transform:translate3d(var(--dx, 0), var(--dy, 0), var(--dz, 0));
+  }
+}
+
 @keyframes timeout {
   1% {
     --timeout: 1;
