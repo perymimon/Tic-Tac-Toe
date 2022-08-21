@@ -19,7 +19,7 @@ const END = "END";
 * */
 export function Game({ gameModel, onRemove, onSelectTile }) {
     var { players, board, turn, turnTime, stage, id } = gameModel;
-    var {draw, winner } = gameModel.stageMeta;
+    var { draw, winner } = gameModel.stageMeta;
     const gameDom = useRef();
     const [showSplash, setSplash] = useState(true);
     const loginUser = useLoginUser();
@@ -79,7 +79,8 @@ export function Game({ gameModel, onRemove, onSelectTile }) {
                 </If>
             </tk-game>
             <SplashScreen show={stage !== END && showSplash} gameModel={gameModel}
-                onAnimationEnd={noAnimBubble('xyz-out-keyframes', _ => setSplash(false))} />
+                // <SplashScreen gameModel={gameModel}
+                onSplashEnd={_ => setSplash(false)} />
 
 
         </>
@@ -88,29 +89,29 @@ export function Game({ gameModel, onRemove, onSelectTile }) {
 /*
 * <SplashScreen>
 * ***********************/
-function SplashScreen({ gameModel, show, onAnimationEnd, gameRef, ...otherProp }) {
+function SplashScreen({ gameModel, show = true, onSplashEnd, gameRef, ...otherProp }) {
     const { players } = gameModel;
+    const ref = useRef();
+
+    useTimeout(() => onSplashEnd?.(), 5000, { autoStart: show })
+    useTimeout(() => ref.current.classList.replace('xyz-in', 'xyz-out'), 2000, { autoStart: show })
 
     if (!show) return null;
 
-    function handleAnimationEnd(evt) {
-        if (evt.animationName === 'xyz-in-keyframes') {
-            evt.target.classList.add('xyz-out')
-        } else {
-            onAnimationEnd?.(evt);
-        }
-    }
+    // function handleAnimationEnd(evt) {
+    //     if (evt.animationName === 'xyz-in-keyframes')
+    //         evt.target.classList.add('xyz-out')
+    // }
 
     return (
-        <Message className="vs-annotation-message xyz-in"
-            onAnimationEnd={handleAnimationEnd}
-            xyz="fade out-delay-10 duration-10 out-delay-10" {...otherProp}
+        <Message ref={ref} className="vs-annotation-message xyz-in"
+            xyz="fade " {...otherProp}
         >
             <PlayerName user={players[0]} className="player-1 xyz-nested"
-                xyz="inherit left-100% skew-left-2 wide-25%" />
+                xyz="inherit skew-left-2 wide-25%" />
             <span className="xyz-nested">VS</span>
             <PlayerName user={players[1]} className="player-2 xyz-nested"
-                xyz="inherit right-100% skew-right-2 wide-25%" />
+                xyz="inherit skew-right-2 wide-25%" />
         </Message>
     )
 }
@@ -125,19 +126,19 @@ function score(ref, newScore) {
 }
 
 function End({ model, onRemove, gameRef, ...otherProp }) {
-    var {draw, winner, winnerOldScore, winnerNewScore } = model.stageMeta;
-    var {victoryPrize} = model.setting;
+    var { draw, winner, winnerOldScore, winnerNewScore } = model.stageMeta;
+    var { victoryPrize } = model.setting;
     var prizeRef = useRef(null);
 
     var init = useCallback(() => {
         score(gameRef, winnerOldScore);
-    },[]);
+    }, []);
 
-     var { clear } = useInterval(() => {
+    var { clear } = useInterval(() => {
         const num = score(gameRef)
         if (num >= winnerNewScore) { clear(); return }
         score(gameRef, num + 1);
-    }, 10, { delay:800, init, autoStart: !draw });
+    }, 10, { delay: 800, init, autoStart: !draw });
 
 
     var message = draw ? 'draw' : 'Winner !';

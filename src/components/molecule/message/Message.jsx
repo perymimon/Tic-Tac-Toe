@@ -1,29 +1,33 @@
 import './message.scss'
 import useCssClass from "@perymimon/react-hooks/css/useCssClass";
 import useEventListener from "@perymimon/react-hooks/useEventListener";
-import {useRef} from "react";
+import { useRef, forwardRef, useImperativeHandle } from "react";
 import { useTimeout } from '@perymimon/react-hooks';
 
-export function Message({waiting,className="", children, ...otherProps}) {
-    const classString = useCssClass({
-        [className]: true,
-    })
-    const $message = useRef(null)
+export const Message = forwardRef(
+    function Message({ waiting, className = "", children, ...otherProps }, ref) {
 
-    useIntervalClass($message, 10000, 'poke')
+        const classString = useCssClass({
+            [className]: true,
+        })
+        const $message = useRef(null)
+        useImperativeHandle(ref, () => $message.current);
 
-    return (
-        <tk-message ref={$message} waiting={waiting} class={classString} {...otherProps}>
-            {children}
-        </tk-message>
-    )
-}
+        useIntervalClass($message, 10000, 'poke')
+
+        return (
+            <tk-message ref={$message} waiting={waiting} class={classString} {...otherProps}>
+                {children}
+            </tk-message>
+        )
+    }
+)
 
 /* helper */
-function useIntervalClass(ref, time, className){
-    const {restart} = useTimeout(()=>ref.current.classList.add(className), time)
+function useIntervalClass(ref, time, className) {
+    const { restart } = useTimeout(() => ref.current.classList.add(className), time)
 
-    useEventListener('animationend',(event)=> {
+    useEventListener('animationend', (event) => {
         // event.target.classList.remove(className)
         ref.current.classList.remove(className)
         restart();

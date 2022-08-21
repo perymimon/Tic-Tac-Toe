@@ -95,6 +95,21 @@ tk-game {
   }
 }
 
+.vs-annotation-message {
+  --xyz-in-ease: cubic-bezier(0.18, 0.99, 0, 0.82);
+  --xyz-in-duration: 3s;
+  --xyz-out-duration: 0.3s;
+  --xyz-out-ease: ease;
+
+  .player-1 {
+    --xyz-translate-x: -130%
+  }
+
+  .player-2 {
+    --xyz-translate-x: 130%
+  }
+}
+
 tk-message:is(.vs-annotation-message, .game-over) {
   background-image: none;
   height: 100%;
@@ -117,24 +132,26 @@ tk-message:is(.vs-annotation-message, .game-over) {
   inset: auto 0;
   bottom: 0;
   text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;
-  
+
   font-family: var(--font-3);
 
-  .message{
+  .message {
     transform: translateY(-9em) translateZ(0.2em);
     animation: opacity .5s 0s both;
   }
-  &.winner .prize{
+
+  &.winner .prize {
     transform: translateY(0em) translateZ(12px);
-    animation: .8s .5s forwards ease-out ;
-    --dy:-2em;
+    animation: .8s .5s forwards ease-out;
+    --dy: -2em;
     --dz: 12px;
     animation-direction: normal, reverse;
     animation-name: transform, opacity;
     z-index: 1;
 
   }
-  &:not(.winner) .prize{
+
+  &:not(.winner) .prize {
     display: none;
   }
 
