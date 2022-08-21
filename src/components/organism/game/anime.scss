@@ -9,10 +9,11 @@ tk-game {
   tk-board:after, menu:after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: -.5em 0;
     backdrop-filter: blur(0);
     pointer-events: none;
     transition: backdrop-filter 0.2s ease-in-out;
+    border-radius: var(--border-radius-medium);
   }
 
 
