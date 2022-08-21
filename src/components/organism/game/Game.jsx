@@ -4,7 +4,7 @@ import { Player, PlayerCover, PlayerName, PlayerTag } from "components/molecule/
 import { Board } from "components/molecule/board/Board";
 import { Message } from "components/molecule/message/Message";
 import { noAnimBubble } from "helpers/helpers.js";
-import { useInterval, useRun, useTimeout, useTimingsStages } from "@perymimon/react-hooks";
+import { useInterval, useLatest, useRun, useTimeout, useTimingsStages } from "@perymimon/react-hooks";
 import useCssClass from "@perymimon/react-hooks/css/useCssClass";
 import { useLoginUser } from "service/socket";
 import { rotate } from "@perymimon/js-tools-belt";
@@ -18,11 +18,11 @@ const END = "END";
 * <Game>
 * */
 export function Game({ gameModel, onRemove, onSelectTile }) {
-    const { players, board, turn, turnTime, stage, id, winner, draw } = gameModel;
+    var { players, board, turn, turnTime, stage, id } = gameModel;
+    var {draw, winner } = gameModel.stageMeta;
     const gameDom = useRef();
     const [showSplash, setSplash] = useState(true);
     const loginUser = useLoginUser();
-
     const rotateIndex = players.findIndex(p => p.id === loginUser.id);
     const rPlayers = rotate(players, rotateIndex);
     const rotateTurn = (turn + rotateIndex) % players.length;
@@ -118,37 +118,41 @@ function SplashScreen({ gameModel, show, onAnimationEnd, gameRef, ...otherProp }
 /*
 * <End> 
 **************/
+function score(ref, newScore) {
+    var elm = ref.current.querySelector('.winner dd[name="score"]');
+    newScore && (elm.innerText = newScore);
+    return Number(elm.innerText);
+}
+
 function End({ model, onRemove, gameRef, ...otherProp }) {
-    var { draw, winner, prize = 100 } = model;
+    var {draw, winner, winnerOldScore, winnerNewScore } = model.stageMeta;
+    var {victoryPrize} = model.setting;
     var prizeRef = useRef(null);
 
-    var currentScore = useCallback((score) => {
-        var elm = gameRef.current.querySelector('.winner dd[name="score"]');
-        score && (elm.innerText = score);
-        return Number(elm.innerText);
+    var init = useCallback(() => {
+        score(gameRef, winnerOldScore);
+    },[]);
 
-    })
+     var { clear } = useInterval(() => {
+        const num = score(gameRef)
+        if (num >= winnerNewScore) { clear(); return }
+        score(gameRef, num + 1);
+    }, 10, { delay:800, init, autoStart: !draw });
 
-    var newScore = useRun(() => {
-        if (!gameRef.current) return [0, 0]
-        return currentScore() + prize;
-    }, [gameRef.current])
-
-
-    var {clear, restart} = useInterval(() => {
-        var num = currentScore();
-        if (num >= newScore) { clear(); return }
-        currentScore(num + 1);
-    }, 10,{autoStart:false});
-    useTimeout(restart, 800)
 
     var message = draw ? 'draw' : 'Winner !';
 
+    var classString = useCssClass('game-over-anotation', {
+        "winner": winner,
+        "draw": draw,
+    })
     return (
-        <div className='game-over-anotation'>
+        <div className={classString}>
             <div className='message'>{message}</div>
-            <div ref={prizeRef} className="prize">+{prize}</div>
+            <div ref={prizeRef} className="prize">+{victoryPrize}</div>
             <Button onClick={onRemove} className="primary">Fine</Button>
         </div>
     )
 }
+
+

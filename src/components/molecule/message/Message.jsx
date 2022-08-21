@@ -1,8 +1,8 @@
 import './message.scss'
 import useCssClass from "@perymimon/react-hooks/css/useCssClass";
 import useEventListener from "@perymimon/react-hooks/useEventListener";
-import useTimeout from "@perymimon/react-hooks/useTimeout";
 import {useRef} from "react";
+import { useTimeout } from '@perymimon/react-hooks';
 
 export function Message({waiting,className="", children, ...otherProps}) {
     const classString = useCssClass({
@@ -21,12 +21,12 @@ export function Message({waiting,className="", children, ...otherProps}) {
 
 /* helper */
 function useIntervalClass(ref, time, className){
-    const {reset} = useTimeout(()=>ref.current.classList.add(className), time)
+    const {restart} = useTimeout(()=>ref.current.classList.add(className), time)
 
     useEventListener('animationend',(event)=> {
         // event.target.classList.remove(className)
         ref.current.classList.remove(className)
-        reset();
+        restart();
     }, ref)
 
 }

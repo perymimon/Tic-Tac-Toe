@@ -1,10 +1,20 @@
 {
     "configurations": [
         {
+            "name": "node",
+            "port": 9229,
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
             "type": "pwa-chrome",
             "name": "http://localhost:4001/",
             "request": "launch",
-            "url": "http://localhost:4001/"
+            "url": "http://localhost:4001/",
+            "runtimeArgs": ["--load-extension=${env:userprofile}/AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.25.0_5"]
         }
     ]
 }
