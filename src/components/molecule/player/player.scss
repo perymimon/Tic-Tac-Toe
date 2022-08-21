@@ -41,7 +41,7 @@ tk-player {
 
   dd {
     font-family: "FontAwesome";
-    mix-blend-mode: luminosity
+    color: hsl(0deg 0% 100% / 49%);
   }
 
   [name="name"] {
@@ -76,6 +76,7 @@ tk-player {
 
   dd {
     grid-row: 7;
+
   }
 
   dl {
