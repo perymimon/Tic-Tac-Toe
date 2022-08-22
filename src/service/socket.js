@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
-import {useLayoutEffect, useMemo, useState} from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 // import LetMap from '../helpers/let-map'
-import {LetMap} from '@perymimon/let-map'
+import { LetMap } from '@perymimon/let-map'
 
 /** enable Verbose on devtool logs to see that logs*/
 import debuggers from 'debug'
@@ -11,7 +11,7 @@ const debug = debuggers("socket");
 listen to all event under socket ns .
  save last value and update all register react hooks
  /************************************/
-function socketEventWatcher({type, nsp, data}) {
+function socketEventWatcher({ type, nsp, data }) {
     const [event, datum] = data;
     debug('Event Watcher', event, nsp, datum)
     const [, key] = nspEventKey(nsp, event);
@@ -33,8 +33,8 @@ function createSocket(namespace) {
     const SOCKET_DOMAIN = process.env.REACT_APP_SOCKET_DOMAIN;
     const socket = io(SOCKET_DOMAIN + namespace, {
         autoConnect: false,
-        query: {uid},
-        transports : ['websocket'],
+        query: { uid },
+        transports: ['websocket'],
         extraHeaders: {
             'Access-Control-Allow-Origin': "*"
         }
@@ -49,7 +49,7 @@ const sockets = new LetMap(ns => createSocket(ns))
 const socketMemo = new LetMap(); // use it for events
 
 /* need to reconnect for query get place on the request*/
-socketMemo.on('/user', function ({key, value:user}) {
+socketMemo.on('/user', function ({ key, value: user }) {
     debug('/user', user);
     if (localStorage.userId !== user.id) {
         localStorage.userId = user.id
@@ -70,11 +70,9 @@ export function useSocket(nspEvent, defaultValue) {
     const [, forceRender] = useState(/*just for we have a trigger RENDER*/);
 
     useLayoutEffect(() => {
-        const setters = eventsHooks.let(key)
-        setters.add(forceRender)
-        return () => {
-            setters.delete(forceRender)
-        }
+        const setters = eventsHooks.let(key);
+        setters.add(forceRender);
+        return () => setters.delete(forceRender)
     }, [key])
     return [socketMemo.get(key) ?? defaultValue, sockets.let(nsp)];
 }
@@ -95,7 +93,7 @@ export function useConnected() {
         function set() {
             setIsConnected(socket.connected);
         }
-        if (socket.connected !== isConnected){
+        if (socket.connected !== isConnected) {
             set()
         }
 

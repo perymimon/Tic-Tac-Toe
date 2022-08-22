@@ -10,6 +10,7 @@ app.get('/', (req, res) => {
 })
 const Users = require('./src/users');
 const Arenas = require('./src/games');
+const users = require('./src/users');
 
 /*Create One AI*/
 Users.create('bob', true)
@@ -86,8 +87,7 @@ io.on('connection', socket => {
     });
 
     const userid = socket.handshake.query.uid;
-    if (userid)
-        var user = socket.user = Users.get(userid);
+    var user = userid ? socket.user = Users.get(userid): null;
     console.log(`connect: ${socket.id} userid: ${userid}`);
 
     if (user) {
@@ -101,6 +101,7 @@ io.on('connection', socket => {
         user = socket.user = Users.create(name)
         socket.client.request._query.uid = user.id;
         welcome(socket, user);
+        users.on(user.id, user=> io.to(user.id).emit('user', user.model));
         socket.removeAllListeners('user-register');
     })
 
