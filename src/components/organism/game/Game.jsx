@@ -93,7 +93,7 @@ function SplashScreen({ gameModel, show = true, onSplashEnd, gameRef, ...otherPr
     const { players } = gameModel;
     const ref = useRef();
 
-    useTimeout(() => onSplashEnd?.(), 5000, { autoStart: show })
+    useTimeout(() => onSplashEnd?.(), 4000, { autoStart: show })
     useTimeout(() => ref.current.classList.replace('xyz-in', 'xyz-out'), 2000, { autoStart: show })
 
     if (!show) return null;

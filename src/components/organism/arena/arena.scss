@@ -8,7 +8,8 @@ tk-arena {
 
   min-width: 10em;
   min-height: 10em;
-
-
+ 
+  /* try solve problem with move animation  */
+  will-change: transform;
 
 }

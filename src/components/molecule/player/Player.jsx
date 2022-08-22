@@ -55,7 +55,7 @@ export const Player = forwardRef(
             <tk-player ref={$playerRef} {...basicProps} class={classesName} style={properties} onClick={handleClick}>
                 {icon}
                 <dd name="name">{player.name}</dd>
-                <dd name="nickname">"{player.slogan}"</dd>
+                <dd name="nickname">" {player.slogan} "</dd>
                 <dt name="score">score</dt>
                 <dd name="score">{oldScore}</dd>
                 <dt />

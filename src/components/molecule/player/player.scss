@@ -15,6 +15,7 @@ tk-player {
 
   padding: 0.3em;
   width: min-content;
+  min-width: 5em;
 
   //--from-color: var(--player-color-text);
   //--to-color: #1a4e64;
@@ -230,4 +231,5 @@ tk-player.just-head{
   outline: none;
   font-size: .8em;
   background: none;
+  min-width: auto;
 }
