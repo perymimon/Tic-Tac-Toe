@@ -133,7 +133,7 @@ tk-cover-player {
     margin-inline-start: -0.5em;
 
     [name="name"] {
-      inset-block-start: 0.8em;
+      // inset-block-start: 0.8em;
       position: relative;
     }
 
@@ -154,9 +154,9 @@ tk-cover-player {
     z-index: 2;
     clip-path: polygon(-3em -3em, 10em -3em, 10em -3em, 10em -3em, 10em 10em, 10em 10em, 10em 10em, -3em 10em, -3em 10em, -3em 10em, -3em -3em, -3em -3em) !important;
 
-    [name="name"] {
-      inset-block-start: 0;
-    }
+    // [name="name"] {
+    //   inset-block-start: 0;
+    // }
 
   }
 }
