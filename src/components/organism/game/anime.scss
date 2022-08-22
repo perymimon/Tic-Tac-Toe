@@ -118,6 +118,10 @@ tk-game {
       opacity: 1;
       clip-path: polygon(-30em -30em, 30em -30em, 30em -30em, 30em -30em, 30em 30em, 30em 30em, 30em 30em, -30em 30em, -30em 30em, -30em 30em, -30em -30em, -30em -30em) !important;
       transform: translateX(var(--tX)) translateZ(10px) translateY(3em) !important;
+      
+      [name="name"] {
+        inset-block-start: 0;
+      }
     }
 
     tk-cover-player:not(.winner) {

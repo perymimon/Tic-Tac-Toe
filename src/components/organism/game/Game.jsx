@@ -119,26 +119,26 @@ function SplashScreen({ gameModel, show = true, onSplashEnd, gameRef, ...otherPr
 /*
 * <End> 
 **************/
-function score(ref, newScore) {
-    var elm = ref.current.querySelector('.winner dd[name="score"]');
-    newScore && (elm.innerText = newScore);
-    return Number(elm.innerText);
-}
+// function score(ref, newScore) {
+//     var elm = ref.current.querySelector('.winner dd[name="score"]');
+//     newScore && (elm.innerText = newScore);
+//     return Number(elm.innerText);
+// }
 
 function End({ model, onRemove, gameRef, ...otherProp }) {
     var { draw, winner, winnerOldScore, winnerNewScore } = model.stageMeta;
     var { victoryPrize } = model.setting;
     var prizeRef = useRef(null);
 
-    var init = useCallback(() => {
-        score(gameRef, winnerOldScore);
-    }, []);
+    // var init = useCallback(() => {
+    //     score(gameRef, winnerOldScore);
+    // }, []);
 
-    var { clear } = useInterval(() => {
-        const num = score(gameRef)
-        if (num >= winnerNewScore) { clear(); return }
-        score(gameRef, num + 1);
-    }, 10, { delay: 800, init, autoStart: !draw });
+    // var { clear } = useInterval(() => {
+    //     const num = score(gameRef)
+    //     if (num >= winnerNewScore) { clear(); return }
+    //     score(gameRef, num + 1);
+    // }, 10, { delay: 800, init, autoStart: !draw });
 
 
     var message = draw ? 'draw' : 'Winner !';
