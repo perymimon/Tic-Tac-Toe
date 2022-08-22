@@ -40,7 +40,7 @@ export const Player = forwardRef(
             colors={[player.color, player.color2, player.color3, "#F0AB3D", "#C271B4", "#C20D90"]}
         />);
 
-        const [oldScore, ver] = useLazyPrevious(player.score);
+        const [oldScore] = useLazyPrevious(player.score);
         const { restart, clear } = useInterval(() => {
             var $score = $playerRef.current.querySelector('dd[name="score"]');
             var currentScore = Number($score.innerText);

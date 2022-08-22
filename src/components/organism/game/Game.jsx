@@ -1,10 +1,10 @@
 import './index.scss'
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Player, PlayerCover, PlayerName, PlayerTag } from "components/molecule/player/Player";
+import { useEffect, useRef, useState } from "react";
+import { PlayerCover, PlayerName } from "components/molecule/player/Player";
 import { Board } from "components/molecule/board/Board";
 import { Message } from "components/molecule/message/Message";
-import { noAnimBubble } from "helpers/helpers.js";
-import { useInterval, useLatest, useRun, useTimeout, useTimingsStages } from "@perymimon/react-hooks";
+// import { noAnimBubble } from "helpers/helpers.js";
+import { useRun, useTimeout, useTimingsStages } from "@perymimon/react-hooks";
 import useCssClass from "@perymimon/react-hooks/css/useCssClass";
 import { useLoginUser } from "service/socket";
 import { rotate } from "@perymimon/js-tools-belt";
@@ -55,7 +55,7 @@ export function Game({ gameModel, onRemove, onSelectTile }) {
                 {/* <If show={stage !== END} hidedelay={2000} name="menu"> */}
                 <menu className="competitors" >
                     {useRun(() => {
-                        const winnerCls = rPlayers[0].id == winner ? ' winner' : '';
+                        const winnerCls = rPlayers[0].id === winner ? ' winner' : '';
                         return <PlayerCover
                             player={rPlayers[0]} class={`player-1`}
                             coverClass={winnerCls} />
@@ -63,7 +63,7 @@ export function Game({ gameModel, onRemove, onSelectTile }) {
                     <StopWatch />
                     <span className="vs">VS</span>
                     {useRun(() => {
-                        const winnerCls = rPlayers[1].id == winner ? ' winner' : '';
+                        const winnerCls = rPlayers[1].id === winner ? ' winner' : '';
                         return <PlayerCover player={rPlayers[1]}
                             class="player-2"
                             coverClass={`rtl ${winnerCls}`} />
@@ -126,20 +126,9 @@ function SplashScreen({ gameModel, show = true, onSplashEnd, gameRef, ...otherPr
 // }
 
 function End({ model, onRemove, gameRef, ...otherProp }) {
-    var { draw, winner, winnerOldScore, winnerNewScore } = model.stageMeta;
+    var { draw, winner } = model.stageMeta;
     var { victoryPrize } = model.setting;
     var prizeRef = useRef(null);
-
-    // var init = useCallback(() => {
-    //     score(gameRef, winnerOldScore);
-    // }, []);
-
-    // var { clear } = useInterval(() => {
-    //     const num = score(gameRef)
-    //     if (num >= winnerNewScore) { clear(); return }
-    //     score(gameRef, num + 1);
-    // }, 10, { delay: 800, init, autoStart: !draw });
-
 
     var message = draw ? 'draw' : 'Winner !';
 

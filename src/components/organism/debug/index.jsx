@@ -1,6 +1,6 @@
 import './style.scss'
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { useEventListener } from '@perymimon/react-hooks';
 
 export function Debug() {
