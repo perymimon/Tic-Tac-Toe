@@ -11,7 +11,7 @@ export function Header() {
 
     return (
         <header className="introduce-finish">
-            {user.id ? <PlayerName user={user} showScore/> : <span/>}
+            {user.id ? <PlayerName player={user} showScore/> : <span/>}
             Tic Tac Toe {env}
             <span className="disconnect-icon" title="socket disconnected">
                 {!isConnected && <i className="fa-solid fa-wifi"></i>}

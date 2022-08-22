@@ -1,14 +1,14 @@
 import './player.scss'
 import Avatar from "boring-avatars";
 import useCssClass from "@perymimon/react-hooks/css/useCssClass";
-import {useCallback} from "react";
+import { useCallback } from "react";
 
 // const {
 //     name, score, color, disconnect,   colorView,  AI, counterDown,
 // } = props;
 
 export function Player(props) {
-    const {user: player, className = "", style, onClick, ...basicProps} = props;
+    const { player, className = "", style, onClick, ...basicProps } = props;
 
     const classesName = useCssClass({
         disconnected: !!player.disconnect,
@@ -41,15 +41,15 @@ export function Player(props) {
             <dd name="nickname">"{player.slogan}"</dd>
             <dt name="score">score</dt>
             <dd name="score">{player.score}</dd>
-            <dt/>
-            <dd/>
-            <dt name="icon"/>
+            <dt />
+            <dd />
+            <dt name="icon" />
             <dd name="icon">{(!!player.AI) ? '\uf4fb' : '\uf007'}</dd>
         </tk-player>
     )
 }
 
-export function PlayerCover({coverStyle, coverClass, ...otherProps}) {
+export function PlayerCover({ coverStyle, coverClass, ...otherProps }) {
     return (
         <tk-cover-player style={coverStyle} class={coverClass}>
             <Player {...otherProps} />
@@ -58,28 +58,28 @@ export function PlayerCover({coverStyle, coverClass, ...otherProps}) {
 }
 
 
-export function PlayerNameScore({className = "", ...basicProps}) {
+export function PlayerNameScore({ className = "", ...basicProps }) {
     const classesString = useCssClass({
         'small-banner': true,
         'name-score': true,
         [className]: true,
     });
-    return <Player {...basicProps} showScore showName className={classesString}/>
+    return <Player {...basicProps} showScore showName className={classesString} />
 }
 
-export function PlayerName({className = "", ...basicProps}) {
+export function PlayerName({ className = "", ...basicProps }) {
     const classesString = useCssClass({
         'small-banner': true,
         [className]: true,
     });
-    return <Player {...basicProps} showName className={classesString}/>
+    return <Player {...basicProps} showName className={classesString} />
 }
 
-export function PlayerHead({className = "", ...basicProps}) {
-    const classesString = useCssClass({
-        'just-head': true,
-        [className]: true,
-    });
-    return <Player {...basicProps} showTag={false} showName={false} className={classesString}/>
+export function PlayerHead({ className = "", ...basicProps }) {
+    return <Player {...basicProps}
+        showTag={false} 
+        showName={false} className={useCssClass(className, {
+            'just-head': true,
+        })} />
 }
 

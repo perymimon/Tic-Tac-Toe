@@ -57,14 +57,14 @@ export function Game({ gameModel, onRemove, onSelectTile }) {
                     {useRun(() => {
                         const winnerCls = rPlayers[0].id == winner ? ' winner' : '';
                         return <PlayerCover
-                            user={rPlayers[0]} class={`player-1`}
+                            player={rPlayers[0]} class={`player-1`}
                             coverClass={winnerCls} />
                     })}
                     <StopWatch />
                     <span className="vs">VS</span>
                     {useRun(() => {
                         const winnerCls = rPlayers[1].id == winner ? ' winner' : '';
-                        return <PlayerCover user={rPlayers[1]}
+                        return <PlayerCover player={rPlayers[1]}
                             class="player-2"
                             coverClass={`rtl ${winnerCls}`} />
                     })}
@@ -72,7 +72,7 @@ export function Game({ gameModel, onRemove, onSelectTile }) {
                 </menu>
                 {/* </If> */}
 
-                <Board board={board} onSelectTile={onSelectTile} />
+                <Board board={board} onSelectTile={onSelectTile} players={players} />
                 <div className="game-id">{id}</div>
                 <If show={stage === END} showdelay={900} name="end">
                     <End model={gameModel} gameRef={gameDom} onRemove={onRemove} />
@@ -107,10 +107,10 @@ function SplashScreen({ gameModel, show = true, onSplashEnd, gameRef, ...otherPr
         <Message ref={ref} className="vs-annotation-message xyz-in"
             xyz="fade " {...otherProp}
         >
-            <PlayerName user={players[0]} className="player-1 xyz-nested"
+            <PlayerName player={players[0]} className="player-1 xyz-nested"
                 xyz="inherit skew-left-2 wide-25%" />
             <span className="xyz-nested">VS</span>
-            <PlayerName user={players[1]} className="player-2 xyz-nested"
+            <PlayerName player={players[1]} className="player-2 xyz-nested"
                 xyz="inherit skew-right-2 wide-25%" />
         </Message>
     )

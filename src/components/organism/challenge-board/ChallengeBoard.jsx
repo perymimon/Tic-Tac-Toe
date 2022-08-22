@@ -24,7 +24,7 @@ export function ChallengeBoard(props) {
 
     function PlayerItem({item: player}) {
         return (
-            <PlayerNameScore user={player} onClick={onChallenge}/>
+            <PlayerNameScore player={player} onClick={onChallenge}/>
         )
     }
 }

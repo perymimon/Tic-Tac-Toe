@@ -19,7 +19,7 @@ export function Invitation({gameModel, onApprove, onCancel, onRemove}) {
                 if (stage === INVITATION && loginUser.id === against.id) return (
                     /*  invited  */
                     <Message attention key={1}>
-                        dual against <PlayerName user={by} className="user-inviting"/>
+                        dual against <PlayerName player={by} className="user-inviting"/>
                         <Button className="primary" onClick={onApprove}>approve</Button>
                         <Button className="secondary" onClick={onCancel}>decline</Button>
                     </Message>
@@ -28,7 +28,7 @@ export function Invitation({gameModel, onApprove, onCancel, onRemove}) {
                 if (stage === INVITATION && loginUser.id === by.id) return (
                     /*  inviting  */
                     <Message waiting key={1}>
-                        waiting to <PlayerName user={against} className="user-invited"/>
+                        waiting to <PlayerName player={against} className="user-invited"/>
                         <button className="secondary" onClick={onCancel}>cancel</button>
                     </Message>
                 )
@@ -37,7 +37,7 @@ export function Invitation({gameModel, onApprove, onCancel, onRemove}) {
                 if (stage === CANCEL) return (
                     /* cancel */
                     <Message className="canceled" key={1}>
-                        <PlayerName user={player}/>
+                        <PlayerName player={player}/>
 
                         canceled
 
