@@ -14,7 +14,8 @@
     "server": "nodemon --inspect server",
     "server:dbg": "nodemon --inspect-brk server",
     "server:production": "nodemon server",
-    "killnode": "taskkill /f /im node.exe"
+    "killnode": "taskkill /f /im node.exe",
+    "supportedBrowsers": "(echo var reg = && browserslist-useragent-regexp --allowHigherVersions && echo export default reg;) > src/supportedBrowsers.js"
   },
   "dependencies": {
     "@animxyz/core": "^0.6.6",
@@ -49,9 +50,8 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "last 1 chrome version",
+      "> 5%"
     ],
     "development": [
       "last 1 chrome version",
@@ -59,5 +59,8 @@
       "last 1 safari version"
     ]
   },
-  "license": "AGPL-3.0-or-later"
+  "license": "AGPL-3.0-or-later",
+  "devDependencies": {
+    "browserslist-useragent-regexp": "^3.0.2"
+  }
 }
