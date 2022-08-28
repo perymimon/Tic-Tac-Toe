@@ -43,6 +43,16 @@ header {
     color: var(--app-color-text-error)
 
   }
+  .versions{
+    font-size: 0.2em;
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    text-align: left;
+
+    font-family: monospace;
+  }
 
 }
 

@@ -15,7 +15,7 @@ const rootContainer = document.getElementById('root');
 const root = createRoot(rootContainer);
 
 if (!supportedBrowsers.test(navigator.userAgent)) {
-    var href1 = location.href.replace(/https?/, 'googlechrome')
+    var href1 = window.location.href.replace(/https?/, 'googlechrome')
     var href2 = `intent${window.location.href.replace(/https?/, '')};scheme=https;package=com.android.chrome;end`
     root.render(
         <div>
