@@ -15,13 +15,14 @@ const rootContainer = document.getElementById('root');
 const root = createRoot(rootContainer);
 
 if (!supportedBrowsers.test(navigator.userAgent)) {
-    alert('Your browser is not supported.');
-    // var href = location.href.replace(/https?/, 'googlechrome')
-    var href = `intent${window.location.href.replace(/https?/, '')};scheme=https;package=com.android.chrome;end`
+    var href1 = location.href.replace(/https?/, 'googlechrome')
+    var href2 = `intent${window.location.href.replace(/https?/, '')};scheme=https;package=com.android.chrome;end`
     root.render(
         <div>
-            Your browser is not supported.
-            click <a href={href} target="_blank" rel="noreferrer">here</a> to open it on chrome
+           <h1>   Your browser is not supported. </h1>
+            <p>this app desing to work on chrome only.</p>
+            <p>try click <a href={href1}>here</a> to move to  Chrome</p> 
+            <p>or <a href={href2} target="_blank" rel="noreferrer">here</a> </p>
         </div>
     )
 } else {
