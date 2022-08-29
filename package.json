@@ -15,7 +15,8 @@
     "server:dbg": "nodemon --inspect-brk server",
     "server:production": "nodemon server",
     "killnode": "taskkill /f /im node.exe",
-    "supportedBrowsers": "(echo var reg = && browserslist-useragent-regexp --allowHigherVersions && echo export default reg;) > src/supportedBrowsers.js"
+    "supportedBrowsers": "(echo var reg = && browserslist-useragent-regexp --allowHigherVersions && echo export default reg;) > src/supportedBrowsers.js",
+    "bump":"npm version patch --force && npm publish"
   },
   "dependencies": {
     "@animxyz/core": "^0.6.6",

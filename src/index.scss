@@ -13,3 +13,17 @@ layer(  animation );
 @import "components/molecule/button/button";
 @import "components/molecule/error/tk-error";
 @import "layout/media-pointer-coarse.scss" (pointer: coarse) ;
+
+.no-supported-banner{
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+
+    text-transform: capitalize;
+    h1{
+        font-size: 2em;
+    }
+    p{
+        line-height: 2em;
+    }
+}

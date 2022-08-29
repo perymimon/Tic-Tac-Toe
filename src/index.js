@@ -18,11 +18,14 @@ if (!supportedBrowsers.test(navigator.userAgent)) {
     var href1 = window.location.href.replace(/https?/, 'googlechrome')
     var href2 = `intent${window.location.href.replace(/https?/, '')};scheme=https;package=com.android.chrome;end`
     root.render(
-        <div>
+        <div className='no-supported-banner'>
            <h1>   Your browser is not supported. </h1>
             <p>this app desing to work on chrome only.</p>
-            <p>try click <a href={href1}>here</a> to move to  Chrome</p> 
-            <p>or <a href={href2} target="_blank" rel="noreferrer">here</a> </p>
+            <p>
+                try click <a href={href1}>here</a> or <a href={href2} target="_blank" rel="noreferrer">here </a> 
+                 to move to  Chrome
+            </p> 
+            <image href="images/screanshot-18.001.png" />
         </div>
     )
 } else {
