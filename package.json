@@ -25,23 +25,20 @@
     "@perymimon/react-anime-manager": "^3.1.5",
     "@perymimon/react-hooks": "^1.4.10",
     "@perymimon/timer": "^1.0.7",
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
     "animate.css": "^4.1.1",
     "boring-avatars": "^1.7.0",
     "express": "^4.18.1",
-    "nodemon": "^2.0.19",
+    
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
-    "sass": "^1.53.0",
+   
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
     "uid": "^2.0.0",
-    "use-sound": "^4.0.1",
-    "web-vitals": "^2.1.4"
+    "use-sound": "^4.0.1"
+    
   },
   "eslintConfig": {
     "extends": [
@@ -62,6 +59,12 @@
   },
   "license": "AGPL-3.0-or-later",
   "devDependencies": {
-    "browserslist-useragent-regexp": "^3.0.2"
+    "browserslist-useragent-regexp": "^3.0.2",
+    "sass": "^1.53.0",
+    "web-vitals": "^2.1.4",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "nodemon": "^2.0.19"
   }
 }
